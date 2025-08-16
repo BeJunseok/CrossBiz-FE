@@ -39,13 +39,11 @@ const FilterButtons = ({ onFilterChange }) => {
   const FilterButton = ({ filterType }) => (
     <div className="relative">
       <button
-        className={`bg-white px-3.5 py-1.5 rounded-full shadow-sm text-xs border border-gray-200 flex items-center gap-1 
-          ${openDropdown === filterType ? 'border-blue-500' : ''}
-          ${
-            selectedFilters[filterType]
-              ? 'bg-blue-50 border-blue-200'
-              : 'text-gray-600'
-          }`}
+        className={`bg-white px-3.5 py-1.5 rounded-full shadow-sm text-xs flex items-center gap-1 transition-colors ${
+          openDropdown === filterType
+            ? 'border border-blue-500'
+            : 'border border-gray-200'
+        } ${selectedFilters[filterType] ? 'bg-blue-50' : 'text-gray-600'}`}
         onClick={() => handleDropdownToggle(filterType)}
       >
         {selectedFilters[filterType] || filterLabels[filterType]}
