@@ -9,7 +9,7 @@ const NewsSection = ({ news }) => {
         <h3 className="text-base font-semibold text-black">최신 소식</h3>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto">
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide">
         {news.map((newsItem) => (
           <NewsCard key={newsItem.id} news={newsItem} />
         ))}
