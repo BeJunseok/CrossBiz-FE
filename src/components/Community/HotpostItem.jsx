@@ -2,34 +2,27 @@ import Views from '@/assets/icons/Views.svg?react';
 import Comments from '@/assets/icons/Comments.svg?react';
 import Saves from '@/assets/icons/Saves.svg?react';
 
+const Stat = ({ icon, value, width = 'w-8' }) => (
+  <div className="flex items-center justify-end gap-1.5 text-[10px] text-gray-500">
+    <div className="flex-shrink-0">{icon}</div>
+    <span className={`inline-block ${width} text-center font-medium`}>
+      {value.toLocaleString()}
+    </span>
+  </div>
+);
+
 const HotPostItem = ({ post }) => {
   return (
     <div className="p-3 border-b border-gray-100 last:border-b-0">
       <div className="flex items-center">
-        <p className="text-xs text-gray-600 w-3/4 truncate pr-10">
+        <p className="flex-1 truncate pr-4 text-xs text-gray-600">
           {post.title}
         </p>
-        <div className="w-1/4 flex justify-end">
-          <div className="flex gap-2 text-xs text-gray-500">
-            <div className="flex items-center gap-1">
-              <div className="w-3 h-3 flex items-center justify-center">
-                <Views />
-              </div>
-              <span>{post.stats.views.toLocaleString()}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="w-3 h-3 flex items-center justify-center">
-                <Comments />
-              </div>
-              <span>{post.stats.comments}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="w-3 h-3 flex items-center justify-center">
-                <Saves />
-              </div>
-              <span>{post.stats.shares}</span>
-            </div>
-          </div>
+
+        <div className="flex gap-x-1">
+          <Stat icon={<Views />} value={post.stats.views} width="w-7" />
+          <Stat icon={<Comments />} value={post.stats.comments} width="w-3" />
+          <Stat icon={<Saves />} value={post.stats.shares} width="w-3" />
         </div>
       </div>
     </div>
