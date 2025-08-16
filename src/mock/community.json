@@ -44,10 +44,13 @@
       }
     }
   ],
+
   "recentPosts": [
     {
       "id": 1,
       "category": "Q&A",
+      "industry": "소매·유통",
+      "nationality": "기타",
       "author": "Anna",
       "title": "의류 도매 쪽 잘 아시는 분 있나요?",
       "content": "안녕하세요. 예비 창업자입니다.\n제가 의류 도매 쪽을 준비중인데, 유통업체와 분쟁이 생겨서요.\n법률을 잘 아시는 분들 댓글 달아주세요ㅠㅜ",
@@ -61,6 +64,8 @@
     {
       "id": 2,
       "category": "Q&A",
+      "industry": "서비스업",
+      "nationality": "미국",
       "author": "Jhon Smith",
       "title": "My D-8 visa is expiring soon. Any tips for renewal?",
       "content": "Hey everyone, my D-8 business visa will expire in two months.\nI heard the process changed this year? Do I need to re-submit my entire business plan? Any tips would be appreciated!",
@@ -74,6 +79,8 @@
     {
       "id": 3,
       "category": "Discussion",
+      "industry": "외식업",
+      "nationality": "기타",
       "author": "Selly Kim",
       "title": "홍대 bakery location 괜찮을까요?",
       "content": "I'm planning to open a European-style bakery near Hongdae Station.\n근데 rent가 조금 비싸네요…\n혹시 홍대에서 business 하시는 분, weekday랑 weekend foot traffic이 어떤지 알려주실 수 있나요?",
@@ -87,6 +94,8 @@
     {
       "id": 4,
       "category": "Help",
+      "industry": "외식업",
+      "nationality": "중국",
       "author": "Liu Gwan Xci",
       "title": "외국인 비자 연장 관련",
       "content": "제가 한국에서의 비자 연장이 처음인데, 완전히 모르겠어서요, 😅\n중국어를 할 줄 아는 상담사가 서울에 있나요?\n요식업쪽이였으면 좋겠어요.",

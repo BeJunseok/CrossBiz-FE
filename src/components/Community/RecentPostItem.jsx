@@ -42,12 +42,14 @@ const RecentPostItem = ({ post }) => {
         </div>
       </div>
       <p className="text-xs text-gray-600 leading-relaxed mb-2 line-clamp-3">
-        {post.content.split('\n').map((line, index) => (
-          <React.Fragment key={index}>
-            {line}
-            {index < post.content.split('\n').length - 1 && <br />}
-          </React.Fragment>
-        ))}
+        {post.content
+          ? post.content.split('\n').map((line, index) => (
+              <React.Fragment key={index}>
+                {line}
+                {index < post.content.split('\n').length - 1 && <br />}
+              </React.Fragment>
+            ))
+          : '내용이 없습니다'}
       </p>
 
       <div className="flex justify-end gap-2 text-xs text-gray-400">
@@ -55,19 +57,19 @@ const RecentPostItem = ({ post }) => {
           <div className="w-3 h-3 flex items-center justify-center">
             <Views />
           </div>
-          <span>{post.stats.views}</span>
+          <span>{post.stats?.views || 0}</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 flex items-center justify-center">
             <Comments />
           </div>
-          <span>{post.stats.comments}</span>
+          <span>{post.stats?.comments || 0}</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 flex items-center justify-center">
             <Saves />
           </div>
-          <span>{post.stats.shares}</span>
+          <span>{post.stats?.shares || 0}</span>
         </div>
       </div>
     </div>
