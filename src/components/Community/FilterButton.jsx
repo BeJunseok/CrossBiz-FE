@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import ChevronDown from '@/assets/svg/common/ChevronDown.svg?react';
+import ChevronDown from '@/assets/svg/community/ChevronDown.svg?react';
 import ChevronUp from '@/assets/svg/community/ChevronUp.svg?react';
 
 const FilterButtons = ({ onFilterChange }) => {
