@@ -5,12 +5,14 @@ import LayoutWithNavbar from './layouts/LayoutWithNavbar';
 import CommunityPage from '@/pages/Community/CommunityPage';
 import SearchPage from '@/pages/community/SearchPage';
 import PostDetailPage from '@/pages/community/PostDetailPgae';
+import OnboardingPage from './pages/onboarding/OnboardingPage';
 
 function App() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
         {/* Navbar가 없는 페이지 */}
+        <Route path="/onboarding" element={<OnboardingPage />} />
         <Route path="/community/search" element={<SearchPage />} />
         <Route path="/community/post/:id" element={<PostDetailPage />} />
         {/* Navbar가 있는 페이지 */}
