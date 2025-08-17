@@ -4,10 +4,19 @@ import Comments from '@/assets/svg/community/Comments.svg?react';
 import Bookmark from '@/assets/svg/community/Bookmark.svg?react';
 import { getTimeAgo } from '@/utils/dateUtils';
 import { getCategoryColor } from '@/utils/categoryColor';
+import { useNavigate } from 'react-router-dom';
 
 const RecentPostItem = ({ post }) => {
+  const nav = useNavigate();
+
+  const handlePostClick = () => {
+    nav(`/community/post/${post.id}`);
+  };
   return (
-    <div className="p-4 border-b border-gray-100 last:border-b-0">
+    <div
+      onClick={handlePostClick}
+      className="p-4 border-b border-gray-100 last:border-b-0 cursor-pointer"
+    >
       <div className="mb-1.5">
         <span
           style={{ backgroundColor: getCategoryColor(post.category) }}
