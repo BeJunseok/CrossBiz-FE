@@ -17,7 +17,7 @@ export default function MonthlyHighlightsCard({ groups=[] }) {
         {groups.map((g, gi) => (
           <div key={gi} className="flex gap-2 md:gap-3 p-1.5 md:p-3">
             <div className="shrink-0 pt-0.5">
-              <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-blue-600 text-white grid place-items-center">
+              <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-[#f3f3f3] text-blue-600 grid place-items-center">
                 <span className="text-[9px] md:text-[13px] font-bold leading-none">{g.day}일</span>
               </div>
             </div>
