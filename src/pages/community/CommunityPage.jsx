@@ -6,7 +6,7 @@ import RecentPostsSection from '@/components/Community/RecentPostsSection';
 
 const CommunityPage = () => {
   return (
-    <div className="bg-gray-100 min-h-screen w-full max-w-md mx-auto relative">
+    <div className="bg-gray-100 min-h-screen w-full">
       <Header />
 
       <NewsSection news={mockData.news} />
