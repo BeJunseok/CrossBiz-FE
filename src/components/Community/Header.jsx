@@ -1,5 +1,5 @@
-import User from '@/assets/icons/User.svg?react';
-import Search from '@/assets/icons/Search.svg?react';
+import User from '@/assets/svg/community/User.svg?react';
+import Search from '@/assets/svg/community/Search.svg?react';
 
 const Header = () => {
   return (

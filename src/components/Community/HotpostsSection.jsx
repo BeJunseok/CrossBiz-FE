@@ -1,5 +1,5 @@
 import HotPostItem from './HotPostItem';
-import Fire from '@/assets/icons/Fire.svg?react';
+import Fire from '@/assets/svg/community/Fire.svg?react';
 
 const HotPostsSection = ({ hotPosts }) => {
   const displayPosts = hotPosts.slice(0, 3);

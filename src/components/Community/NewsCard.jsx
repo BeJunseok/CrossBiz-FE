@@ -1,4 +1,4 @@
-import Export from '@/assets/icons/Export.svg?react';
+import Export from '@/assets/svg/community/Export.svg?react';
 
 const handleClick = (url) => {
   window.location.href = `${url}`;

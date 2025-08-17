@@ -1,7 +1,7 @@
 import React from 'react';
-import Views from '@/assets/icons/Views.svg?react';
-import Comments from '@/assets/icons/Comments.svg?react';
-import Saves from '@/assets/icons/Saves.svg?react';
+import Views from '@/assets/svg/community/Views.svg?react';
+import Comments from '@/assets/svg/community/Comments.svg?react';
+import Saves from '@/assets/svg/community/Saves.svg?react';
 import { getTimeAgo } from '@/lib/dateUtils';
 
 const getCategoryColor = (category) => {

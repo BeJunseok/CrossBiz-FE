@@ -1,5 +1,5 @@
 import NewsCard from './NewsCard';
-import Megaphone from '@/assets/icons/Megaphone.svg?react';
+import Megaphone from '@/assets/svg/community/Megaphone.svg?react';
 
 const NewsSection = ({ news }) => {
   return (

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import RecentPostItem from './RecentPostItem';
 import FilterButtons from './FilterButton';
-import Star from '@/assets/icons/Star.svg?react';
+import Star from '@/assets/svg/community/Star.svg?react';
 
 const RecentPostsSection = ({ recentPosts }) => {
   const [filteredPosts, setFilteredPosts] = useState(recentPosts.slice(0, 5));

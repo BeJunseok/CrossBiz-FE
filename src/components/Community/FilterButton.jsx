@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import ChevronDown from '@/assets/icons/ChevronDown.svg?react';
-import ChevronUp from '@/assets/icons/ChevronUp.svg?react';
+import ChevronDown from '@/assets/svg/community/ChevronDown.svg?react';
+import ChevronUp from '@/assets/svg/community/ChevronUp.svg?react';
 
 const FilterButtons = ({ onFilterChange }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
