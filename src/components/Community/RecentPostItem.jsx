@@ -1,18 +1,9 @@
 import React from 'react';
 import Views from '@/assets/svg/community/Views.svg?react';
 import Comments from '@/assets/svg/community/Comments.svg?react';
-import Saves from '@/assets/svg/community/Saves.svg?react';
-import { getTimeAgo } from '@/lib/dateUtils';
-
-const getCategoryColor = (category) => {
-  const colorMap = {
-    'Q&A': '#FF6F00',
-    Discussion: '#8A38F5',
-    Help: '#E06161',
-    Tips: '#00C725',
-  };
-  return colorMap[category] || '#d1d5db';
-};
+import Bookmark from '@/assets/svg/community/Bookmark.svg?react';
+import { getTimeAgo } from '@/utils/dateUtils';
+import { getCategoryColor } from '@/utils/categoryColor';
 
 const RecentPostItem = ({ post }) => {
   return (
@@ -67,7 +58,7 @@ const RecentPostItem = ({ post }) => {
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 flex items-center justify-center">
-            <Saves />
+            <Bookmark />
           </div>
           <span>{post.stats?.shares || 0}</span>
         </div>
