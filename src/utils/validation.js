@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { dropdownOptions } from '@/constants/dropdownOptions';
 
 export const registerSchema = z
   .object({
@@ -17,3 +18,12 @@ export const registerSchema = z
     message: '비밀번호가 일치하지 않습니다.',
     path: ['confirmPassword'],
   });
+
+export const personalInfoSchema = z.object({
+  name: z.string().min(1, '이름을 입력해주세요.'),
+  age: z.enum(dropdownOptions.AGE_OPTIONS, {
+    errorMap: () => ({ message: '나이를 선택해주세요.' }),
+  }),
+  nationality: z.string().min(1, '국적을 선택하거나 입력해주세요.'),
+  businessInfo: z.string().min(1, '사업자 정보를 선택하거나 입력해주세요.'),
+});
