@@ -1,13 +1,20 @@
 import useMonthGrid from "../../hooks/useMonthGrid";
 import { cx } from "../../utils/cx";
 import EventBars from "./Eventbars";
+import { useNavigate } from "react-router-dom";
 
-export default function Calendar({ year, month, dayEvents={}, selected, onSelect, onPrev, onNext }) {
+export default function Calendar({ year, month, dayEvents={}, selected, onSelect, onPrev, onNext,hideTitle = false, }) {
   const cells = useMonthGrid(year, month);
   const weeks = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const nav = useNavigate();
+
+  const outerGap = hideTitle ? "mt-0 md:mt-0" : "mt-4 md:mt-6";
+  const cardGap = hideTitle ? "mt-0" : "mt-2";
 
   return (
-    <section className="mt-4 md:mt-6">
+    <section className={outerGap}>
+    {!hideTitle && (
+    <>
       <div className="border-t border-gray-200 mb-2 md:mb-3" />
       <div className="flex items-center justify-between mb-3">
       <h2 className="text-[15px] md:text-base font-bold text-gray-900 pl-1.5">My 세무 캘린더</h2>
@@ -15,9 +22,13 @@ export default function Calendar({ year, month, dayEvents={}, selected, onSelect
         type="button"
         aria-label="add"
         className="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-gray-900 text-white text-[17px]
-        leading-none shadow-md hover:bg-gray-800 active:scale-95 mr-1">+</button>
+        leading-none shadow-md hover:bg-gray-800 active:scale-95 mr-1"
+        onClick={()=>nav("/schedule/new")}
+        >+</button>
       </div>
-      <div className="mt-2 rounded-[14px] md:rounded-[24px] bg-white shadow-sm p-2.5 md:p-4">
+    </>
+    )}
+      <div className={`${cardGap} rounded-[14px] md:rounded-[24px] bg-white shadow-sm p-2.5 md:p-4`}>
         <div className="flex items-center justify-between">
           <div className="text-base md:text-xl font-extrabold tracking-tight mb-1">
             {new Date(year, month, 1).toLocaleString("en-US", { month: "long", year: "numeric" })}

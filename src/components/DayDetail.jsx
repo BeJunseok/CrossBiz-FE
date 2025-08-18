@@ -1,6 +1,8 @@
 import { FiExternalLink } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 export default function DayDetail({ date, items = [], warning }) {
+  const nav = useNavigate();
   const label = date
     ? date.toLocaleDateString("en-US", { month: "long", day: "numeric" })
     : "";
@@ -17,7 +19,10 @@ export default function DayDetail({ date, items = [], warning }) {
                 {label}
               </span>
             </div>
-            <button className="px-2 py-0.5 md:px-2.5 md:py-1 rounded-full text-[10px] md:text-xs text-gray-600 bg-gray-100 hover:bg-gray-200">
+            <button 
+            className="px-2 py-0.5 md:px-2.5 md:py-1 rounded-full text-[10px] md:text-xs text-gray-600 bg-gray-100 hover:bg-gray-200"
+            onClick={()=>nav("/schedule/new")}
+            >
               수정
             </button>
           </div>

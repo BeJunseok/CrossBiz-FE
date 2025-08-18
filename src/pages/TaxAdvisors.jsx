@@ -5,6 +5,7 @@ import {
   LANGUAGE_OPTIONS,
   SORT_OPTIONS,
 } from "../data/taxAdvisors"; // ✅ 옵션+데이터 한 파일에서 임포트
+import { useNavigate } from "react-router-dom";
 
 // 간단한 className 조합 유틸
 const cx = (...a) => a.filter(Boolean).join(" ");
@@ -14,6 +15,7 @@ export default function TaxAdvisors() {
   const [industry, setIndustry] = useState("");
   const [lang, setLang] = useState("");
   const [sort, setSort] = useState("hire");
+  const nav = useNavigate();
   const getLabel = (opts, v) => opts.find(o => o.value === v)?.label ?? opts[0]?.label ?? "";
 
   // 필터 + 정렬 처리
@@ -21,6 +23,7 @@ export default function TaxAdvisors() {
     let arr = [...ADVISORS];
     const ind = industry.trim();
     const lg = lang.trim();
+    
 
     if (ind) arr = arr.filter((x) => x.industries?.includes(ind));
     if (lg)  arr = arr.filter((x) => x.languages?.includes(lg));
@@ -136,7 +139,15 @@ export default function TaxAdvisors() {
             className={cx(
               "px-4 py-4 flex gap-3 items-start transition-transform duration-200 ease-in-out hover:scale-105 cursor-pointer",
               idx !== list.length - 1 && "border-b border-gray-100"
+            
             )}
+            onClick={()=> nav("/recommend",{
+              state :{
+                  name: it.name,
+                  langs: it.langs || ["영어","중국어"],
+              },
+            })
+            }
           >
             <div className="flex-1 min-w-0">
               <h3 className="text-lg font-extrabold text-gray-900 truncate">
