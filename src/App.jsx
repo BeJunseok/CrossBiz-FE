@@ -7,6 +7,7 @@ import LoginPage from '@/pages/login/Login';
 import CommunityPage from '@/pages/Community/CommunityPage';
 import SearchPage from '@/pages/community/SearchPage';
 import PostDetailPage from '@/pages/community/PostDetailPgae';
+import RegisterPage from './pages/register/RegisterPage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         {/* Navbar가 없는 페이지 */}
         <Route path="/onboarding" element={<OnboardingPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/community/search" element={<SearchPage />} />
         <Route path="/community/post/:id" element={<PostDetailPage />} />
 
