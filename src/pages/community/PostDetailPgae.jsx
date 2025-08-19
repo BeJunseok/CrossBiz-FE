@@ -6,8 +6,10 @@ import ChevronLeft from '@/assets/svg/community/ChevronLeft.svg?react';
 import Likes from '@/assets/svg/community/LikesFill.svg?react';
 import LikesActive from '@/assets/svg/community/LikesFill-active.svg?react';
 import Comments from '@/assets/svg/community/CommentsFill.svg?react';
+import Menu from '@/assets/svg/community/Menu.svg?react';
 import { getCategoryColor } from '@/utils/categoryColor';
 import { useRef } from 'react';
+import { useClickOutside } from '@/hooks/useClickOutside';
 
 const PostDetailPage = () => {
   const { id } = useParams();
@@ -22,6 +24,9 @@ const PostDetailPage = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useClickOutside(() => setIsDropdownOpen(false));
 
   useEffect(() => {
     const loadPostData = () => {
@@ -104,6 +109,25 @@ const PostDetailPage = () => {
     setLikeCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1));
   };
 
+  const handleReport = () => {
+    setIsDropdownOpen(false);
+    alert('신고하기 기능을 준비 중입니다.');
+  };
+
+  const handleShare = () => {
+    setIsDropdownOpen(false);
+
+    const currentUrl = window.location.href;
+    navigator.clipboard
+      .writeText(currentUrl)
+      .then(() => {
+        alert('URL이 복사되었습니다.');
+      })
+      .catch(() => {
+        alert('URL 복사에 실패했습니다.');
+      });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen w-full bg-white flex items-center justify-center">
@@ -123,10 +147,42 @@ const PostDetailPage = () => {
   return (
     <div className="min-h-screen w-full ">
       {/* 헤더 */}
-      <header className="bg-white border-gray-200 px-5 py-4">
-        <button onClick={handleBack}>
-          <ChevronLeft className="w-6 h-6 text-gray-600" />
-        </button>
+      <header className="bg-white border-gray-200 px-5 py-4 relative">
+        <div className="flex items-center justify-between h-6">
+          <button onClick={handleBack}>
+            <ChevronLeft className="w-6 h-6 text-gray-600" />
+          </button>
+
+          {/* 더보기 버튼 */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="p-1"
+            >
+              <Menu className="w-4 h-4 text-gray-600" />
+            </button>
+
+            {/* 드롭다운 메뉴 */}
+            {isDropdownOpen && (
+              <>
+                <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-40 w-52">
+                  <button
+                    onClick={handleReport}
+                    className="w-full px-6 py-3 text-center text-sm font-medium text-[#323232] hover:bg-gray-50 border-b border-gray-200"
+                  >
+                    신고하기
+                  </button>
+                  <button
+                    onClick={handleShare}
+                    className="w-full px-6 py-3 text-center text-sm font-medium text-[#323232] hover:bg-gray-50"
+                  >
+                    URL 공유하기
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
       </header>
 
       {/* 메인 콘텐츠 */}
