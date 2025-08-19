@@ -27,3 +27,11 @@ export const personalInfoSchema = z.object({
   nationality: z.string().min(1, '국적을 선택하거나 입력해주세요.'),
   businessInfo: z.string().min(1, '사업자 정보를 선택하거나 입력해주세요.'),
 });
+
+export const visaInfoSchema = z.object({
+  residenceStatus: z.string().optional(),
+  expectedStayPeriod: z.string().optional(),
+  workExperience: z.string().optional(),
+  degree: z.string().optional(),
+  koreanProficiency: z.string().optional(),
+});

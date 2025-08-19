@@ -9,6 +9,7 @@ import SearchPage from '@/pages/community/SearchPage';
 import PostDetailPage from '@/pages/community/PostDetailPgae';
 import RegisterPage from './pages/register/RegisterPage';
 import PersonalInfoPage from './pages/register/PersonalInfoPage';
+import VisaInfoPage from './pages/register/VisaInfoPage';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/register/personal-info" element={<PersonalInfoPage />} />
+        <Route path="/register/visa-info" element={<VisaInfoPage />} />
         <Route path="/community/search" element={<SearchPage />} />
         <Route path="/community/post/:id" element={<PostDetailPage />} />
 

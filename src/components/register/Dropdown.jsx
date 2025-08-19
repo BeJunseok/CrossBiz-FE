@@ -43,7 +43,7 @@ const Dropdown = ({ options, value, placeholder, onChange, error }) => {
             onChange={(e) => onChange(e.target.value)}
             placeholder="직접 입력해주세요"
             className={clsx(
-              'w-full h-12 bg-[#f3f3f3] rounded-xl px-6 py-4 text-lg font-medium text-black focus:outline-none focus:ring-2 transition-all',
+              'w-full h-12 bg-[#f3f3f3] rounded-xl px-6 py-4 placeholder:text-sm text-black focus:outline-none focus:ring-2 transition-all',
               {
                 'border border-red-300 focus:ring-red-300': error,
                 'focus:border-blue-500': !error,
@@ -57,7 +57,7 @@ const Dropdown = ({ options, value, placeholder, onChange, error }) => {
             type="button"
             onClick={() => setIsOpen(!isOpen)}
             className={clsx(
-              'w-full h-12 bg-[#f3f3f3] rounded-xl px-6 py-lg flex items-center justify-between text-left transition-all focus:border-blue-500',
+              'w-full h-12 bg-[#f3f3f3] rounded-xl px-6 py-lg  flex items-center justify-between text-left transition-all focus:border-blue-500',
               {
                 'border border-red-300': error,
                 'border focus:border-blue-500': !error,
@@ -65,7 +65,7 @@ const Dropdown = ({ options, value, placeholder, onChange, error }) => {
             )}
           >
             <span
-              className={`text-base font-medium ${
+              className={`text-sm font-medium ${
                 value ? 'text-black' : 'text-gray-400'
               }`}
             >
@@ -86,7 +86,7 @@ const Dropdown = ({ options, value, placeholder, onChange, error }) => {
                 key={option}
                 type="button"
                 onClick={() => handleSelect(option)}
-                className="w-full h-12 px-6 py-3 text-left text-lg hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                className="w-full h-12 px-6 py-3 text-left text-base hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
               >
                 {option}
               </button>
