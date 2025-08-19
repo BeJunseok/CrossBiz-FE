@@ -118,7 +118,7 @@ const RegisterPage = () => {
             disabled={!isValid}
             className="w-full h-16 bg-black text-white text-xl font-semibold rounded-[40px] hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors mt-5"
           >
-            회원가입
+            확인
           </button>
         </div>
       </form>
