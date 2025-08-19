@@ -2,6 +2,7 @@ export const dropdownOptions = {
   AGE_OPTIONS: ['10대 미만', '20-30대', '40-50대', '60대 이상'],
   NATIONALITY_OPTIONS: ['중국', '미국', '터키', '태국', '기타'],
   BUSINESS_INFO_OPTIONS: ['자영업자', '예비창업자', '기타'],
+  CATEGORY_OPTIONS: ['Q&A', 'Discussion', 'Help', 'Tips'],
   RESIDENCE_STATUS_OPTIONS: [
     '유학',
     '구직',
@@ -43,6 +44,14 @@ export const dropdownOptions = {
     '중급(TOPIK 3-4)',
     '고급(TOPIK 5-6)',
     '한국 대학교 졸업',
+    '기타',
+  ],
+  INDUSTRY_OPTIONS: [
+    '외식업',
+    '소매·유통',
+    '서비스업',
+    'IT',
+    '문화·예술',
     '기타',
   ],
 };

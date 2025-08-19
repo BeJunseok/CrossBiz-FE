@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { dropdownOptions } from '@/constants/dropdownOptions';
 import ChevronDown from '@/assets/svg/common/ChevronDown.svg?react';
 import ChevronUp from '@/assets/svg/community/ChevronUp.svg?react';
 
@@ -11,9 +12,9 @@ const FilterButtons = ({ onFilterChange }) => {
   });
 
   const filterOptions = {
-    industry: ['외식업', '소매·유통', '서비스업', 'IT', '문화·예술', '기타'],
-    nationality: ['중국', '미국', '터키', '태국', '기타'],
-    category: ['Q&A', 'Discussion', 'Help', 'Tips'],
+    industry: dropdownOptions.INDUSTRY_OPTIONS,
+    nationality: dropdownOptions.NATIONALITY_OPTIONS,
+    category: dropdownOptions.CATEGORY_OPTIONS,
   };
 
   const filterLabels = {
