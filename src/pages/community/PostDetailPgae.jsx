@@ -4,6 +4,7 @@ import communityPostData from '@/mock/communityPost.json';
 import { formatDateTime } from '@/utils/dateUtils';
 import ChevronLeft from '@/assets/svg/community/ChevronLeft.svg?react';
 import Likes from '@/assets/svg/community/LikesFill.svg?react';
+import LikesActive from '@/assets/svg/community/LikesFill-active.svg?react';
 import Comments from '@/assets/svg/community/CommentsFill.svg?react';
 import { getCategoryColor } from '@/utils/categoryColor';
 import { useRef } from 'react';
@@ -15,6 +16,10 @@ const PostDetailPage = () => {
 
   const [postData, setPostData] = useState(null);
   const [newComment, setNewComment] = useState('');
+
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -22,13 +27,15 @@ const PostDetailPage = () => {
     const loadPostData = () => {
       try {
         // const post = await fetchPost(id);
-        // setPostData(post);
+        // setPostData(posts
 
         const posts = communityPostData.post; // 배열
         const post = posts.find((p) => p.id === parseInt(id));
 
-        if (post.id === parseInt(id)) {
+        if (post) {
           setPostData(post);
+          setLikeCount(post.likeCount);
+          // API 호출시: setIsLiked(post.userHasLiked)
         } else {
           setError('글을 찾을 수 없습니다.');
         }
@@ -93,7 +100,8 @@ const PostDetailPage = () => {
   };
 
   const handleLike = () => {
-    console.log('좋아요 클릭');
+    setIsLiked(!isLiked);
+    setLikeCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1));
   };
 
   if (loading) {
@@ -168,7 +176,7 @@ const PostDetailPage = () => {
           <div className="flex items-center justify-center gap-16">
             <button
               onClick={handleComment}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
+              className="flex items-center gap-2 text-gray-600 "
             >
               <Comments className="w-5 h-5" />
               <span className="text-xs font-semibold">
@@ -177,12 +185,14 @@ const PostDetailPage = () => {
             </button>
             <button
               onClick={handleLike}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
+              className={`flex items-center gap-2 transition-colors ${isLiked ? 'text-[#E06161]' : 'text-gray-600 '}`}
             >
-              <Likes className="w-5 h-5 mb-0.5" />
-              <span className="text-xs font-semibold">
-                좋아요 {postData.likeCount}
-              </span>
+              {isLiked ? (
+                <LikesActive className="w-5 h-5 mb-0.5" />
+              ) : (
+                <Likes className="w-5 h-5 mb-0.5" />
+              )}
+              <span className="text-xs font-semibold">좋아요 {likeCount}</span>
             </button>
           </div>
         </div>
