@@ -4,11 +4,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { personalInfoSchema } from '@/utils/validation';
 import { dropdownOptions } from '@/constants/dropdownOptions';
 import Dropdown from '@/components/register/Dropdown';
+import { useRegisterStore } from '@/stores/registerStore';
+import { useNavigate } from 'react-router-dom';
 
 const { AGE_OPTIONS, NATIONALITY_OPTIONS, BUSINESS_INFO_OPTIONS } =
   dropdownOptions;
 
 const PersonalInfoPage = () => {
+  const { formData, updateFormData } = useRegisterStore();
+  const nav = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -17,10 +22,13 @@ const PersonalInfoPage = () => {
   } = useForm({
     resolver: zodResolver(personalInfoSchema),
     mode: 'onChange',
+    defaultValues: formData,
   });
 
   const onSubmit = (data) => {
+    updateFormData(data);
     console.log('Personal info:', data);
+    nav('/register/visa-info');
   };
 
   return (

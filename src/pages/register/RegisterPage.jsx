@@ -4,19 +4,24 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { registerSchema } from '@/utils/validation';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRegisterStore } from '@/stores/registerStore';
 
 const RegisterPage = () => {
+  const { formData, updateFormData } = useRegisterStore();
   const nav = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({
     resolver: zodResolver(registerSchema),
-    mode: 'onChange', // 실시간 유효성 검사
+    mode: 'onChange',
+    defaultValues: formData,
   });
 
   const onSubmit = (data) => {
+    updateFormData(data);
     console.log('로그인 정보: ', data);
     nav('/register/personal-info');
   };
