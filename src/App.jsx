@@ -6,6 +6,9 @@ import LoginPage from '@/pages/login/Login';
 import CommunityPage from '@/pages/Community/CommunityPage';
 import SearchPage from '@/pages/community/SearchPage';
 import PostDetailPage from '@/pages/community/PostDetailPgae';
+import RegisterPage from './pages/register/RegisterPage';
+import PersonalInfoPage from './pages/register/PersonalInfoPage';
+import VisaInfoPage from './pages/register/VisaInfoPage';
 import Tax from './pages/Tax';
 import RecommendPage from './pages/RecommendPage';
 import NewSchedulePage from './pages/NewSchedulePage';
@@ -17,6 +20,9 @@ function App() {
         {/* Navbar가 없는 페이지 */}
         <Route path="/onboarding" element={<OnboardingPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/register/personal-info" element={<PersonalInfoPage />} />
+        <Route path="/register/visa-info" element={<VisaInfoPage />} />
         <Route path="/community/search" element={<SearchPage />} />
         <Route path="/community/post/:id" element={<PostDetailPage />} />
         <Route path='/recommend' element={<RecommendPage />} />
