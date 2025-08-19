@@ -1,7 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import MainLayout from '@/layouts/MainLayout';
 import LayoutWithNavbar from '@/layouts/LayoutWithNavbar';
-
 import OnboardingPage from '@/pages/onboarding/Onboarding';
 import LoginPage from '@/pages/login/Login';
 import CommunityPage from '@/pages/Community/CommunityPage';
@@ -10,6 +9,9 @@ import PostDetailPage from '@/pages/community/PostDetailPgae';
 import RegisterPage from './pages/register/RegisterPage';
 import PersonalInfoPage from './pages/register/PersonalInfoPage';
 import VisaInfoPage from './pages/register/VisaInfoPage';
+import Tax from './pages/Tax';
+import RecommendPage from './pages/RecommendPage';
+import NewSchedulePage from './pages/NewSchedulePage';
 
 function App() {
   return (
@@ -23,10 +25,14 @@ function App() {
         <Route path="/register/visa-info" element={<VisaInfoPage />} />
         <Route path="/community/search" element={<SearchPage />} />
         <Route path="/community/post/:id" element={<PostDetailPage />} />
+        <Route path='/recommend' element={<RecommendPage />} />
+        <Route path='/schedule/new' element={<NewSchedulePage />} />
+          
 
         {/* Navbar가 있는 페이지 */}
         <Route element={<LayoutWithNavbar />}>
           <Route path="/community" element={<CommunityPage />} />
+          <Route path='/tax' element={<Tax />} />
         </Route>
       </Route>
     </Routes>
