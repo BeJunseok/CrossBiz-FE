@@ -1,6 +1,6 @@
 import Views from '@/assets/svg/community/Views.svg?react';
 import Comments from '@/assets/svg/community/Comments.svg?react';
-import Bookmark from '@/assets/svg/community/Bookmark.svg?react';
+import Likes from '@/assets/svg/community/Likes.svg?react';
 
 const Stat = ({ icon, value, width = 'w-8' }) => (
   <div className="flex items-center justify-end gap-1.5 text-[10px] text-gray-500">
@@ -22,7 +22,7 @@ const HotPostItem = ({ post }) => {
         <div className="flex gap-x-1">
           <Stat icon={<Views />} value={post.stats.views} width="w-7" />
           <Stat icon={<Comments />} value={post.stats.comments} width="w-3" />
-          <Stat icon={<Bookmark />} value={post.stats.shares} width="w-3" />
+          <Stat icon={<Likes className="mb-0.5"/>} value={post.stats.likes} width="w-3" />
         </div>
       </div>
     </div>

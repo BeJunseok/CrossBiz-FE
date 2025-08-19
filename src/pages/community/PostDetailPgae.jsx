@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import communityPostData from '@/mock/communityPost.json';
 import { formatDate } from '@/utils/dateUtils';
 import ChevronLeft from '@/assets/svg/community/ChevronLeft.svg?react';
-import Bookmark from '@/assets/svg/community/BookmarkFill.svg?react';
+import Likes from '@/assets/svg/community/LikesFill.svg?react';
 import Comments from '@/assets/svg/community/CommentsFill.svg?react';
 import { getCategoryColor } from '@/utils/categoryColor';
 import { useRef } from 'react';
@@ -92,8 +92,8 @@ const PostDetailPage = () => {
     console.log('새 댓글 추가: ', newCommentObj);
   };
 
-  const handleBookmark = () => {
-    console.log('스크랩 토글');
+  const handleLike = () => {
+    console.log('좋아요 클릭');
   };
 
   if (loading) {
@@ -176,12 +176,12 @@ const PostDetailPage = () => {
               </span>
             </button>
             <button
-              onClick={handleBookmark}
+              onClick={handleLike}
               className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
             >
-              <Bookmark className="w-4 h-5" />
+              <Likes className="w-5 h-5 mb-0.5" />
               <span className="text-xs font-semibold">
-                스크랩 {postData.bookmarkCount}
+                스크랩 {postData.likeCount}
               </span>
             </button>
           </div>

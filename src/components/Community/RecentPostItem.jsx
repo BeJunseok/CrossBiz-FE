@@ -1,7 +1,7 @@
 import React from 'react';
 import Views from '@/assets/svg/community/Views.svg?react';
 import Comments from '@/assets/svg/community/Comments.svg?react';
-import Bookmark from '@/assets/svg/community/Bookmark.svg?react';
+import Likes from '@/assets/svg/community/Likes.svg?react';
 import { getTimeAgo } from '@/utils/dateUtils';
 import { getCategoryColor } from '@/utils/categoryColor';
 import { useNavigate } from 'react-router-dom';
@@ -67,9 +67,9 @@ const RecentPostItem = ({ post }) => {
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 flex items-center justify-center">
-            <Bookmark />
+            <Likes className="mb-0.5" />
           </div>
-          <span>{post.stats?.shares || 0}</span>
+          <span>{post.stats?.likes || 0}</span>
         </div>
       </div>
     </div>

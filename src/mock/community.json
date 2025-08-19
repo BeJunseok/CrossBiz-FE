@@ -22,7 +22,7 @@
       "stats": {
         "views": 1508,
         "comments": 24,
-        "shares": 130
+        "likes": 130
       }
     },
     {
@@ -31,7 +31,7 @@
       "stats": {
         "views": 1000,
         "comments": 17,
-        "shares": 100
+        "likes": 100
       }
     },
     {
@@ -40,7 +40,7 @@
       "stats": {
         "views": 100,
         "comments": 2,
-        "shares": 32
+        "likes": 32
       }
     }
   ],
@@ -58,7 +58,7 @@
       "stats": {
         "views": 260,
         "comments": 13,
-        "shares": 20
+        "likes": 20
       }
     },
     {
@@ -73,7 +73,7 @@
       "stats": {
         "views": 100,
         "comments": 4,
-        "shares": 0
+        "likes": 0
       }
     },
     {
@@ -88,7 +88,7 @@
       "stats": {
         "views": 120,
         "comments": 16,
-        "shares": 2
+        "likes": 2
       }
     },
     {
@@ -103,7 +103,7 @@
       "stats": {
         "views": 200,
         "comments": 2,
-        "shares": 0
+        "likes": 0
       }
     }
   ]
