@@ -1,55 +1,78 @@
-import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import ChevronLeft from '@/assets/svg/community/ChevronLeft.svg?react';
-import Search from '@/assets/svg/community/Search1.svg?react';
+import { useState, useEffect, useCallback } from 'react'; // useCallback 추가
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import mockSearchResults from '@/mock/communitySearch.json';
+import SearchHeader from '@/components/Community/Search/SearchHeader';
+import SearchResults from '@/components/Community/Search/SearchResults';
+import RecentSearches from '@/components/Community/Search/RecentSearches';
+import { useSearchHistory } from '@/hooks/useSearchHistory';
 
 const SearchPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
-  const [recentSearches, setRecentSearches] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
-  // localStorage 키
-  const RECENT_SEARCHES_KEY = 'recentSearches';
+  const nav = useNavigate();
+
+  const {
+    recentSearches,
+    addRecentSearch,
+    removeRecentSearch,
+    clearAllSearches,
+  } = useSearchHistory();
+
+  const performSearch = useCallback(
+    (term) => {
+      if (!term.trim()) return;
+
+      setIsSearching(true);
+      setHasSearched(true);
+
+      setTimeout(() => {
+        const currentTerm = searchParams.get('q');
+        if (term !== currentTerm) {
+          return; // 검색어가 변경되었으면 이전 결과를 무시
+        }
+
+        const filteredResults = mockSearchResults.filter(
+          (result) =>
+            result.title.toLowerCase().includes(term.toLowerCase()) ||
+            result.content.toLowerCase().includes(term.toLowerCase())
+        );
+        setSearchResults(filteredResults);
+        setIsSearching(false);
+      }, 500);
+    },
+    [searchParams]
+  );
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(RECENT_SEARCHES_KEY);
-      if (saved) {
-        const parsedSearches = JSON.parse(saved);
-        setRecentSearches(parsedSearches);
-      }
-    } catch (error) {
-      console.error('Failed to load recent searches:', error);
-      setRecentSearches([]);
+    const queryParams = searchParams.get('q');
+    if (queryParams) {
+      setSearchTerm(queryParams);
+      performSearch(queryParams);
+    } else {
+      setSearchTerm('');
+      setHasSearched(false);
+      setSearchResults([]);
+      setIsSearching(false);
     }
-  }, []);
-
-  // localStorage에 최근 검색어 저장
-  const saveToLocalStorage = (searches) => {
-    try {
-      localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(searches));
-    } catch (error) {
-      console.error('Failed to save recent searches:', error);
-    }
-  };
+  }, [searchParams, performSearch]);
 
   const handleBack = () => {
-    window.history.back();
+    if (hasSearched) {
+      setSearchParams({});
+    } else {
+      nav('/community', { replace: true });
+    }
   };
 
   const handleSearch = () => {
-    if (searchTerm.trim()) {
-      console.log('Searching for:', searchTerm);
-
-      // 최근 검색어에 추가
-      const newSearch = searchTerm.trim();
-      const updatedSearches = [
-        newSearch,
-        ...recentSearches.filter((item) => item !== newSearch),
-      ].slice(0, 10);
-
-      setRecentSearches(updatedSearches);
-      saveToLocalStorage(updatedSearches);
-      setSearchTerm('');
+    const trimmedTerm = searchTerm.trim();
+    if (trimmedTerm) {
+      addRecentSearch(trimmedTerm);
+      setSearchParams({ q: trimmedTerm });
     }
   };
 
@@ -59,93 +82,33 @@ const SearchPage = () => {
     }
   };
 
-  const handleRemoveSearch = (indexToRemove) => {
-    const updatedSearches = recentSearches.filter(
-      (_, index) => index !== indexToRemove
-    );
-    setRecentSearches(updatedSearches);
-    saveToLocalStorage(updatedSearches);
-  };
-
-  const handleClearAll = () => {
-    setRecentSearches([]);
-    saveToLocalStorage([]);
-  };
-
   const handleRecentSearchClick = (searchItem) => {
-    setSearchTerm(searchItem);
-    console.log('Searching for:', searchItem);
+    setSearchParams({ q: searchItem });
   };
 
   return (
-    <div className="min-h-screen w-full">
-      <div className="flex items-center px-4 py-4 border-b border-gray-100">
-        <button onClick={handleBack} className="mr-3">
-          <ChevronLeft className="text-gray-600 w-5 h-5" />
-        </button>
+    <div className="min-h-screen w-full bg-gray-50">
+      <SearchHeader
+        searchTerm={searchTerm}
+        onSearchTermChange={(e) => setSearchTerm(e.target.value)}
+        onBack={handleBack}
+        onSearch={handleSearch}
+        onKeyDown={handleKeyDown}
+      />
 
-        <div className="flex-1">
-          <div className="relative">
-            <Search
-              size={20}
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="글 제목, 내용"
-              className="w-full pl-10 pr-4 py-3 bg-gray-50 rounded-lg border-none outline-none text-sm placeholder-gray-400"
-              autoFocus
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* 최근 검색어 섹션 */}
-      {recentSearches.length > 0 && (
-        <div className="px-4 py-6 bg-white">
-          <div className="flex justify-between items-center mb-4 pb-4 border-b border-[#E8E8E8]">
-            <h3 className="text-base font-medium text-gray-900">최근 검색어</h3>
-            <button
-              onClick={handleClearAll}
-              className="text-xs text-gray-500 hover:text-gray-700"
-            >
-              전체삭제
-            </button>
-          </div>
-
-          <div className="space-y-3">
-            {recentSearches.map((searchItem, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between py-2"
-              >
-                <button
-                  onClick={() => handleRecentSearchClick(searchItem)}
-                  className="flex-1 text-left text-gray-700 hover:text-gray-900"
-                >
-                  {searchItem}
-                </button>
-                <button
-                  onClick={() => handleRemoveSearch(index)}
-                  className="ml-3 p-1 hover:bg-gray-100 rounded"
-                >
-                  <X size={16} className="text-gray-400" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 검색어가 없을 때 */}
-      {recentSearches.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-20 text-gray-500">
-          <Search className="mb-4 text-gray-300 w-12 h-12" />
-          <p className="text-sm">최근 검색 기록이 없습니다.</p>
-        </div>
+      {hasSearched ? (
+        <SearchResults
+          searchResults={searchResults}
+          searchTerm={searchParams.get('q') || ''}
+          isSearching={isSearching}
+        />
+      ) : (
+        <RecentSearches
+          recentSearches={recentSearches}
+          onRecentSearchClick={handleRecentSearchClick}
+          onRemoveSearch={removeRecentSearch}
+          onClearAll={clearAllSearches}
+        />
       )}
     </div>
   );

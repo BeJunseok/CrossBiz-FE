@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import communityPostData from '@/mock/communityPost.json';
-import { formatDate } from '@/utils/dateUtils';
+import { formatDateTime } from '@/utils/dateUtils';
 import ChevronLeft from '@/assets/svg/community/ChevronLeft.svg?react';
 import Likes from '@/assets/svg/community/LikesFill.svg?react';
 import Comments from '@/assets/svg/community/CommentsFill.svg?react';
@@ -147,7 +147,7 @@ const PostDetailPage = () => {
               {postData.author.name}
             </h3>
             <div className="flex items-center gap-8 text-sm text-gray-400">
-              <span>{formatDate(postData.createdAt)}</span>
+              <span>{formatDateTime(postData.createdAt)}</span>
               <span>조회 {postData.views}</span>
             </div>
           </div>
@@ -210,7 +210,7 @@ const PostDetailPage = () => {
                       {comment.author.name}
                     </span>
                     <span className="text-xs text-gray-400">
-                      {formatDate(comment.createdAt)}
+                      {formatDateTime(comment.createdAt)}
                     </span>
                   </div>
                   <p className="text-xs text-gray-600 leading-relaxed">
