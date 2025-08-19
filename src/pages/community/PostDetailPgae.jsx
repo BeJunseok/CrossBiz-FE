@@ -181,7 +181,7 @@ const PostDetailPage = () => {
             >
               <Likes className="w-5 h-5 mb-0.5" />
               <span className="text-xs font-semibold">
-                스크랩 {postData.likeCount}
+                좋아요 {postData.likeCount}
               </span>
             </button>
           </div>
