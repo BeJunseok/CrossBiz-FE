@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import HotPostItem from './HotPostItem';
 import Fire from '@/assets/svg/community/Fire.svg?react';
 
@@ -11,7 +12,12 @@ const HotPostsSection = ({ hotPosts }) => {
           <Fire />
           <h3 className="text-base font-semibold text-black">HOT 글</h3>
         </div>
-        <span className="text-xs text-gray-400">더보기</span>
+        <Link
+          to={`/community/hotpost`}
+          className="text-xs text-gray-400 cursor-pointer"
+        >
+          더보기
+        </Link>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm">

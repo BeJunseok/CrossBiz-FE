@@ -6,12 +6,13 @@ import LoginPage from '@/pages/login/Login';
 import CommunityPage from '@/pages/Community/CommunityPage';
 import SearchPage from '@/pages/community/SearchPage';
 import PostDetailPage from '@/pages/community/PostDetailPgae';
-import RegisterPage from './pages/register/RegisterPage';
-import PersonalInfoPage from './pages/register/PersonalInfoPage';
-import VisaInfoPage from './pages/register/VisaInfoPage';
-import Tax from './pages/Tax';
-import RecommendPage from './pages/RecommendPage';
-import NewSchedulePage from './pages/NewSchedulePage';
+import RegisterPage from '@/pages/register/RegisterPage';
+import PersonalInfoPage from '@/pages/register/PersonalInfoPage';
+import VisaInfoPage from '@/pages/register/VisaInfoPage';
+import Tax from '@/pages/Tax';
+import RecommendPage from '@/pages/RecommendPage';
+import NewSchedulePage from '@/pages/NewSchedulePage';
+import HotPostsPage from '@/pages/community/HotPostsPage';
 
 function App() {
   return (
@@ -25,14 +26,14 @@ function App() {
         <Route path="/register/visa-info" element={<VisaInfoPage />} />
         <Route path="/community/search" element={<SearchPage />} />
         <Route path="/community/post/:id" element={<PostDetailPage />} />
-        <Route path='/recommend' element={<RecommendPage />} />
-        <Route path='/schedule/new' element={<NewSchedulePage />} />
-          
+        <Route path="/community/hotpost" element={<HotPostsPage />} />
+        <Route path="/recommend" element={<RecommendPage />} />
+        <Route path="/schedule/new" element={<NewSchedulePage />} />
 
         {/* Navbar가 있는 페이지 */}
         <Route element={<LayoutWithNavbar />}>
           <Route path="/community" element={<CommunityPage />} />
-          <Route path='/tax' element={<Tax />} />
+          <Route path="/tax" element={<Tax />} />
         </Route>
       </Route>
     </Routes>
