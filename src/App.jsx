@@ -15,6 +15,7 @@ import NewSchedulePage from '@/pages/NewSchedulePage';
 import HotPostsPage from '@/pages/community/HotPostsPage';
 import NewPostPage from '@/pages/community/NewPostPage';
 import MyPage from '@/pages/community/MyPage';
+import AdditionalInfoPage from '@/pages/community/AdditionalInfoPage';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/community/post/new" element={<NewPostPage />} />
         <Route path="/community/hotpost" element={<HotPostsPage />} />
         <Route path="/community/my" element={<MyPage />} />
+        <Route path="/community/my/edit" element={<AdditionalInfoPage />} />
         <Route path="/recommend" element={<RecommendPage />} />
         <Route path="/schedule/new" element={<NewSchedulePage />} />
 
