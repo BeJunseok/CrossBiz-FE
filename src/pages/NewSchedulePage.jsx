@@ -1,7 +1,10 @@
-// src/pages/NewSchedulePage.jsx
 import React, { useLayoutEffect, useMemo, useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Calendar from "../components/Calendar/Calendar";
+import { DEFAULT_ICON_24, PALETTE, SELECT_ICONS, getArrowColor } from "../utils/arrows";
+import { addEvent } from "../utils/eventStore";
+
+
 
 const IconChevronLeft = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -20,15 +23,13 @@ const splitDateParts = (isoLike) => {
   const mm = `${d.getMinutes()}`.padStart(2,"0");
   return { left: `${y}년 ${m}월 ${day}일 (${wd})`, right: `${hh}:${mm}` };
 };
+const toYMD = (d) =>
+  `${d.getFullYear()}-${`${d.getMonth() + 1}`.padStart(2, "0")}-${`${d.getDate()}`.padStart(2, "0")}`;
 
-const COLORS = ["#111827","#2563EB","#059669","#F59E0B","#EF4444","#8B5CF6","#06B6D4","#C084FC"];
-const toYMD = (d) => `${d.getFullYear()}-${`${d.getMonth()+1}`.padStart(2,"0")}-${`${d.getDate()}`.padStart(2,"0")}`;
-
-/* ===== 시간 휠 팝오버(아래로 뜨는 드롭다운 스타일) : 24시간 + 분(5분 단위) ===== */
+/* ===== 시간 휠(중앙 회색 필 고정) ===== */
 function TimeWheelPopover({ anchorRef, valueHHmm = "00:00", onChange, onClose }) {
   const popRef = useRef(null);
 
-  // 바깥 클릭 닫기
   useEffect(() => {
     const handle = (e) => {
       if (!popRef.current || !anchorRef.current) return;
@@ -38,65 +39,45 @@ function TimeWheelPopover({ anchorRef, valueHHmm = "00:00", onChange, onClose })
     return () => document.removeEventListener("mousedown", handle);
   }, [onClose]);
 
-  // 초기 값 파싱
   const [H, M] = valueHHmm.split(":").map(n => parseInt(n || "0", 10));
-  const initHour = Math.min(23, Math.max(0, isNaN(H) ? 0 : H));
-  const initMin  = Math.min(55, Math.max(0, isNaN(M) ? 0 : M - (M % 5)));
+  const initHour = Number.isFinite(H) ? Math.min(23, Math.max(0, H)) : 0;
+  const initMin  = Number.isFinite(M) ? Math.min(55, Math.max(0, M - (M % 5))) : 0;
 
-  // 리스트 데이터
-  const hours   = Array.from({ length: 24 }, (_, i) => i);         // 00..23
-  const minutes = Array.from({ length: 12 }, (_, i) => i * 5);     // 00..55
+  const hours   = Array.from({ length: 24 }, (_, i) => i);
+  const minutes = Array.from({ length: 12 }, (_, i) => i * 5);
 
-  /* 공통 컬럼 — 중앙 스냅 정밀 동기화 */
   const Col = ({ values, selected, onPick, widthClass = "w-[70px]" }) => {
     const ref = useRef(null);
-    const itemHRef = useRef(36);         // 실제 아이템 높이
-    const viewHRef = useRef(180);        // 뷰 높이
-    const rafRef   = useRef(0);
-    const snapTORef= useRef(0);
+    const itemHRef = useRef(36);
+    const viewHRef = useRef(180);
+    const padRef   = useRef(72);
 
-    // 아이템 실제 높이 측정 후 초기 정렬
     useEffect(() => {
       const measure = () => {
         const item = ref.current?.querySelector("[data-wheel-item]");
         const box  = ref.current;
         if (item) itemHRef.current = item.getBoundingClientRect().height || 36;
         if (box)  viewHRef.current = box.getBoundingClientRect().height || 180;
-
+        padRef.current = Math.max(0, viewHRef.current / 2 - itemHRef.current / 2);
         const idx = Math.max(0, values.indexOf(selected));
-        const centerOffset = viewHRef.current / 2 - itemHRef.current / 2;
-        const top = Math.max(0, idx * itemHRef.current - centerOffset);
-        if (box) box.scrollTop = top;
+        if (box) box.scrollTop = idx * itemHRef.current; // 상단 패딩 기준
       };
-      // 첫 렌더 후 측정
       requestAnimationFrame(measure);
-    }, []); // mount 1회
+    }, []);
 
     const clampIdx = (idx) => Math.min(Math.max(idx, 0), values.length - 1);
-
-    // 스크롤 시: 중앙 기준으로 가장 가까운 항목을 선택
     const onScroll = (e) => {
       const box = e.currentTarget;
-      const centerOffset = viewHRef.current / 2 - itemHRef.current / 2;
-      const idx = clampIdx(Math.round((box.scrollTop + centerOffset) / itemHRef.current));
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = requestAnimationFrame(() => onPick(values[idx]));
-
-      // 스크롤 종료 후 정확히 정렬(덜컥임 방지)
-      clearTimeout(snapTORef.current);
-      snapTORef.current = setTimeout(() => {
-        const targetTop = idx * itemHRef.current - centerOffset;
-        box.scrollTo({ top: targetTop, behavior: "auto" });
-      }, 100);
+      const idx = clampIdx(Math.round((box.scrollTop) / itemHRef.current));
+      onPick(values[idx]);
     };
-
-    // 클릭 시: 선택 + 중앙 정렬
     const onClickItem = (v, idx) => {
       const box = ref.current;
-      const centerOffset = viewHRef.current / 2 - itemHRef.current / 2;
       onPick(v);
-      if (box) box.scrollTo({ top: idx * itemHRef.current - centerOffset, behavior: "auto" });
+      if (box) box.scrollTo({ top: idx * itemHRef.current, behavior: "auto" });
     };
+
+    const padStyle = { height: padRef.current };
 
     return (
       <div
@@ -106,32 +87,29 @@ function TimeWheelPopover({ anchorRef, valueHHmm = "00:00", onChange, onClose })
         style={{ scrollbarWidth: "none" }}
       >
         <style>{`.no-scrollbar::-webkit-scrollbar{display:none;}`}</style>
+        <div style={padStyle} aria-hidden />
         {values.map((v, i) => (
           <button
             key={v}
             type="button"
             data-wheel-item
             onClick={() => onClickItem(v, i)}
-            className={`h-9 w-full flex items-center justify-center text-[14px]
-              ${v === selected ? "font-semibold text-gray-900" : "text-gray-900"}`}
+            className={`h-9 w-full flex items-center justify-center text-[14px] ${
+              v === selected ? "font-semibold text-gray-900" : "text-gray-900"
+            }`}
           >
             {`${v}`.padStart(2, "0")}
           </button>
         ))}
+        <div style={padStyle} aria-hidden />
       </div>
     );
   };
 
-  // 현재 선택 상태
   const [hour, setHour] = useState(initHour);
   const [min,  setMin]  = useState(initMin);
+  useEffect(() => { onChange?.(`${`${hour}`.padStart(2,"0")}:${`${min}`.padStart(2,"0")}`); }, [hour, min, onChange]);
 
-  // 선택 즉시 외부 전달
-  useEffect(() => {
-    onChange?.(`${`${hour}`.padStart(2,"0")}:${`${min}`.padStart(2,"0")}`);
-  }, [hour, min, onChange]);
-
-  // 앵커 아래로 위치
   const rect = anchorRef.current?.getBoundingClientRect();
   const POPOVER_W = 200, POPOVER_H = 200;
   const style = rect ? {
@@ -142,9 +120,7 @@ function TimeWheelPopover({ anchorRef, valueHHmm = "00:00", onChange, onClose })
   } : {};
 
   return (
-    <div ref={popRef} style={style}
-      className="w-[200px] rounded-xl border border-gray-200 bg-white shadow-lg p-3 relative">
-      {/* 중앙 가이드(회색 필) */}
+    <div ref={popRef} style={style} className="w-[200px] rounded-xl border border-gray-200 bg-white shadow-lg p-3 relative">
       <div className="pointer-events-none absolute left-3 right-3 top-[calc(50%-18px)] h-9 rounded-md bg-gray-100" />
       <div className="flex gap-2 relative">
         <Col values={hours}   selected={hour} onPick={setHour} />
@@ -154,7 +130,6 @@ function TimeWheelPopover({ anchorRef, valueHHmm = "00:00", onChange, onClose })
   );
 }
 
-/* ===== 항상 ‘아래’로 뜨는 조세처 셀렉트 ===== */
 function OfficeSelectDown({ value, onChange, options }) {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef(null);
@@ -167,33 +142,23 @@ function OfficeSelectDown({ value, onChange, options }) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
   const selected = value || "";
-
   return (
-    <div ref={wrapRef} className="relative mb-3 rounded-xl border border-gray-200">
-      <button
-        type="button"
-        onClick={() => setOpen(v => !v)}
-        className="flex w-full items-center justify-between rounded-xl px-3 py-3"
-      >
-        <span className={`text-[15px] ${selected ? "font-semibold text-gray-900" : "text-gray-400"}`}>
-          {selected || "조세처"}
-        </span>
+    <div ref={wrapRef} className="relative mb-3 rounded-xl border border-gray-200 bg-white shadow-md">
+      <button type="button" onClick={() => setOpen(v => !v)} className="flex w-full items-center justify-between rounded-xl px-3 py-3">
+        <span className={`text-[15px] ${selected ? "font-semibold text-gray-900" : "text-gray-400"}`}>{selected || "조세처"}</span>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-gray-400">
           <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </button>
-
       {open && (
         <div className="absolute left-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg">
           <div className="px-3 py-2 text-[13px] text-gray-500">조세처</div>
           <ul className="max-h-60 overflow-auto">
             {options.map((label) => (
               <li key={label}>
-                <button
-                  type="button"
-                  onClick={() => { onChange(label); setOpen(false); }}
-                  className="w-full text-left px-3 py-2 hover:bg-gray-50 text-[15px] text-gray-900"
-                >{label}</button>
+                <button type="button" onClick={() => { onChange(label); setOpen(false); }} className="w-full text-left px-3 py-2 hover:bg-gray-50 text-[15px] text-gray-900">
+                  {label}
+                </button>
               </li>
             ))}
           </ul>
@@ -206,42 +171,62 @@ function OfficeSelectDown({ value, onChange, options }) {
 export default function NewSchedulePage() {
   const nav = useNavigate();
   useLayoutEffect(() => window.scrollTo(0, 0), []);
+  const editingId = undefined;
 
-  const [colorIdx, setColorIdx] = useState(0);
-  const [showColorPicker, setShowColorPicker] = useState(false);
+  const handleDelete = async () => {
+    if (!window.confirm("일정을 삭제할까요?")) return;
+    try {
+      console.log("DELETE EVENT:", editingId);
+      nav(-1);
+    } catch (e) {
+      console.error(e);
+      alert("삭제 중 오류가 발생했습니다.");
+    }
+  };
+
+  // 색상 팔레트
+  const [arrowCode, setArrowCode] = useState(null);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const paletteBtnRef = useRef(null);
+  const paletteWrapRef = useRef(null);
+  useEffect(() => {
+    if (!paletteOpen) return;
+    const close = (e) => {
+      if (!paletteWrapRef.current || !paletteBtnRef.current) return;
+      if (!paletteWrapRef.current.contains(e.target) && !paletteBtnRef.current.contains(e.target)) setPaletteOpen(false);
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, [paletteOpen]);
+
+  // 값들
   const [title, setTitle] = useState("");
-
   const now = new Date();
-  const defStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0); // 시작은 내부값만 유지
+  const defStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0);
   const defEnd   = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 1, 0);
-
   const [start, setStart] = useState(defStart.toISOString().slice(0,16));
   const [end, setEnd]     = useState(defEnd.toISOString().slice(0,16));
-  const [alarm, setAlarm] = useState("당일");
   const [office, setOffice] = useState("");
 
-  const [openEndCal, setOpenEndCal] = useState(false);
+  // 시간 팝오버
   const [openEndTime, setOpenEndTime] = useState(false);
   const [endView, setEndView] = useState(new Date(end));
   const timeAnchorRef = useRef(null);
 
-  /* ✅ 저장 버튼 활성화: 제목/종료/조세처만 있으면 OK */
-  const isValid = useMemo(
-    () => title.trim() !== "" && !!end && office.trim() !== "",
-    [title, end, office]
-  );
+  const isValid = useMemo(() => title.trim() !== "" && !!end && office.trim() !== "" && arrowCode !=null, [title, end, office,arrowCode]);
 
   const onSave = () => {
     if (!isValid) return;
     const payload = {
-      color: COLORS[colorIdx],
+      date: toYMD(new Date(end)),
+      code: arrowCode,
       title: title.trim(),
-      start: new Date(start).toISOString(),
-      end:   new Date(end).toISOString(),
-      alarm,
-      office
+      startISO: new Date(start).toISOString(),
+      endISO:   new Date(end).toISOString(),
+      office,
     };
     console.log("SAVE NEW EVENT:", payload);
+    addEvent(payload);
     nav(-1);
   };
 
@@ -249,60 +234,60 @@ export default function NewSchedulePage() {
   const [endDate, endTime] = end.split("T");
 
   return (
-    <div className="w-full min-h-screen bg-white">
-      {/* 헤더 */}
+    <div className="w-full min-h-screen bg-[#f3f3f3]">
       <header className="sticky top-0 z-10 flex items-center justify-between border-b bg-white px-4 py-3">
-        <button onClick={() => nav(-1)} aria-label="back" className="text-gray-900">
-          <IconChevronLeft />
-        </button>
+        <button onClick={() => nav(-1)} aria-label="back" className="text-gray-900"><IconChevronLeft /></button>
         <h1 className="text-[17px] font-semibold text-gray-900">새 일정</h1>
-        <button
-          onClick={onSave}
-          disabled={!isValid}
-          className={`text-[15px] font-semibold ${isValid ? "text-blue-600" : "text-gray-300"}`}
-        >
-          저장
-        </button>
+        <button onClick={onSave} disabled={!isValid} className={`text-[15px] font-semibold ${isValid ? "text-blue-600" : "text-gray-300"}`}>저장</button>
       </header>
 
       <main className="px-4 pt-4 pb-24">
         {/* 캘린더 색상 */}
-        <div className="mb-3 rounded-xl border border-gray-200 p-3">
-          <div className="flex items-center">
+        <div className="mb-3 relative rounded-xl border border-gray-200 p-3 bg-white shadow-md">
+          <div className="flex items-center justify-between">
             <div className="text-[13px] text-gray-500">캘린더 색상</div>
-            <div className="relative ml-auto">
-              <button
-                type="button"
-                onClick={() => setShowColorPicker(v => !v)}
-                className="h-6 w-6 rounded-full border"
-                style={{ backgroundColor: COLORS[colorIdx], borderColor: "rgba(0,0,0,0.08)" }}
-                aria-label="색상 선택 열기"
+            <button
+              ref={paletteBtnRef}
+              type="button"
+              onClick={() => setPaletteOpen(v => !v)}
+              aria-label="색상 선택"
+              className="h-6 w-6 rounded-full overflow-hidden"
+            >
+              <img
+                src={arrowCode ? SELECT_ICONS[arrowCode] : DEFAULT_ICON_24}
+                width={24}
+                height={24}
+                alt=""
+                draggable={false}
               />
-              {showColorPicker && (
-                <>
-                  <button type="button" aria-hidden onClick={() => setShowColorPicker(false)} className="fixed inset-0 z-40 cursor-default" />
-                  <div className="absolute right-0 top-full mt-2 z-[60] w-56 rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
-                    <div className="flex flex-wrap gap-2">
-                      {COLORS.map((c, i) => (
-                        <button
-                          key={c}
-                          type="button"
-                          onClick={() => { setColorIdx(i); setShowColorPicker(false); }}
-                          className={`h-7 w-7 rounded-full border transition ${i === colorIdx ? "ring-2 ring-offset-2 ring-gray-300" : ""}`}
-                          style={{ backgroundColor: c, borderColor: "rgba(0,0,0,0.08)" }}
-                          aria-label={`color-${i}`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
+            </button>
           </div>
+
+          {paletteOpen && (
+            <div
+              ref={paletteWrapRef}
+              className="absolute right-3 top-[42px] z-[60] bg-white border border-gray-200 shadow-md rounded-lg px-3"
+              style={{ width: 206, height: 42 }}
+            >
+              <div className="h-full w-full flex items-center justify-between">
+                {PALETTE.map(({ code, icon }) => (
+                  <button
+                    key={code}
+                    type="button"
+                    onClick={() => { setArrowCode(code); setPaletteOpen(false); }}
+                    style={{ width: 24, height: 24, borderRadius: 12, overflow: "hidden" }}
+                    aria-label={`color-${code}`}
+                  >
+                    <img src={icon} width={24} height={24} alt="" draggable={false} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 제목 */}
-        <div className="mb-3 rounded-xl border border-gray-200 p-3">
+        <div className="mb-3 rounded-xl border border-gray-200 p-3 bg-white shadow-md">
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -311,51 +296,52 @@ export default function NewSchedulePage() {
           />
         </div>
 
-        {/* 종료만 표시 */}
-        <div className="mb-3 rounded-xl border border-gray-200">
+        {/* 종료/시간 + 항상 보이는 캘린더 */}
+        <div className="mb-3 rounded-xl border border-gray-200 bg-white shadow-md">
+          {/* 상단 컨트롤 라인 */}
           <div className="flex w-full items-center gap-3 px-3 py-3">
-            <span className="w-[40px] text-left text-[13px] text-gray-500">종료</span>
+            <span className="w-[40px] text-left text-[13px] text-gray-900">마감일</span>
             <div className="ml-auto flex min-w-0 items-center gap-2 text-right">
-              {/* 날짜 → 아래 인라인 캘린더 */}
-              <button
-                type="button"
-                onClick={() => { setOpenEndCal(v => !v); setOpenEndTime(false); setEndView(new Date(end)); }}
-                className="truncate rounded-md bg-gray-100 px-2 py-1 text-[13px] text-gray-900"
-              >
+              {/* 날짜 버튼: 토글 없이 표시만 */}
+              <span className="truncate rounded-md bg-gray-100 px-2 py-1 text-[13px] text-gray-900">
                 {endParts.left}
-              </button>
-              {/* 시간 → 아래 팝오버 */}
+              </span>
+              {/* 시간 버튼: 클릭 시 휠 표시 */}
               <button
                 ref={timeAnchorRef}
                 type="button"
-                onClick={() => { setOpenEndTime(v => !v); setOpenEndCal(false); }}
+                onClick={() => setOpenEndTime(v => !v)}
                 className="rounded-md bg-gray-100 px-2 py-1 text-[13px] text-gray-900"
               >
                 {endParts.right}
               </button>
             </div>
           </div>
+          <div className="border-t border-gray-200" />
 
-          {/* 종료 캘린더 (인라인, 헤더/여백 제거) */}
-          {openEndCal && (
-            <>
-              <div className="px-0 pb-2">
-                <Calendar
-                  hideTitle
-                  year={endView.getFullYear()}
-                  month={endView.getMonth()}
-                  dayEvents={{}}
-                  selected={new Date(endDate)}
-                  onSelect={(d) => { setEnd(`${toYMD(d)}T${endTime || "00:00"}`); setOpenEndCal(false); }}
-                  onPrev={() => setEndView(new Date(endView.getFullYear(), endView.getMonth() - 1, 1))}
-                  onNext={() => setEndView(new Date(endView.getFullYear(), endView.getMonth() + 1, 1))}
-                />
-              </div>
-              <div className="border-t border-gray-200" />
-            </>
-          )}
+          {/* 🔥 캘린더는 항상 아래에 렌더링 */}
+          <div className="px-0 pb-2">
+            <Calendar
+              hideTitle
+              hidePurple
+              fitContainer
+              year={endView.getFullYear()}
+              month={endView.getMonth()}
+              dayEvents={{}}
+              selected={new Date(endDate)}
+              onSelect={(d) => {
+                // 날짜 선택 시 값 갱신 (회색 pill 텍스트만 변경)
+                const newEnd = `${toYMD(d)}T${endTime || "00:00"}`;
+                setEnd(newEnd);
+                setEndView(new Date(d));
+              }}
+              onPrev={() => setEndView(new Date(endView.getFullYear(), endView.getMonth() - 1, 1))}
+              onNext={() => setEndView(new Date(endView.getFullYear(), endView.getMonth() + 1, 1))}
+            />
+          </div>
+          <div className="border-t border-gray-200" />
 
-          {/* 시간 팝오버 */}
+          {/* 시간 휠 팝오버 */}
           {openEndTime && (
             <TimeWheelPopover
               anchorRef={timeAnchorRef}
@@ -364,31 +350,8 @@ export default function NewSchedulePage() {
               onClose={() => setOpenEndTime(false)}
             />
           )}
-
-          {/* 알림 */}
-          <div className="flex items-center gap-3 px-3 py-3">
-            <span className="w-[40px] text-left text-[13px] text-gray-500">알림</span>
-            <div className="ml-auto relative cursor-pointer">
-              <select
-                value={alarm}
-                onChange={(e) => setAlarm(e.target.value)}
-                className="h-8 rounded-lg bg-[#f3f3f3] focus:bg-[#f3f3f3] px-2 pr-6 text-[13px] leading-none outline-none appearance-none cursor-pointer"
-              >
-                <option value="당일">당일</option>
-                <option value="하루 전">하루 전</option>
-                <option value="이틀 전">이틀 전</option>
-                <option value="일주일 전">일주일 전</option>
-              </select>
-              <div className="cursor-pointer absolute right-1 top-1/2 -translate-y-1/2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M6 9l6 6 6-6" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* 조세처 (항상 아래로) */}
         <OfficeSelectDown
           value={office}
           onChange={setOffice}
@@ -401,6 +364,17 @@ export default function NewSchedulePage() {
             "기타",
           ]}
         />
+
+        {/* 삭제 버튼 */}
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="w-full rounded-xl border text-red-600 bg-white py-3 text-[15px] font-semibold active:scale-[0.99] shadow-md"
+          >
+            일정 삭제
+          </button>
+        </div>
       </main>
     </div>
   );

@@ -4,21 +4,20 @@ import {
   INDUSTRY_OPTIONS,
   LANGUAGE_OPTIONS,
   SORT_OPTIONS,
-} from "../data/taxAdvisors"; // ✅ 옵션+데이터 한 파일에서 임포트
+} from "../data/taxAdvisors"; 
 import { useNavigate } from "react-router-dom";
 
-// 간단한 className 조합 유틸
+
 const cx = (...a) => a.filter(Boolean).join(" ");
 
 export default function TaxAdvisors() {
-  // 빈 문자열("") = 필터 해제
+
   const [industry, setIndustry] = useState("");
   const [lang, setLang] = useState("");
   const [sort, setSort] = useState("hire");
   const nav = useNavigate();
   const getLabel = (opts, v) => opts.find(o => o.value === v)?.label ?? opts[0]?.label ?? "";
 
-  // 필터 + 정렬 처리
   const list = useMemo(() => {
     let arr = [...ADVISORS];
     const ind = industry.trim();
@@ -44,24 +43,23 @@ export default function TaxAdvisors() {
         세무상담사 추천
       </h2>
 
-      {/* 필터 헤더 */}
+      
       <div className="mt-2 flex items-center justify-between gap-3 bg-white rounded-2xl shadow-sm border border-gray-200 py-1">
 
-        {/* 좌측: 유동폭 pill 2개 */}
         <section className="flex items-center gap-1.5">
-          {/* 업종 */}
+    
           <div className="relative inline-flex items-center h-8 rounded-full bg-black text-white px-3">
-            {/* 보이는 라벨(폭을 이게 결정) */}
+           
             <span className="text-sm leading-none whitespace-nowrap pr-4">
               {getLabel(INDUSTRY_OPTIONS, industry)}
             </span>
-            {/* 커스텀 화살표 */}
+        
             <svg className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 opacity-80"
                 viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path d="M5.25 7.5L10 12.25 14.75 7.5" stroke="currentColor" strokeWidth="1.8" fill="none"
                     strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            {/* 진짜 select: 클릭만 받는 투명 오버레이 */}
+           
             <select
               aria-label="업종"
               value={industry}
@@ -74,7 +72,7 @@ export default function TaxAdvisors() {
             </select>
           </div>
 
-          {/* 가능 언어 */}
+         
           <div className="relative inline-flex items-center h-8 rounded-full bg-black text-white px-3">
             <span className="text-sm leading-none whitespace-nowrap pr-4">
               {getLabel(LANGUAGE_OPTIONS, lang)}
@@ -97,13 +95,13 @@ export default function TaxAdvisors() {
           </div>
         </section>
 
-        {/* 우측 정렬(같은 패턴) */}
+       
         <div className="relative inline-flex items-center h-8 rounded-full bg-white text-gray-900 px-3 mr-2.5">
-          {/* 보이는 라벨 */}
+          
           <span className="text-sm leading-none whitespace-nowrap pr-4">
             {SORT_OPTIONS.find(o => o.value === sort)?.label}
           </span>
-          {/* 커스텀 화살표 */}
+     
           <svg
             className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 opacity-60"
             viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
@@ -117,7 +115,7 @@ export default function TaxAdvisors() {
               strokeLinejoin="round"
             />
           </svg>
-          {/* 투명 select */}
+     
           <select
             aria-label="정렬"
             value={sort}
@@ -131,7 +129,6 @@ export default function TaxAdvisors() {
         </div>
       </div>
 
-      {/* 리스트 */}
       <section className="mt-2.5 rounded-2xl bg-white border border-gray-200 shadow-sm">
         {list.map((it, idx) => (
           <article

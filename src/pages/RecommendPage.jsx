@@ -1,9 +1,7 @@
-// src/pages/RecommendPage.jsx
 import React, { useMemo, useState, useLayoutEffect, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 
-/* ---------- Icons ---------- */
 const IconStarFill = ({ size = 22, className = "" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" className={className}>
     <path d="M12 17.3l-6.16 3.33 1.18-6.88L2 8.97l6.92-1L12 1.6l3.08 6.36 6.92 1-5.02 4.78 1.18 6.88L12 17.3z" fill="currentColor"/>
@@ -25,14 +23,13 @@ const IconGlobe = () => (
     <path d="M3 12h18M12 3c3.3 3.8 3.3 13.2 0 18M12 3c-3.3 3.8-3.3 13.2 0 18" stroke="currentColor" strokeWidth="1.6"/>
   </svg>
 );
-/* 둥근 수화기 아이콘 */
+
 const IconPhone = ({ size = 18, className="" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" className={className}>
     <path fill="currentColor" d="M6.62 10.79a15.05 15.05 0 006.59 6.59l1.98-1.98a1 1 0 011.01-.24c1.1.37 2.29.57 3.5.57a1 1 0 011 1v3.52a1 1 0 01-1 1C11.85 21.26 2.74 12.15 2.75 2.3a1 1 0 011-1H7.3a1 1 0 011 1c0 1.21.2 2.4.57 3.5a1 1 0 01-.25 1.01l-2 1.98z"/>
   </svg>
 );
 
-/* ---------- Small UI ---------- */
 const Avatar = () => <div className="h-8 w-8 shrink-0 rounded-full bg-gray-200" />;
 const Tag = ({ children }) => <span className="inline-block rounded-full bg-gray-100 px-2.5 py-1 text-[12px] font-semibold text-gray-800">{children}</span>;
 const Row = ({ label, children, accent }) => (
@@ -53,7 +50,7 @@ const RatingBar = ({ label, value, max = 10 }) => {
   );
 };
 
-/* ---------- 바텀시트: 뷰포트 고정, 버튼 2개(흰 배경/파란 텍스트) ---------- */
+
 function ContactSheet({ open, phone="010-0000-0000", onClose }) {
   useEffect(() => {
     if (!open) return;
@@ -68,13 +65,13 @@ function ContactSheet({ open, phone="010-0000-0000", onClose }) {
 
   const content = (
     <div className="fixed inset-0 z-[100]">
-      {/* 어두운 배경 */}
+     
       <button
         aria-hidden
         onClick={onClose}
         className="absolute inset-0 bg-black/70 backdrop-blur-[4px]"
       />
-      {/* 버튼들 (연락하기 타이틀 제거, 강한 그림자) */}
+      
       <div className="fixed inset-x-0 bottom-6 mx-auto w-[92%] max-w-[520px] space-y-2">
         <button
           type="button"
@@ -95,11 +92,11 @@ function ContactSheet({ open, phone="010-0000-0000", onClose }) {
     </div>
   );
 
-  // 고정 오버레이는 document.body로 포털
+ 
   return createPortal(content, document.body);
 }
 
-/* ---------- 페이지 ---------- */
+
 export default function RecommendPage() {
   const nav = useNavigate();
   const { state } = useLocation();
@@ -250,7 +247,7 @@ export default function RecommendPage() {
         <div className="h-64 bg-white" />
       </main>
 
-      {/* 바텀시트 */}
+   
       <ContactSheet
         open={openContact}
         phone="010-0000-0000"
