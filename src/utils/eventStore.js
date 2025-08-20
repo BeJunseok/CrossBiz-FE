@@ -83,8 +83,35 @@ export function getEventsListMap() {
   }, {});
 }
 
+
+
+
+
+// ───────────────────────────────────────────────────────────
+// Public API
+// ───────────────────────────────────────────────────────────
+
+// 단건 추가
+
+
+// 단건 업데이트 (존재하면 patch 머지)
+export function updateEvent(id, patch) {
+  const list = read();
+  const idx = list.findIndex((e) => e?.id === id);
+  if (idx === -1) return false;
+  const next = [...list];
+  next[idx] = { ...next[idx], ...patch };
+  write(next);
+  return true;
+}
+
+// 단건 삭제
 export function removeEventById(id) {
   const list = read();
-  const next = list.filter((e) => e.id!== id);
+  const next = list.filter((e) => e?.id !== id);
   write(next);
+  return list.length !== next.length;
 }
+
+
+

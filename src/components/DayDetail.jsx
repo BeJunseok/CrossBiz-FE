@@ -27,7 +27,7 @@ export default function DayDetail({ date, items = [] }) {
           code: COLOR_TO_CODE[it?.color] ?? null,
           office: it.office ?? "",
           fromArrow: true,
-          eventId: it?.id ?? "",
+          eventId: it?.id ?? null,
         },
       },
     });
