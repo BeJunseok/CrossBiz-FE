@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { DAY_ARROW_ICONS } from "../../utils/arrows";
 
 // 기본 고정값(미지정 시 사용)
-const CARD_W  = 361;
-const INNER_W = 329;
+const CARD_W  = 365;
+const INNER_W = 353;
 const GAP     = 4;
 const CELL_W  = 47;
 const CELL_H  = 80;
@@ -71,19 +71,19 @@ export default function Calendar({
         </>
       )}
 
-      <div className="bg-white shadow-sm" style={{ width: cardW, padding: 12, borderRadius: 0 }}>
+      <div className="bg-white rounded-md shadow-sm" style={{ width: cardW, padding: 12, borderRadius: 0 }}>
         {/* 헤더 */}
         <div className="flex items-center justify-between" style={{ width: innerW }}>
           <div className="font-extrabold tracking-tight" style={{ fontSize: 20, marginBottom: 4 }}>
             {new Date(year, month, 1).toLocaleString("en-US", { month: "long", year: "numeric" })}
           </div>
-          <div className="flex items-center" style={{ gap: 8 }}>
+          <div className="flex items-center gap-2">
             <button onClick={onPrev} className="rounded-full bg-gray-100 grid place-items-center" style={{ width: 32, height: 32 }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
               </svg>
             </button>
-            <button onClick={onNext} className="rounded-full bg-gray-100 grid place-items-center" style={{ width: 32, height: 32 }}>
+            <button onClick={onNext} className="rounded-full bg-gray-100 grid place-items-center mr-2" style={{ width: 32, height: 32 }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
               </svg>

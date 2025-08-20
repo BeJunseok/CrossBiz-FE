@@ -1,10 +1,9 @@
+// src/pages/NewSchedulePage.jsx
 import React, { useLayoutEffect, useMemo, useRef, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Calendar from "../components/Calendar/Calendar";
-import { DEFAULT_ICON_24, PALETTE, SELECT_ICONS, getArrowColor } from "../utils/arrows";
-import { addEvent } from "../utils/eventStore";
-
-
+import { DEFAULT_ICON_24, PALETTE, SELECT_ICONS } from "../utils/arrows";
+import { addEvent, removeEventById } from "../utils/eventStore";
 
 const IconChevronLeft = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -13,6 +12,8 @@ const IconChevronLeft = () => (
 );
 
 const weekday = ["일","월","화","수","목","금","토"];
+const CODE_TO_COLOR = {1: "red", 2:"orange", 3: "yellow", 4: "green", 5: "blue"};
+
 const splitDateParts = (isoLike) => {
   const d = new Date(isoLike);
   const y = d.getFullYear();
@@ -26,10 +27,8 @@ const splitDateParts = (isoLike) => {
 const toYMD = (d) =>
   `${d.getFullYear()}-${`${d.getMonth() + 1}`.padStart(2, "0")}-${`${d.getDate()}`.padStart(2, "0")}`;
 
-/* ===== 시간 휠(중앙 회색 필 고정) ===== */
 function TimeWheelPopover({ anchorRef, valueHHmm = "00:00", onChange, onClose }) {
   const popRef = useRef(null);
-
   useEffect(() => {
     const handle = (e) => {
       if (!popRef.current || !anchorRef.current) return;
@@ -60,7 +59,7 @@ function TimeWheelPopover({ anchorRef, valueHHmm = "00:00", onChange, onClose })
         if (box)  viewHRef.current = box.getBoundingClientRect().height || 180;
         padRef.current = Math.max(0, viewHRef.current / 2 - itemHRef.current / 2);
         const idx = Math.max(0, values.indexOf(selected));
-        if (box) box.scrollTop = idx * itemHRef.current; // 상단 패딩 기준
+        if (box) box.scrollTop = idx * itemHRef.current;
       };
       requestAnimationFrame(measure);
     }, []);
@@ -71,37 +70,17 @@ function TimeWheelPopover({ anchorRef, valueHHmm = "00:00", onChange, onClose })
       const idx = clampIdx(Math.round((box.scrollTop) / itemHRef.current));
       onPick(values[idx]);
     };
-    const onClickItem = (v, idx) => {
-      const box = ref.current;
-      onPick(v);
-      if (box) box.scrollTo({ top: idx * itemHRef.current, behavior: "auto" });
-    };
-
-    const padStyle = { height: padRef.current };
 
     return (
-      <div
-        ref={ref}
-        className={`h-[180px] overflow-y-auto no-scrollbar ${widthClass}`}
-        onScroll={onScroll}
-        style={{ scrollbarWidth: "none" }}
-      >
+      <div ref={ref} className={`h-[180px] overflow-y-auto no-scrollbar ${widthClass}`} onScroll={onScroll} style={{ scrollbarWidth: "none" }}>
         <style>{`.no-scrollbar::-webkit-scrollbar{display:none;}`}</style>
-        <div style={padStyle} aria-hidden />
+        <div style={{ height: 72 }} aria-hidden />
         {values.map((v, i) => (
-          <button
-            key={v}
-            type="button"
-            data-wheel-item
-            onClick={() => onClickItem(v, i)}
-            className={`h-9 w-full flex items-center justify-center text-[14px] ${
-              v === selected ? "font-semibold text-gray-900" : "text-gray-900"
-            }`}
-          >
+          <button key={i} type="button" data-wheel-item className={`h-9 w-full flex items-center justify-center text-[14px] ${v === selected ? "font-semibold text-gray-900" : "text-gray-900"}`} onClick={() => onPick(v)}>
             {`${v}`.padStart(2, "0")}
           </button>
         ))}
-        <div style={padStyle} aria-hidden />
+        <div style={{ height: 72 }} aria-hidden />
       </div>
     );
   };
@@ -111,11 +90,10 @@ function TimeWheelPopover({ anchorRef, valueHHmm = "00:00", onChange, onClose })
   useEffect(() => { onChange?.(`${`${hour}`.padStart(2,"0")}:${`${min}`.padStart(2,"0")}`); }, [hour, min, onChange]);
 
   const rect = anchorRef.current?.getBoundingClientRect();
-  const POPOVER_W = 200, POPOVER_H = 200;
   const style = rect ? {
     position: "fixed",
-    top: Math.min(window.innerHeight - POPOVER_H - 8, rect.bottom + 8),
-    left: Math.min(window.innerWidth - POPOVER_W - 8, Math.max(8, rect.right - POPOVER_W)),
+    top: Math.min(window.innerHeight - 208, rect.bottom + 8),
+    left: Math.min(window.innerWidth - 208, Math.max(8, rect.right - 200)),
     zIndex: 60
   } : {};
 
@@ -123,8 +101,8 @@ function TimeWheelPopover({ anchorRef, valueHHmm = "00:00", onChange, onClose })
     <div ref={popRef} style={style} className="w-[200px] rounded-xl border border-gray-200 bg-white shadow-lg p-3 relative">
       <div className="pointer-events-none absolute left-3 right-3 top-[calc(50%-18px)] h-9 rounded-md bg-gray-100" />
       <div className="flex gap-2 relative">
-        <Col values={hours}   selected={hour} onPick={setHour} />
-        <Col values={minutes} selected={min}  onPick={setMin}  />
+        <Col values={Array.from({length:24},(_,i)=>i)} selected={hour} onPick={setHour} />
+        <Col values={Array.from({length:12},(_,i)=>i*5)} selected={min}  onPick={setMin}  />
       </div>
     </div>
   );
@@ -146,9 +124,7 @@ function OfficeSelectDown({ value, onChange, options }) {
     <div ref={wrapRef} className="relative mb-3 rounded-xl border border-gray-200 bg-white shadow-md">
       <button type="button" onClick={() => setOpen(v => !v)} className="flex w-full items-center justify-between rounded-xl px-3 py-3">
         <span className={`text-[15px] ${selected ? "font-semibold text-gray-900" : "text-gray-400"}`}>{selected || "조세처"}</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-gray-400">
-          <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-gray-400"><path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
       </button>
       {open && (
         <div className="absolute left-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-lg">
@@ -170,25 +146,35 @@ function OfficeSelectDown({ value, onChange, options }) {
 
 export default function NewSchedulePage() {
   const nav = useNavigate();
+  const { state } = useLocation();
+  const preset = state?.preset; // { dateISO, title, code, office? }
+
   useLayoutEffect(() => window.scrollTo(0, 0), []);
-  const editingId = undefined;
 
-  const handleDelete = async () => {
-    if (!window.confirm("일정을 삭제할까요?")) return;
-    try {
-      console.log("DELETE EVENT:", editingId);
-      nav(-1);
-    } catch (e) {
-      console.error(e);
-      alert("삭제 중 오류가 발생했습니다.");
-    }
-  };
+  // 초기값: preset을 최우선으로 적용
+  const presetDate = preset?.dateISO ? new Date(preset.dateISO) : new Date();
+  const defStart = new Date(presetDate.getFullYear(), presetDate.getMonth(), presetDate.getDate(), 0, 0);
+  const defEnd   = new Date(presetDate.getFullYear(), presetDate.getMonth(), presetDate.getDate(), presetDate.getHours() || 1, presetDate.getMinutes() || 0);
 
-  // 색상 팔레트
-  const [arrowCode, setArrowCode] = useState(null);
+  const editingId = preset?.eventId ?? null;
+  const fromArrow = !!preset?.fromArrow;
+
+  const [arrowCode, setArrowCode] = useState(
+    Number.isFinite(preset?.code) ? preset.code : null
+  );
   const [paletteOpen, setPaletteOpen] = useState(false);
   const paletteBtnRef = useRef(null);
   const paletteWrapRef = useRef(null);
+
+  const [title, setTitle] = useState(preset?.title ?? "");
+  const [start, setStart] = useState(defStart.toISOString().slice(0, 16));
+  const [end, setEnd]     = useState(defEnd.toISOString().slice(0, 16));
+  const [office, setOffice] = useState(preset?.office ?? ""); // ✅ 프리셋의 조세처 반영
+
+  const [openEndTime, setOpenEndTime] = useState(false);
+  const [endView, setEndView] = useState(new Date(end));
+  const timeAnchorRef = useRef(null);
+
   useEffect(() => {
     if (!paletteOpen) return;
     const close = (e) => {
@@ -199,36 +185,53 @@ export default function NewSchedulePage() {
     return () => document.removeEventListener("mousedown", close);
   }, [paletteOpen]);
 
-  // 값들
-  const [title, setTitle] = useState("");
-  const now = new Date();
-  const defStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0);
-  const defEnd   = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 1, 0);
-  const [start, setStart] = useState(defStart.toISOString().slice(0,16));
-  const [end, setEnd]     = useState(defEnd.toISOString().slice(0,16));
-  const [office, setOffice] = useState("");
-
-  // 시간 팝오버
-  const [openEndTime, setOpenEndTime] = useState(false);
-  const [endView, setEndView] = useState(new Date(end));
-  const timeAnchorRef = useRef(null);
-
-  const isValid = useMemo(() => title.trim() !== "" && !!end && office.trim() !== "" && arrowCode !=null, [title, end, office,arrowCode]);
+  const isValid = useMemo(
+    () => title.trim() !== "" && !!end && office.trim() !== "" && arrowCode != null,
+    [title, end, office, arrowCode]
+  );
 
   const onSave = () => {
     if (!isValid) return;
     const payload = {
       date: toYMD(new Date(end)),
       code: arrowCode,
+      color: CODE_TO_COLOR[arrowCode],
       title: title.trim(),
+      text: title.trim(),
       startISO: new Date(start).toISOString(),
       endISO:   new Date(end).toISOString(),
-      office,
+      office, // ✅ 저장
     };
-    console.log("SAVE NEW EVENT:", payload);
     addEvent(payload);
     nav(-1);
   };
+  // ✅ 폼 리셋 유틸
+   const resetForm = () => {
+   const now = new Date();
+   const s = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0)
+                 .toISOString().slice(0,16);
+   const e = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 1, 0)
+                 .toISOString().slice(0,16);
+   setArrowCode(null);
+   setTitle("");
+   setOffice("");
+   setStart(s);
+   setEnd(e);
+   setEndView(new Date(e));
+ };
+
+ // ✅ 삭제 버튼 핸들러
+ const onDelete = () => {
+   // 화살표/리스트에서 편집으로 들어온 경우: 저장돼 있던 이벤트 삭제
+   if (fromArrow && editingId) {
+     removeEventById(editingId);
+   }
+   // 폼 리셋 후 이전 화면으로
+   resetForm();
+   nav(-1);
+ };
+
+  
 
   const endParts = splitDateParts(end);
   const [endDate, endTime] = end.split("T");
@@ -242,7 +245,7 @@ export default function NewSchedulePage() {
       </header>
 
       <main className="px-4 pt-4 pb-24">
-        {/* 캘린더 색상 */}
+        {/* 색상 */}
         <div className="mb-3 relative rounded-xl border border-gray-200 p-3 bg-white shadow-md">
           <div className="flex items-center justify-between">
             <div className="text-[13px] text-gray-500">캘린더 색상</div>
@@ -253,31 +256,15 @@ export default function NewSchedulePage() {
               aria-label="색상 선택"
               className="h-6 w-6 rounded-full overflow-hidden"
             >
-              <img
-                src={arrowCode ? SELECT_ICONS[arrowCode] : DEFAULT_ICON_24}
-                width={24}
-                height={24}
-                alt=""
-                draggable={false}
-              />
+              <img src={arrowCode ? SELECT_ICONS[arrowCode] : DEFAULT_ICON_24} width={24} height={24} alt="" draggable={false} />
             </button>
           </div>
 
           {paletteOpen && (
-            <div
-              ref={paletteWrapRef}
-              className="absolute right-3 top-[42px] z-[60] bg-white border border-gray-200 shadow-md rounded-lg px-3"
-              style={{ width: 206, height: 42 }}
-            >
+            <div ref={paletteWrapRef} className="absolute right-3 top-[42px] z-[60] bg-white border border-gray-200 shadow-md rounded-lg px-3" style={{ width: 206, height: 42 }}>
               <div className="h-full w-full flex items-center justify-between">
                 {PALETTE.map(({ code, icon }) => (
-                  <button
-                    key={code}
-                    type="button"
-                    onClick={() => { setArrowCode(code); setPaletteOpen(false); }}
-                    style={{ width: 24, height: 24, borderRadius: 12, overflow: "hidden" }}
-                    aria-label={`color-${code}`}
-                  >
+                  <button key={code} type="button" onClick={() => { setArrowCode(code); setPaletteOpen(false); }} style={{ width: 24, height: 24, borderRadius: 12, overflow: "hidden" }} aria-label={`color-${code}`}>
                     <img src={icon} width={24} height={24} alt="" draggable={false} />
                   </button>
                 ))}
@@ -288,38 +275,22 @@ export default function NewSchedulePage() {
 
         {/* 제목 */}
         <div className="mb-3 rounded-xl border border-gray-200 p-3 bg-white shadow-md">
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="제목"
-            className="w-full bg-transparent text-[15px] text-gray-900 placeholder-gray-400 outline-none"
-          />
+          <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="제목" className="w-full bg-transparent text-[15px] text-gray-900 placeholder-gray-400 outline-none" />
         </div>
 
-        {/* 종료/시간 + 항상 보이는 캘린더 */}
+        {/* 날짜/시간 + 항상 보이는 캘린더 */}
         <div className="mb-3 rounded-xl border border-gray-200 bg-white shadow-md">
-          {/* 상단 컨트롤 라인 */}
           <div className="flex w-full items-center gap-3 px-3 py-3">
             <span className="w-[40px] text-left text-[13px] text-gray-900">마감일</span>
             <div className="ml-auto flex min-w-0 items-center gap-2 text-right">
-              {/* 날짜 버튼: 토글 없이 표시만 */}
-              <span className="truncate rounded-md bg-gray-100 px-2 py-1 text-[13px] text-gray-900">
-                {endParts.left}
-              </span>
-              {/* 시간 버튼: 클릭 시 휠 표시 */}
-              <button
-                ref={timeAnchorRef}
-                type="button"
-                onClick={() => setOpenEndTime(v => !v)}
-                className="rounded-md bg-gray-100 px-2 py-1 text-[13px] text-gray-900"
-              >
+              <span className="truncate rounded-md bg-gray-100 px-2 py-1 text-[13px] text-gray-900">{endParts.left}</span>
+              <button ref={timeAnchorRef} type="button" onClick={() => setOpenEndTime(v => !v)} className="rounded-md bg-gray-100 px-2 py-1 text-[13px] text-gray-900">
                 {endParts.right}
               </button>
             </div>
           </div>
           <div className="border-t border-gray-200" />
 
-          {/* 🔥 캘린더는 항상 아래에 렌더링 */}
           <div className="px-0 pb-2">
             <Calendar
               hideTitle
@@ -330,7 +301,6 @@ export default function NewSchedulePage() {
               dayEvents={{}}
               selected={new Date(endDate)}
               onSelect={(d) => {
-                // 날짜 선택 시 값 갱신 (회색 pill 텍스트만 변경)
                 const newEnd = `${toYMD(d)}T${endTime || "00:00"}`;
                 setEnd(newEnd);
                 setEndView(new Date(d));
@@ -341,7 +311,6 @@ export default function NewSchedulePage() {
           </div>
           <div className="border-t border-gray-200" />
 
-          {/* 시간 휠 팝오버 */}
           {openEndTime && (
             <TimeWheelPopover
               anchorRef={timeAnchorRef}
@@ -355,23 +324,15 @@ export default function NewSchedulePage() {
         <OfficeSelectDown
           value={office}
           onChange={setOffice}
-          options={[
-            "홈택스 (국세청)",
-            "위택스",
-            "ETAX (서울시)",
-            "4대 사회보험 연계센터",
-            "UNI-PASS (관세청)",
-            "기타",
-          ]}
+          options={["홈택스 (국세청)", "위택스", "ETAX (서울시)", "4대 사회보험 연계센터", "UNI-PASS (관세청)", "기타"]}
         />
 
-        {/* 삭제 버튼 */}
+        {/* 삭제 버튼(그냥 이전으로) */}
         <div className="mt-3">
-          <button
-            type="button"
-            onClick={handleDelete}
-            className="w-full rounded-xl border text-red-600 bg-white py-3 text-[15px] font-semibold active:scale-[0.99] shadow-md"
-          >
+          <button 
+          type="button" 
+          onClick={onDelete} 
+          className="w-full rounded-xl border text-red-600 bg-white py-3 text-[15px] font-semibold active:scale-[0.99] shadow-md">
             일정 삭제
           </button>
         </div>
