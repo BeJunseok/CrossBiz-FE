@@ -17,7 +17,7 @@ const NewsCard = ({ news }) => {
       <div className="flex justify-between items-center">
         <div className="text-xs text-gray-600">{news.source}</div>
         <div
-          className="w-6 h-6 bg-black rounded-full flex items-center justify-center cursor-pointer"
+          className="w-6 h-6 bg-[#654EFF] rounded-full flex items-center justify-center cursor-pointer"
           onClick={() => {
             handleClick(news.url);
           }}
