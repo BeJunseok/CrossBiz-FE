@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import HotPostItem from './HotPostItem';
+import HotPostItem from '@/components/Community/HotpostItem';
 import Fire from '@/assets/svg/community/Fire.svg?react';
 
 const HotPostsSection = ({ hotPosts }) => {

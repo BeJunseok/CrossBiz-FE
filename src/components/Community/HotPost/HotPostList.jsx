@@ -1,4 +1,4 @@
-import HotPostItem from './HotPostItem';
+import PostItem from '@/components/Community/PostItem';
 
 const HotPostsList = ({ posts, maxItems = 5 }) => {
   const displayPosts = posts.slice(0, maxItems);
@@ -6,7 +6,7 @@ const HotPostsList = ({ posts, maxItems = 5 }) => {
   return (
     <div className="flex flex-col">
       {displayPosts.map((post) => (
-        <HotPostItem key={post.id} post={post} />
+        <PostItem key={post.id} post={post} />
       ))}
     </div>
   );

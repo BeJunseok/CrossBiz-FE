@@ -4,7 +4,7 @@ import Comments from '@/assets/svg/community/Comments.svg?react';
 import Likes from '@/assets/svg/community/Likes.svg?react';
 import { Link } from 'react-router-dom';
 
-const HotPostItem = ({ post }) => {
+const PostItem = ({ post }) => {
   return (
     <Link
       to={`/community/post/${post.id}`}
@@ -60,4 +60,4 @@ const HotPostItem = ({ post }) => {
   );
 };
 
-export default HotPostItem;
+export default PostItem;

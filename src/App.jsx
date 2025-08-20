@@ -13,7 +13,8 @@ import Tax from '@/pages/Tax';
 import RecommendPage from '@/pages/RecommendPage';
 import NewSchedulePage from '@/pages/NewSchedulePage';
 import HotPostsPage from '@/pages/community/HotPostsPage';
-import NewPostPage from './pages/community/NewPostPage';
+import NewPostPage from '@/pages/community/NewPostPage';
+import MyPage from '@/pages/community/MyPage';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/community/post/:id" element={<PostDetailPage />} />
         <Route path="/community/post/new" element={<NewPostPage />} />
         <Route path="/community/hotpost" element={<HotPostsPage />} />
+        <Route path="/community/my" element={<MyPage />} />
         <Route path="/recommend" element={<RecommendPage />} />
         <Route path="/schedule/new" element={<NewSchedulePage />} />
 

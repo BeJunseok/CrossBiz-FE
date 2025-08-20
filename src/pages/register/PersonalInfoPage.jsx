@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { personalInfoSchema } from '@/utils/validation';
 import { dropdownOptions } from '@/constants/dropdownOptions';
-import Dropdown from '@/components/register/Dropdown';
+import Dropdown from '@/components/common/Dropdown';
 import { useRegisterStore } from '@/stores/registerStore';
 import { useNavigate } from 'react-router-dom';
 

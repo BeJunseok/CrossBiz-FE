@@ -12,9 +12,11 @@ const Header = () => {
             <Search />
           </div>
         </Link>
-        <div className="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center">
-          <User />
-        </div>
+        <Link to="/community/my">
+          <div className="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center">
+            <User />
+          </div>
+        </Link>
       </div>
     </div>
   );
