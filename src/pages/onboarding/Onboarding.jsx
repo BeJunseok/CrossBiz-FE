@@ -33,7 +33,12 @@ const OnboardingPage = () => {
   return (
     <div className="min-h-screen w-full bg-white flex flex-col items-center justify-center px-10">
       {/* 로고 영역 */}
-      <Logo className="mb-16" />
+      <Logo className="mb-3" />
+      <h1 className="font-bold text-3xl mb-2">CrossBiz</h1>
+      <div className="font-semibold text-sm text-center leading-tight mb-[73px] text-gray-500">
+        <p>비자 · 세금부터 상권 트래킹까지.</p>
+        <p>나만의 비즈니스 도우미</p>
+      </div>
 
       {/* 언어 선택 드롭다운 */}
       <div className="relative mb-16">

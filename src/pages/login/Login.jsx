@@ -40,7 +40,7 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen w-full bg-white flex flex-col items-center justify-center px-10">
       {/* 로고 영역 */}
-      <Logo className="mb-16" />
+      <Logo className="mb-32" />
 
       {/* 로그인 폼 */}
       <form onSubmit={handleLogin} className="w-full max-w-80">
