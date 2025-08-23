@@ -16,6 +16,7 @@ import HotPostsPage from '@/pages/community/HotPostsPage';
 import NewPostPage from '@/pages/community/NewPostPage';
 import MyPage from '@/pages/community/MyPage';
 import AdditionalInfoPage from '@/pages/community/AdditionalInfoPage';
+import MapView from '@/pages/analysis/MapView';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
         <Route element={<LayoutWithNavbar />}>
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/tax" element={<Tax />} />
+          <Route path="/analysis" element={<MapView />} />
         </Route>
       </Route>
     </Routes>

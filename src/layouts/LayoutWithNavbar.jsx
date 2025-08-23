@@ -9,7 +9,7 @@ const LayoutWithNavbar = () => {
         <Outlet />
       </main>
 
-      <div className="sticky bottom-0 mt-auto z-999">
+      <div className="sticky bottom-0 mt-auto z-50">
         <BottomNavbar />
       </div>
     </div>
