@@ -3,7 +3,8 @@ import HotPostItem from '@/components/Community/HotpostItem';
 import Fire from '@/assets/svg/community/Fire.svg?react';
 
 const HotPostsSection = ({ hotPosts }) => {
-  const displayPosts = hotPosts.slice(0, 3);
+  const posts = Array.isArray(hotPosts) ? hotPosts : [];
+  const displayPosts = posts.slice(0, 3);
 
   return (
     <div className="px-4 mb-6">
@@ -21,9 +22,15 @@ const HotPostsSection = ({ hotPosts }) => {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm">
-        {displayPosts.map((post) => (
-          <HotPostItem key={post.id} post={post} />
-        ))}
+        {displayPosts.length > 0 ? (
+          displayPosts.map((post) => (
+            <HotPostItem key={post.articleId || post.id} post={post} />
+          ))
+        ) : (
+          <div className="p-8 text-center text-gray-500 text-sm">
+            인기 게시글이 없습니다.
+          </div>
+        )}
       </div>
     </div>
   );

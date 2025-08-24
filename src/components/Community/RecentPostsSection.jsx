@@ -4,15 +4,17 @@ import FilterButtons from './FilterButton';
 import Star from '@/assets/svg/community/Star.svg?react';
 
 const RecentPostsSection = ({ recentPosts }) => {
-  const [filteredPosts, setFilteredPosts] = useState(recentPosts.slice(0, 5));
+  const posts = Array.isArray(recentPosts) ? recentPosts : [];
+  const [filteredPosts, setFilteredPosts] = useState(posts.slice(0, 5));
 
-  // recentPosts가 변경될 때마다 초기값 다시 설정
   useEffect(() => {
-    setFilteredPosts(recentPosts.slice(0, 5));
+    const validPosts = Array.isArray(recentPosts) ? recentPosts : [];
+    setFilteredPosts(validPosts.slice(0, 5));
   }, [recentPosts]);
 
   const handleFilterChange = (filters) => {
-    let filtered = recentPosts;
+    const validPosts = Array.isArray(recentPosts) ? recentPosts : [];
+    let filtered = validPosts;
 
     // 필터가 하나라도 선택되어 있는지 확인
     const hasActiveFilters =
@@ -58,7 +60,10 @@ const RecentPostsSection = ({ recentPosts }) => {
       <div className="bg-white rounded-xl shadow-sm">
         {filteredPosts.length > 0 ? (
           filteredPosts.map((post) => (
-            <RecentPostItem key={`post-${post.id}`} post={post} />
+            <RecentPostItem
+              key={`post-${post.articleId || post.id}`}
+              post={post}
+            />
           ))
         ) : (
           <div

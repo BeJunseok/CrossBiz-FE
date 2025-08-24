@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import communityPostData from '@/mock/communityPost.json';
 import { formatDateTime } from '@/utils/dateUtils';
 import ChevronLeft from '@/assets/svg/common/ChevronLeft.svg?react';
 import Likes from '@/assets/svg/community/LikesFill.svg?react';
@@ -8,56 +7,107 @@ import LikesActive from '@/assets/svg/community/LikesFill-active.svg?react';
 import Comments from '@/assets/svg/community/CommentsFill.svg?react';
 import Menu from '@/assets/svg/community/Menu.svg?react';
 import { getCategoryColor } from '@/utils/categoryColor';
-import { useRef } from 'react';
 import { useClickOutside } from '@/hooks/useClickOutside';
+import {
+  getPost,
+  toggleLike,
+  toggleUnlike,
+  createComment,
+  getComments,
+} from '@/api/community/postApi';
+import { useAuthStore } from '@/stores/authStore';
+import userProfileImage from '@/assets/svg/common/profileImage.svg';
 
 const PostDetailPage = () => {
   const { id } = useParams();
   const textareaRef = useRef();
   const nav = useNavigate();
+  const { userId, isLoggedIn } = useAuthStore();
 
   const [postData, setPostData] = useState(null);
+  const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
-
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   const dropdownRef = useClickOutside(() => setIsDropdownOpen(false));
 
+  // 게시글 데이터 불러오기
   useEffect(() => {
-    const loadPostData = () => {
+    const loadPostData = async () => {
+      if (!id) {
+        setError('잘못된 접근입니다.');
+        setLoading(false);
+        return;
+      }
       try {
-        // const post = await fetchPost(id);
-        // setPostData(posts
+        setLoading(true);
+        setError(null);
 
-        const posts = communityPostData.post; // 배열
-        const post = posts.find((p) => p.id === parseInt(id));
+        // API 호출
+        const response = await getPost(parseInt(id));
 
-        if (post) {
-          setPostData(post);
-          setLikeCount(post.likeCount);
-          // API 호출시: setIsLiked(post.userHasLiked)
-        } else {
-          setError('글을 찾을 수 없습니다.');
-        }
+        // API 응답을 컴포넌트 형식에 맞게 변환
+        const transformedPost = {
+          id: response.articleId,
+          title: response.name,
+          content: response.content,
+          author: {
+            name: response.authorLoginId,
+            profileImage: userProfileImage,
+          },
+          category: response.category,
+          createdAt: response.createdAt,
+          views: response.view,
+          likeCount: response.like,
+          commentCount: 0,
+          userId: response.userId,
+        };
+
+        setPostData(transformedPost);
+        setLikeCount(transformedPost.likeCount);
       } catch (err) {
-        console.error('Failed to load post data:', err);
-        setError('글을 불러오는데 실패했습니다.');
+        console.error('게시글 조회 실패:', err);
+        if (err.response?.status === 404) {
+          setError('게시글을 찾을 수 없습니다.');
+        } else if (err.response?.status >= 500) {
+          setError('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        } else {
+          setError('게시글을 불러오는데 실패했습니다.');
+        }
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
-      loadPostData();
-    } else {
-      setError('잘못된 접근입니다.');
-      setLoading(false);
-    }
+    loadPostData();
+  }, [id]);
+
+  // 댓글 데이터 불러오기
+  useEffect(() => {
+    const loadComments = async () => {
+      if (!id) return;
+      try {
+        const commentsResponse = await getComments(parseInt(id));
+        const transformedComments = commentsResponse.map((comment) => ({
+          ...comment,
+          author: {
+            name: comment.authorLoginId,
+            profileImage: userProfileImage,
+          },
+        }));
+        setComments(transformedComments);
+        setPostData((prev) =>
+          prev ? { ...prev, commentCount: transformedComments.length } : prev
+        );
+      } catch (err) {
+        console.error('댓글 조회 실패:', err);
+      }
+    };
+    loadComments();
   }, [id]);
 
   const handleBack = () => {
@@ -65,6 +115,12 @@ const PostDetailPage = () => {
   };
 
   const handleComment = () => {
+    if (!isLoggedIn) {
+      alert('로그인이 필요합니다.');
+      nav('/login');
+      return;
+    }
+
     if (textareaRef.current) {
       textareaRef.current.focus();
       textareaRef.current.scrollIntoView({
@@ -74,49 +130,80 @@ const PostDetailPage = () => {
     }
   };
 
-  const handlePostComment = () => {
+  const handlePostComment = async () => {
+    if (!isLoggedIn) {
+      alert('로그인이 필요합니다.');
+      nav('/login');
+      return;
+    }
+
     if (!newComment.trim()) {
       alert('댓글을 입력해주세요.');
       return;
     }
 
-    const newCommentObj = {
-      id: postData.comments.length + 1,
-      author: {
-        name: '현재 사용자',
-        profileImage: '/api/placeholder/40/40',
-      },
-      content: newComment.trim(),
-      createdAt: new Date().toISOString(),
-    };
+    try {
+      // 댓글 작성 API 호출
+      await createComment(postData.id, newComment.trim());
 
-    const updatedPostData = {
-      ...postData,
-      comments: [...postData.comments, newCommentObj],
-      commentCount: postData.commentCount + 1,
-    };
+      // 댓글 작성 후 최신 목록 다시 불러오기
+      const commentsResponse = await getComments(postData.id);
+      const transformedComments = commentsResponse.map((comment) => ({
+        ...comment,
+        author: {
+          name: comment.authorLoginId,
+          profileImage: userProfileImage,
+        },
+      }));
 
-    setPostData(updatedPostData);
-    setNewComment('');
-
-    // API 호출시: addComment(postData.id, newComment);
-
-    console.log('새 댓글 추가: ', newCommentObj);
+      setComments(transformedComments);
+      setPostData((prev) => ({
+        ...prev,
+        commentCount: transformedComments.length,
+      }));
+      setNewComment('');
+    } catch (error) {
+      console.error('댓글 작성 실패:', error);
+      alert('댓글 작성에 실패했습니다.');
+    }
   };
 
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    setLikeCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1));
+  const handleLike = async () => {
+    if (!isLoggedIn) {
+      alert('로그인이 필요합니다.');
+      nav('/login');
+      return;
+    }
+
+    try {
+      if (isLiked) {
+        // 좋아요 취소 API 호출
+        await toggleUnlike(postData.id);
+        setLikeCount((prev) => prev - 1);
+      } else {
+        // 좋아요 API 호출
+        await toggleLike(postData.id);
+        setLikeCount((prev) => prev + 1);
+      }
+      setIsLiked((prev) => !prev);
+    } catch (error) {
+      console.error('좋아요 처리 실패:', error);
+      alert('좋아요 처리에 실패했습니다.');
+    }
   };
 
   const handleReport = () => {
     setIsDropdownOpen(false);
+    if (!isLoggedIn) {
+      alert('로그인이 필요합니다.');
+      nav('/login');
+      return;
+    }
     alert('신고하기 기능을 준비 중입니다.');
   };
 
   const handleShare = () => {
     setIsDropdownOpen(false);
-
     const currentUrl = window.location.href;
     navigator.clipboard
       .writeText(currentUrl)
@@ -139,7 +226,9 @@ const PostDetailPage = () => {
   if (error || !postData) {
     return (
       <div className="min-h-screen w-full bg-white flex items-center justify-center">
-        <div className="text-red-500">{error || '글을 찾을 수 없습니다.'}</div>
+        <div className="text-red-500">
+          {error || '게시글을 찾을 수 없습니다.'}
+        </div>
       </div>
     );
   }
@@ -185,7 +274,7 @@ const PostDetailPage = () => {
         </div>
       </header>
 
-      {/* 메인 콘텐츠 */}
+      {/* 메인 컨텐츠 */}
       <main className="px-5 py-4 bg-white rounded-b-3xl">
         {/* 카테고리 */}
         <div className="mb-4">
@@ -257,9 +346,9 @@ const PostDetailPage = () => {
       {/* 댓글 섹션 */}
       <section className=" px-4 py-6 min-h-[300px]">
         <div className="space-y-4">
-          {postData.comments.map((comment) => (
+          {comments.map((comment) => (
             <div
-              key={comment.id}
+              key={comment.commentId}
               className="bg-white rounded-2xl shadow-sm p-4"
             >
               <div className="flex items-start gap-3">
@@ -294,13 +383,19 @@ const PostDetailPage = () => {
             ref={textareaRef}
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            placeholder="댓글을 작성해주세요..."
+            placeholder={
+              isLoggedIn
+                ? '댓글을 작성해주세요...'
+                : '로그인 후 댓글을 작성할 수 있습니다.'
+            }
             className="w-full h-20 p-3 border border-gray-200 rounded-lg resize-none text-sm placeholder-gray-400 focus:outline-none focus:border-blue-500"
+            disabled={!isLoggedIn}
           />
           <div className="flex justify-end mt-3">
             <button
               onClick={handlePostComment}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700"
+              disabled={!isLoggedIn}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               댓글 작성
             </button>
