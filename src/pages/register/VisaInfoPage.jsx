@@ -1,127 +1,77 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import Dropdown from '@/components/common/Dropdown';
 import { visaInfoSchema } from '@/utils/validation';
 import { dropdownOptions } from '@/constants/dropdownOptions';
-import { signupDetail } from '@/api/auth/Auth';
+import { signupDetail } from '@/api/auth/Auth'; // API 함수 경로 확인 필요
 
 const {
-  RESIDENCE_STATUS_OPTIONS,
+  DEGREE_OPTIONS,
+  RESIDENCE_STATUS_OPTIONS, // API의 bizCategory 필드에 해당
+  KOREAN_PROFICIENCY_OPTIONS,
   EXPECTED_STAY_PERIOD_OPTIONS,
   WORK_EXPERIENCE_OPTIONS,
-  DEGREE_OPTIONS,
-  KOREAN_PROFICIENCY_OPTIONS,
 } = dropdownOptions;
 
 const VisaInfoPage = () => {
   const nav = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [registerData, setRegisterData] = useState(null);
 
-  useEffect(() => {
-    const savedData = sessionStorage.getItem('step2Data');
-    if (!savedData) {
-      alert('회원가입 정보가 없습니다. 처음부터 다시 시작해주세요.');
-      nav('/register');
-      return;
-    }
-    setRegisterData(JSON.parse(savedData));
-  }, [nav]);
-
-  const {
-    handleSubmit,
-    control,
-    formState: { errors, isValid },
-  } = useForm({
+  const { handleSubmit, control } = useForm({
     resolver: zodResolver(visaInfoSchema),
     mode: 'onChange',
   });
 
-  const handleRegistrationSubmit = async (finalData, isSkip = false) => {
+  const onSubmit = async (data) => {
     setIsSubmitting(true);
     setError('');
 
     try {
-      if (!isSkip) {
-        const apiData = {
-          degree: finalData.degree || '',
-          bizCategory: finalData.bizCategory || '',
-          koreanLevel: finalData.koreanLevel || '',
-          estimatePeriod: finalData.estimatedPeriod || '',
-          workExperience: finalData.workExperience || '',
-        };
+      // API 명세에 맞게 필드명 변경
+      const apiData = {
+        degree: data.degree,
+        bizCategory: data.bizCategory, // '체류 자격'이 'bizCategory' 필드로 전송됨
+        koreanLevel: data.koreanLevel,
+        estimatePeriod: data.estimatePeriod,
+        workExperience: data.workExperience,
+      };
 
-        // 빈 값들은 제거해서 전송
-        const filteredData = Object.keys(apiData).reduce((acc, key) => {
-          if (apiData[key]) {
-            acc[key] = apiData[key];
-          }
-          return acc;
-        }, {});
+      // 값이 있는 필드만 추출하여 전송할 객체를 만듭니다.
+      const filteredData = Object.fromEntries(
+        Object.entries(apiData).filter(([_, value]) => value)
+      );
 
-        console.log('추가 정보 API 데이터:', filteredData);
+      console.log('추가 정보 API 데이터:', filteredData);
 
-        if (Object.keys(filteredData).length > 0) {
-          const response = await signupDetail(filteredData);
-          console.log('추가 정보 등록 성공:', response);
-        }
+      // 전송할 추가 정보가 있을 경우에만 API를 호출합니다.
+      if (Object.keys(filteredData).length > 0) {
+        await signupDetail(filteredData);
       }
 
-      console.log('회원가입 완료! 최종 데이터:', finalData);
-
-      // 세션 스토리지 정리
-      sessionStorage.removeItem('step1Data');
-      sessionStorage.removeItem('step2Data');
-
-      alert('회원가입 완료!');
+      alert('회원가입이 성공적으로 완료되었습니다.');
       nav('/login');
     } catch (error) {
       console.error('추가 정보 등록 오류:', error);
-
-      if (error.response?.status === 401) {
-        setError('인증이 만료되었습니다. 다시 시도해주세요.');
-        // 세션 정리 후 처음부터 다시
-        sessionStorage.removeItem('step1Data');
-        sessionStorage.removeItem('step2Data');
-        setTimeout(() => nav('/register'), 2000);
-      } else if (error.response?.status >= 500) {
+      if (error.response?.status >= 500) {
         setError('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       } else {
-        setError('정보 등록 중 오류가 발생했습니다.');
+        setError(
+          error.response?.data?.message || '정보 등록 중 오류가 발생했습니다.'
+        );
       }
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const onSubmit = (data) => {
-    const completeFormData = { ...registerData, ...data };
-    handleRegistrationSubmit(completeFormData, false);
+  // '건너뛰기' 버튼을 누르면 바로 로그인 페이지로 이동합니다.
+  const handleSkip = () => {
+    alert('회원가입이 성공적으로 완료되었습니다.');
+    nav('/login');
   };
-
-  const handleSkip = async () => {
-    const completeFormData = {
-      ...registerData,
-      bizCategory: '',
-      estimatedPeriod: '',
-      workExperience: '',
-      degree: '',
-      koreanLevel: '',
-    };
-
-    handleRegistrationSubmit(completeFormData, true);
-  };
-
-  if (!registerData) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">로딩 중...</div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen w-full bg-white">
@@ -135,7 +85,7 @@ const VisaInfoPage = () => {
             <br />
             제공하기 위해 더 자세한 정보가
             <br />
-            필요해요.
+            필요해요. (선택)
           </p>
         </div>
 
@@ -153,10 +103,8 @@ const VisaInfoPage = () => {
                 render={({ field }) => (
                   <Dropdown
                     options={RESIDENCE_STATUS_OPTIONS}
-                    value={field.value}
-                    onChange={field.onChange}
+                    {...field}
                     placeholder="선택해주세요"
-                    error={errors.bizCategory}
                     disabled={isSubmitting}
                   />
                 )}
@@ -169,15 +117,13 @@ const VisaInfoPage = () => {
                 예상 체류 기간
               </label>
               <Controller
-                name="estimatedPeriod"
+                name="estimatePeriod"
                 control={control}
                 render={({ field }) => (
                   <Dropdown
                     options={EXPECTED_STAY_PERIOD_OPTIONS}
-                    value={field.value}
-                    onChange={field.onChange}
+                    {...field}
                     placeholder="선택해주세요"
-                    error={errors.estimatedPeriod}
                     disabled={isSubmitting}
                   />
                 )}
@@ -197,10 +143,8 @@ const VisaInfoPage = () => {
                 render={({ field }) => (
                   <Dropdown
                     options={WORK_EXPERIENCE_OPTIONS}
-                    value={field.value}
-                    onChange={field.onChange}
+                    {...field}
                     placeholder="선택해주세요"
-                    error={errors.workExperience}
                     disabled={isSubmitting}
                   />
                 )}
@@ -218,10 +162,8 @@ const VisaInfoPage = () => {
                 render={({ field }) => (
                   <Dropdown
                     options={DEGREE_OPTIONS}
-                    value={field.value}
-                    onChange={field.onChange}
+                    {...field}
                     placeholder="선택해주세요"
-                    error={errors.degree}
                     disabled={isSubmitting}
                   />
                 )}
@@ -240,10 +182,8 @@ const VisaInfoPage = () => {
               render={({ field }) => (
                 <Dropdown
                   options={KOREAN_PROFICIENCY_OPTIONS}
-                  value={field.value}
-                  onChange={field.onChange}
+                  {...field}
                   placeholder="선택해주세요"
-                  error={errors.koreanLevel}
                   disabled={isSubmitting}
                 />
               )}
@@ -257,23 +197,20 @@ const VisaInfoPage = () => {
           )}
 
           <div className="pt-16 pb-10 space-y-3">
-            {/* 확인 버튼 */}
             <button
               type="submit"
-              disabled={!isValid || isSubmitting}
+              disabled={isSubmitting}
               className="w-80 h-16 bg-black text-white text-xl font-semibold rounded-[40px] hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
-              {isSubmitting ? '처리중...' : '확인'}
+              {isSubmitting ? '처리 중...' : '확인'}
             </button>
-
-            {/* 건너뛰기 버튼 */}
             <button
               type="button"
               onClick={handleSkip}
               disabled={isSubmitting}
               className="w-80 h-16 bg-white text-black text-xl font-semibold rounded-[40px] border border-[#d0d0d0] hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors"
             >
-              {isSubmitting ? '처리중...' : '건너뛰기'}
+              건너뛰기
             </button>
           </div>
         </form>

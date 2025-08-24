@@ -1,25 +1,27 @@
 import axiosInstance from '@/lib/axiosInstance';
 
-const handleResponse = (response) => response.data;
-
-export const login = (loginId, password) => {
-  return axiosInstance
-    .post('/users/auth/login', { loginId, password })
-    .then(handleResponse);
+export const login = async (loginId, password) => {
+  const response = await axiosInstance.post('/users/auth/login', {
+    loginId,
+    password,
+  });
+  return response.data;
 };
 
-export const signupBasic = (userData) => {
-  return axiosInstance
-    .post('/users/signup/basic', userData)
-    .then(handleResponse);
+export const signupBasic = async (userData) => {
+  const response = await axiosInstance.post('/users/signup/basic', userData);
+  return response.data;
 };
 
-export const signupDetail = (userData) => {
-  return axiosInstance
-    .patch('/users/me/signup/detail', userData)
-    .then(handleResponse);
+export const signupDetail = async (userData) => {
+  const response = await axiosInstance.patch(
+    '/users/me/signup/detail',
+    userData
+  );
+  return response.data;
 };
 
-export const getUserProfile = () => {
-  return axiosInstance.get('/users/me').then(handleResponse);
+export const getUserProfile = async () => {
+  const response = await axiosInstance.get('/users/me');
+  return response.data;
 };

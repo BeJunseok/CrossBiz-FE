@@ -4,29 +4,26 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { personalInfoSchema } from '@/utils/validation';
 import { dropdownOptions } from '@/constants/dropdownOptions';
 import Dropdown from '@/components/common/Dropdown';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { signupBasic } from '@/api/auth/Auth';
+import { useAuthStore } from '@/stores/authStore';
 
-const { AGE_OPTIONS, NATIONALITY_OPTIONS, BUSINESS_INFO_OPTIONS } =
-  dropdownOptions;
+const {
+  AGE_OPTIONS,
+  NATIONALITY_OPTIONS,
+  BUSINESS_INFO_OPTIONS, // API의 status 필드에 해당
+} = dropdownOptions;
 
 const PersonalInfoPage = () => {
   const nav = useNavigate();
+  const location = useLocation();
+  const { login } = useAuthStore();
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [registerData, setRegisterData] = useState(null);
 
-  useEffect(() => {
-    const savedData = sessionStorage.getItem('step1Data');
-    if (!savedData) {
-      alert('회원가입 정보가 없습니다. 처음부터 다시 시작해주세요');
-      nav('/register');
-      return;
-    }
-
-    setRegisterData(JSON.parse(savedData));
-  }, [nav]);
+  const { loginData } = location.state || {};
 
   const {
     register,
@@ -39,8 +36,8 @@ const PersonalInfoPage = () => {
   });
 
   const onSubmit = async (data) => {
-    if (!registerData) {
-      alert('회원가입 정보가 없습니다.');
+    if (!loginData) {
+      alert('회원가입 정보가 없습니다. 처음부터 다시 시작해주세요.');
       nav('/register');
       return;
     }
@@ -50,34 +47,23 @@ const PersonalInfoPage = () => {
 
     try {
       const apiData = {
-        loginId: registerData.loginId,
-        password: registerData.password,
+        loginId: loginData.loginId,
+        password: loginData.password,
         name: data.name,
         nationality: data.nationality,
         age: data.age,
-        status: data.status,
+        status: data.status, // '사업자 정보'가 'status' 필드로 전송됨
       };
-      console.log('기본 회원가입 데이터: ', apiData);
 
       const response = await signupBasic(apiData);
-      console.log('회원가입 성공: ', response);
+      console.log(response);
 
-      sessionStorage.setItem(
-        'step2Data',
-        JSON.stringify({
-          ...data,
-          userId: response.userId,
-          apiResponse: response,
-        })
-      );
-
-      // 이전 register 데이터 삭제
-      sessionStorage.removeItem('step1Data');
+      const { accessToken, ...userData } = response;
+      login(accessToken, userData);
 
       nav('/register/visa-info');
     } catch (error) {
       console.error('기본 회원가입 오류:', error);
-
       if (error.response?.status === 409) {
         setError('이미 존재하는 아이디입니다.');
       } else if (error.response?.status === 400) {
@@ -92,19 +78,16 @@ const PersonalInfoPage = () => {
     }
   };
 
-  if (!registerData) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">로딩 중...</div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!loginData) {
+      alert('회원가입 정보가 없습니다. 처음부터 다시 시작해주세요');
+      nav('/register');
+    }
+  }, [loginData, nav]);
 
   return (
     <div className="min-h-screen w-full bg-white">
-      {/* 헤더 */}
       <header className="bg-white border-b h-16" />
-
       <div className="px-9 pt-12">
         <div className="mb-12">
           <h1 className="text-3xl font-semibold text-black mb-5">
@@ -116,10 +99,7 @@ const PersonalInfoPage = () => {
             정보를 입력해주세요.
           </p>
         </div>
-
-        {/* 폼 */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-          {/* 이름 입력 */}
           <div>
             <label className="block text-base font-normal text-[#5b5b5b] mb-5">
               이름
@@ -135,14 +115,11 @@ const PersonalInfoPage = () => {
                   'border-gray-300 focus:border-blue-500': !errors.name,
                 }
               )}
-              placeholder=""
             />
             {errors.name && (
               <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
             )}
           </div>
-
-          {/* 나이 드롭다운 */}
           <div>
             <label className="block text-base font-normal text-[#5b5b5b] mb-5">
               나이
@@ -153,8 +130,7 @@ const PersonalInfoPage = () => {
               render={({ field }) => (
                 <Dropdown
                   options={AGE_OPTIONS}
-                  value={field.value}
-                  onChange={field.onChange}
+                  {...field}
                   placeholder="선택해주세요"
                   error={errors.age}
                   disabled={isLoading}
@@ -162,8 +138,6 @@ const PersonalInfoPage = () => {
               )}
             />
           </div>
-
-          {/* 국적 드롭다운 */}
           <div>
             <label className="block text-base font-normal text-[#5b5b5b] mb-5">
               국적
@@ -174,8 +148,7 @@ const PersonalInfoPage = () => {
               render={({ field }) => (
                 <Dropdown
                   options={NATIONALITY_OPTIONS}
-                  value={field.value}
-                  onChange={field.onChange}
+                  {...field}
                   placeholder="선택해주세요"
                   error={errors.nationality}
                   disabled={isLoading}
@@ -183,8 +156,6 @@ const PersonalInfoPage = () => {
               )}
             />
           </div>
-
-          {/* 사업자 정보 드롭다운 */}
           <div>
             <label className="block text-base font-normal text-[#5b5b5b] mb-5">
               사업자 정보
@@ -195,8 +166,7 @@ const PersonalInfoPage = () => {
               render={({ field }) => (
                 <Dropdown
                   options={BUSINESS_INFO_OPTIONS}
-                  value={field.value}
-                  onChange={field.onChange}
+                  {...field}
                   placeholder="선택해주세요"
                   error={errors.status}
                   disabled={isLoading}
@@ -204,21 +174,18 @@ const PersonalInfoPage = () => {
               )}
             />
           </div>
-
           {error && (
             <div className="text-red-600 text-sm text-center bg-red-50 p-2 rounded-md">
               {error}
             </div>
           )}
-
-          {/* 확인 버튼 */}
           <div className="pt-20 pb-10">
             <button
               type="submit"
               disabled={!isValid || isLoading}
               className="w-80 h-16 bg-black text-white text-xl font-semibold rounded-[40px] hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
-              {isLoading ? '처리 중...' : '회원가입'}
+              {isLoading ? '처리 중...' : '다음'}
             </button>
           </div>
         </form>

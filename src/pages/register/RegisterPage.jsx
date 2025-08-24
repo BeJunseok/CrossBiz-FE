@@ -18,15 +18,15 @@ const RegisterPage = () => {
   });
 
   const onSubmit = (data) => {
-    sessionStorage.setItem(
-      'step1Data',
-      JSON.stringify({
-        loginId: data.loginId,
-        password: data.password,
-      })
-    );
-
-    nav('/register/personal-info');
+    // sessionStorage 대신 navigate state를 사용하여 다음 페이지로 데이터 전달
+    nav('/register/personal-info', {
+      state: {
+        loginData: {
+          loginId: data.loginId,
+          password: data.password,
+        },
+      },
+    });
   };
 
   const handleLoginRedirect = () => {
