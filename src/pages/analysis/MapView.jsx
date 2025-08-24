@@ -1,9 +1,16 @@
 import KakaoMap from '@/components/Analysis/Map/KakaoMap';
 import MapHeader from '@/components/Analysis/Map/MapHeader';
+import { useNavigate } from 'react-router-dom';
 
 const MapView = () => {
-  const handleDistrictClick = (districtName) => {
-    console.log(`Clicked district: ${districtName}`);
+  const nav = useNavigate();
+
+  const handleDistrictClick = (district) => {
+    if (district && district.id) {
+      nav(`/analysis/${district.id}`);
+    } else {
+      console.error('클릭된 지역의 ID를 찾을 수 없습니다:', district);
+    }
   };
 
   return (

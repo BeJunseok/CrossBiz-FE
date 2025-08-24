@@ -17,6 +17,7 @@ import NewPostPage from '@/pages/community/NewPostPage';
 import MyPage from '@/pages/community/MyPage';
 import AdditionalInfoPage from '@/pages/community/AdditionalInfoPage';
 import MapView from '@/pages/analysis/MapView';
+import LocationTrackingPage from '@/pages/analysis/LocationTrakingPage';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/community/my/edit" element={<AdditionalInfoPage />} />
         <Route path="/recommend" element={<RecommendPage />} />
         <Route path="/schedule/new" element={<NewSchedulePage />} />
+        <Route path="/analysis/:id" element={<LocationTrackingPage />} />
 
         {/* Navbar가 있는 페이지 */}
         <Route element={<LayoutWithNavbar />}>

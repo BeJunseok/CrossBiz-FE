@@ -15,14 +15,14 @@ const DistrictPolygon = ({ district, map, onPolygonClick, addPolygon }) => {
     const style = createPolygonStyle(district.grade);
 
     // 클릭 핸들러
-    const handleClick = (districtName) => {
+    const handleClick = () => {
       if (onPolygonClick) {
-        onPolygonClick(districtName);
+        onPolygonClick(district);
       }
     };
 
     // 폴리곤 추가
-    const polygon = addPolygon(path, style, handleClick, district.name);
+    addPolygon(path, style, handleClick);
 
     return () => {
       // 컴포넌트 언마운트 시 폴리곤 제거는 상위 컴포넌트에서 처리

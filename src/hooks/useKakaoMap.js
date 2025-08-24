@@ -40,7 +40,7 @@ export const useKakaoMap = (containerRef) => {
 
   // 폴리곤 추가
   const addPolygon = useCallback(
-    (path, style, clickHandler, districtName) => {
+    (path, style, clickHandler) => {
       if (!map) return null;
 
       const polygon = new window.kakao.maps.Polygon({
@@ -52,7 +52,7 @@ export const useKakaoMap = (containerRef) => {
       // 클릭 이벤트 추가
       if (clickHandler) {
         window.kakao.maps.event.addListener(polygon, 'click', () => {
-          clickHandler(districtName);
+          clickHandler();
         });
       }
 
