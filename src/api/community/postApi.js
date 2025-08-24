@@ -50,7 +50,7 @@ export const isPostAuthor = (post, currentUserId) => {
 
 // 좋아요
 export const toggleLike = async (articleId) => {
-  const response = await axiosInstance.post(`/api/articles/${articleId}/like`);
+  const response = await axiosInstance.post(`/articles/${articleId}/like`);
   return response.data;
 };
 

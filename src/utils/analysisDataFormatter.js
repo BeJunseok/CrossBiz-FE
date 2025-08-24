@@ -1,5 +1,3 @@
-
-
 // peak 요일, 시간 계산
 export const calculatePeakTime = (weeklyData, timeData) => {
   if (!weeklyData || !timeData) return { day: '', time: '' };
@@ -70,8 +68,19 @@ export const formatQuarterlyFootfall = (data) => {
   if (!data) return null;
   const { dong, ...quarters } = data;
   const trend = Object.values(quarters);
-  const trendLabels = Object.keys(quarters).map(
-    (q) => `'${q.substring(2, 4)} Q${q.substring(4)}`
-  );
+  const trendLabels = [
+    '22 Q2',
+    '22 Q3',
+    '22 Q4',
+    '23 Q1',
+    '23 Q2',
+    '23 Q3',
+    '23 Q4',
+    '24 Q1',
+    '24 Q2',
+    '24 Q3',
+    '24 Q4',
+    '25 Q1',
+  ];
   return { trend, trendLabels };
 };
