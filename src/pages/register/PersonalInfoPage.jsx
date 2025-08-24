@@ -4,15 +4,29 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { personalInfoSchema } from '@/utils/validation';
 import { dropdownOptions } from '@/constants/dropdownOptions';
 import Dropdown from '@/components/common/Dropdown';
-import { useRegisterStore } from '@/stores/registerStore';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { signupBasic } from '@/api/auth/Auth';
 
 const { AGE_OPTIONS, NATIONALITY_OPTIONS, BUSINESS_INFO_OPTIONS } =
   dropdownOptions;
 
 const PersonalInfoPage = () => {
-  const { formData, updateFormData } = useRegisterStore();
   const nav = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [registerData, setRegisterData] = useState(null);
+
+  useEffect(() => {
+    const savedData = sessionStorage.getItem('step1Data');
+    if (!savedData) {
+      alert('회원가입 정보가 없습니다. 처음부터 다시 시작해주세요');
+      nav('/register');
+      return;
+    }
+
+    setRegisterData(JSON.parse(savedData));
+  }, [nav]);
 
   const {
     register,
@@ -22,14 +36,69 @@ const PersonalInfoPage = () => {
   } = useForm({
     resolver: zodResolver(personalInfoSchema),
     mode: 'onChange',
-    defaultValues: formData,
   });
 
-  const onSubmit = (data) => {
-    updateFormData(data);
-    console.log('Personal info:', data);
-    nav('/register/visa-info');
+  const onSubmit = async (data) => {
+    if (!registerData) {
+      alert('회원가입 정보가 없습니다.');
+      nav('/register');
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const apiData = {
+        loginId: registerData.loginId,
+        password: registerData.password,
+        name: data.name,
+        nationality: data.nationality,
+        age: data.age,
+        status: data.status,
+      };
+      console.log('기본 회원가입 데이터: ', apiData);
+
+      const response = await signupBasic(apiData);
+      console.log('회원가입 성공: ', response);
+
+      sessionStorage.setItem(
+        'step2Data',
+        JSON.stringify({
+          ...data,
+          userId: response.userId,
+          apiResponse: response,
+        })
+      );
+
+      // 이전 register 데이터 삭제
+      sessionStorage.removeItem('step1Data');
+
+      nav('/register/visa-info');
+    } catch (error) {
+      console.error('기본 회원가입 오류:', error);
+
+      if (error.response?.status === 409) {
+        setError('이미 존재하는 아이디입니다.');
+      } else if (error.response?.status === 400) {
+        setError('입력 정보를 확인해주세요.');
+      } else if (error.response?.status >= 500) {
+        setError('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      } else {
+        setError('회원가입 중 오류가 발생했습니다.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (!registerData) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">로딩 중...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full bg-white">
@@ -58,8 +127,9 @@ const PersonalInfoPage = () => {
             <input
               type="text"
               {...register('name')}
+              disabled={isLoading}
               className={clsx(
-                'w-full h-10 border-b pb-2 text-lg font-medium text-black bg-transparent focus:outline-none transition-colors',
+                'w-full h-10 border-b pb-2 text-lg font-medium text-black bg-transparent focus:outline-none transition-colors disabled:opacity-50',
                 {
                   'border-red-500 focus:border-red-500': errors.name,
                   'border-gray-300 focus:border-blue-500': !errors.name,
@@ -87,6 +157,7 @@ const PersonalInfoPage = () => {
                   onChange={field.onChange}
                   placeholder="선택해주세요"
                   error={errors.age}
+                  disabled={isLoading}
                 />
               )}
             />
@@ -107,6 +178,7 @@ const PersonalInfoPage = () => {
                   onChange={field.onChange}
                   placeholder="선택해주세요"
                   error={errors.nationality}
+                  disabled={isLoading}
                 />
               )}
             />
@@ -118,7 +190,7 @@ const PersonalInfoPage = () => {
               사업자 정보
             </label>
             <Controller
-              name="businessInfo"
+              name="status"
               control={control}
               render={({ field }) => (
                 <Dropdown
@@ -126,20 +198,27 @@ const PersonalInfoPage = () => {
                   value={field.value}
                   onChange={field.onChange}
                   placeholder="선택해주세요"
-                  error={errors.businessInfo}
+                  error={errors.status}
+                  disabled={isLoading}
                 />
               )}
             />
           </div>
 
+          {error && (
+            <div className="text-red-600 text-sm text-center bg-red-50 p-2 rounded-md">
+              {error}
+            </div>
+          )}
+
           {/* 확인 버튼 */}
           <div className="pt-20 pb-10">
             <button
               type="submit"
-              disabled={!isValid}
+              disabled={!isValid || isLoading}
               className="w-80 h-16 bg-black text-white text-xl font-semibold rounded-[40px] hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
-              확인
+              {isLoading ? '처리 중...' : '회원가입'}
             </button>
           </div>
         </form>

@@ -4,10 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { registerSchema } from '@/utils/validation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRegisterStore } from '@/stores/registerStore';
 
 const RegisterPage = () => {
-  const { formData, updateFormData } = useRegisterStore();
   const nav = useNavigate();
 
   const {
@@ -17,12 +15,17 @@ const RegisterPage = () => {
   } = useForm({
     resolver: zodResolver(registerSchema),
     mode: 'onChange',
-    defaultValues: formData,
   });
 
   const onSubmit = (data) => {
-    updateFormData(data);
-    console.log('로그인 정보: ', data);
+    sessionStorage.setItem(
+      'step1Data',
+      JSON.stringify({
+        loginId: data.loginId,
+        password: data.password,
+      })
+    );
+
     nav('/register/personal-info');
   };
 
@@ -43,7 +46,7 @@ const RegisterPage = () => {
             <div className="relative">
               <input
                 type="text"
-                {...register('username')}
+                {...register('loginId')}
                 placeholder="아이디"
                 required
                 autoComplete="username"
@@ -51,14 +54,14 @@ const RegisterPage = () => {
                   'w-full h-16 px-5 py-5 bg-[#f3f3f3] rounded-[40px] text-lg font-medium placeholder-[#d0d0d0] focus:outline-none transition-all',
                   {
                     'focus:ring-2 focus:ring-red-300 border-red-300':
-                      errors.username,
-                    'focus:ring-2 focus:ring-gray-300': !errors.username,
+                      errors.loginId,
+                    'focus:ring-2 focus:ring-gray-300': !errors.loginId,
                   }
                 )}
               />
-              {errors.username && (
+              {errors.loginId && (
                 <p className="text-red-500 text-xs mt-1 px-4">
-                  {errors.username.message}
+                  {errors.loginId.message}
                 </p>
               )}
             </div>

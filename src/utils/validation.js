@@ -3,7 +3,7 @@ import { dropdownOptions } from '@/constants/dropdownOptions';
 
 export const registerSchema = z
   .object({
-    username: z
+    loginId: z
       .string()
       .min(1, '아이디를 입력해주세요.')
       .min(4, '아이디는 4자 이상이어야 합니다.')
@@ -25,13 +25,13 @@ export const personalInfoSchema = z.object({
     errorMap: () => ({ message: '나이를 선택해주세요.' }),
   }),
   nationality: z.string().min(1, '국적을 선택하거나 입력해주세요.'),
-  businessInfo: z.string().min(1, '사업자 정보를 선택하거나 입력해주세요.'),
+  status: z.string().min(1, '사업자 정보를 선택하거나 입력해주세요.'),
 });
 
 export const visaInfoSchema = z.object({
-  residenceStatus: z.string().optional(),
-  expectedStayPeriod: z.string().optional(),
+  bizCategory: z.string().optional(),
+  estimatedPeriod: z.string().optional(),
   workExperience: z.string().optional(),
   degree: z.string().optional(),
-  koreanProficiency: z.string().optional(),
+  koreanLevel: z.string().optional(),
 });
