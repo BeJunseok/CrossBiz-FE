@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMyPosts } from '@/api/community/postApi';
-import { getUserProfile } from '@/api/auth/Auth';
+import { getUserProfile, updateUserProfile } from '@/api/auth/Auth';
 import { useAuthStore } from '@/stores/authStore';
 
 export const useMyPageData = () => {
   const nav = useNavigate();
   const { logout } = useAuthStore();
-  const [formData, setFormData] = useState(null); 
+  const [formData, setFormData] = useState(null);
   const [myPosts, setMyPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -54,7 +54,38 @@ export const useMyPageData = () => {
   };
 
   const handleSave = async () => {
-    // ... (저장 로직)
+    if (!formData) return;
+
+    setLoading(true);
+    try {
+      const apiData = {
+        name: formData.name,
+        age: formData.age,
+        nationality: formData.nationality,
+        status: formData.businessInfo,
+        bizCategory: formData.residenceStatus,
+        estimatePeriod: formData.expectedStayPeriod,
+        workExperience: formData.workExperience,
+        degree: formData.education,
+        koreanLevel: formData.koreanProficiency,
+      };
+
+      // 빈 값은 보내지 않도록 필터링합니다 (PATCH 요청이므로).
+      const filteredData = Object.fromEntries(
+        Object.entries(apiData).filter(([_, v]) => v)
+      );
+
+      await updateUserProfile(filteredData);
+
+      alert('프로필이 성공적으로 저장되었습니다.');
+    } catch (err) {
+      console.error('저장 실패:', err);
+      alert(
+        `저장에 실패했습니다: ${err.response?.data?.message || err.message}`
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleLogout = () => {
@@ -67,7 +98,7 @@ export const useMyPageData = () => {
     myPosts,
     loading,
     error,
-    errors, // errors 반환
+    errors,
     handleFieldChange,
     handleSave,
     handleLogout,
