@@ -50,7 +50,6 @@ const PostDetailPage = () => {
         // API 호출
         const response = await getPost(parseInt(id));
 
-        // API 응답을 컴포넌트 형식에 맞게 변환
         const transformedPost = {
           id: response.articleId,
           title: response.name,
@@ -59,7 +58,7 @@ const PostDetailPage = () => {
             name: response.authorLoginId,
             profileImage: userProfileImage,
           },
-          category: response.category,
+          category: response.businessType,
           createdAt: response.createdAt,
           views: response.view,
           likeCount: response.like,

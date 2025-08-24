@@ -19,7 +19,7 @@ export const getPosts = async (params = {}) => {
 
 // 게시글 단건 조회
 export const getPost = async (articleId) => {
-  const response = await axiosInstance.get(`/api/articles/${articleId}`);
+  const response = await axiosInstance.get(`/articles/${articleId}`);
   return response.data;
 };
 
@@ -56,9 +56,7 @@ export const toggleLike = async (articleId) => {
 
 // 좋아요 취소
 export const toggleUnlike = async (articleId) => {
-  const response = await axiosInstance.post(
-    `/articles/${articleId}/unlike`
-  );
+  const response = await axiosInstance.post(`/articles/${articleId}/unlike`);
   return response.data;
 };
 
@@ -81,8 +79,7 @@ export const createComment = async (
 
 // 댓글 목록 조회
 export const getComments = async (articleId) => {
-  const response = await axiosInstance.get(
-  );
+  const response = await axiosInstance.get(`/articles/${articleId}/comments`);
   return response.data;
 };
 

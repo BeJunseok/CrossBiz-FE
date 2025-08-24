@@ -50,7 +50,7 @@ const CommunityPage = () => {
       likes: apiPost.like,
       comments: apiPost.commentCount,
     },
-    category: apiPost.category,
+    category: apiPost.businessType,
     nationality: apiPost.authorNationality,
     industry: apiPost.businessType,
   });

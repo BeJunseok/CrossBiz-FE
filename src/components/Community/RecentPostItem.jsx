@@ -22,6 +22,7 @@ const RecentPostItem = ({ post }) => {
   const category = post.category || '일반';
 
   const handlePostClick = () => {
+    console.log(post.businessType);
     nav(`/community/post/${postId}`);
   };
 
