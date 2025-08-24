@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import communityPostData from '@/mock/communityPost.json';
 import { formatDateTime } from '@/utils/dateUtils';
-import ChevronLeft from '@/assets/svg/community/ChevronLeft.svg?react';
+import ChevronLeft from '@/assets/svg/common/ChevronLeft.svg?react';
 import Likes from '@/assets/svg/community/LikesFill.svg?react';
 import LikesActive from '@/assets/svg/community/LikesFill-active.svg?react';
 import Comments from '@/assets/svg/community/CommentsFill.svg?react';

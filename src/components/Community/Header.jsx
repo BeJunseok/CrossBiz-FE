@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import User from '@/assets/svg/community/User.svg?react';
-import Search from '@/assets/svg/community/Search0.svg?react';
+import Search from '@/assets/svg/common/Search0.svg?react';
 
 const Header = () => {
   return (

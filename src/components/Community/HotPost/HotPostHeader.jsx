@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import ChevronLeft from '@/assets/svg/community/ChevronLeft.svg?react';
+import ChevronLeft from '@/assets/svg/common/ChevronLeft.svg?react';
 
 const HotPostsHeader = () => {
   const nav = useNavigate();

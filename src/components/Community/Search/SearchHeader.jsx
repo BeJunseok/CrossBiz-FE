@@ -1,4 +1,4 @@
-import ChevronLeft from '@/assets/svg/community/ChevronLeft.svg?react';
+import ChevronLeft from '@/assets/svg/common/ChevronLeft.svg?react';
 import Search from '@/assets/svg/community/Search1.svg?react';
 
 const SearchHeader = ({
