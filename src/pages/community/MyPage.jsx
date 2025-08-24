@@ -11,36 +11,49 @@ const MyPage = () => {
     errors,
     myPosts,
     loading,
+    error, // 에러 상태 추가
     handleFieldChange,
     handleSave,
     handleLogout,
   } = useMyPageData();
 
+  // 로딩 중일 때 표시할 UI
+  if (loading) {
+    return (
+      <div className="min-h-screen w-full bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">정보를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 발생 시 표시할 UI
+  if (error) {
+    return (
+      <div className="min-h-screen w-full bg-white flex items-center justify-center">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen w-full bg-white">
       <MyPageHeader onSave={handleSave} />
 
-      <ProfileSection profileData={formData} />
-
-      <PersonalInfoForm
-        formData={formData}
-        errors={errors}
-        onFieldChange={handleFieldChange}
-      />
-
-      <MyPostSection posts={myPosts} />
-
-      <LogoutSection onLogout={handleLogout} />
-
-      {loading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p className="text-gray-600">저장하는 중...</p>
-            </div>
-          </div>
-        </div>
+      {/* formData가 존재할 때만 렌더링. */}
+      {formData && (
+        <>
+          <ProfileSection profileData={formData} />
+          <PersonalInfoForm
+            formData={formData}
+            errors={errors}
+            onFieldChange={handleFieldChange}
+          />
+          <MyPostSection posts={myPosts} />
+          <LogoutSection onLogout={handleLogout} />
+        </>
       )}
     </div>
   );

@@ -63,7 +63,7 @@ const PostDetailPage = () => {
           createdAt: response.createdAt,
           views: response.view,
           likeCount: response.like,
-          commentCount: 0,
+          commentCount: response.commentCount,
           userId: response.userId,
         };
 

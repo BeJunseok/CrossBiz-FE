@@ -41,18 +41,17 @@ const CommunityPage = () => {
     author: apiPost.authorLoginId,
     views: apiPost.view,
     likes: apiPost.like,
-    comments: apiPost.comments,
+    comments: apiPost.commentCount,
     date: apiPost.createdAt,
     createdAt: apiPost.createdAt,
     userId: apiPost.userId,
     stats: {
       views: apiPost.view,
       likes: apiPost.like,
-      comments: apiPost.comments,
+      comments: apiPost.commentCount,
     },
-    // 임시로 카테고리와 국적 정보 추가 (실제로는 API에서 제공되어야 함)
     category: apiPost.category,
-    nationality: apiPost.nationality,
+    nationality: apiPost.authorNationality,
     industry: apiPost.businessType,
   });
 

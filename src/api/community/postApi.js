@@ -86,3 +86,17 @@ export const getComments = async (articleId) => {
   );
   return response.data;
 };
+
+// 검색 결과
+export const searchPosts = async (keyword) => {
+  const response = await axiosInstance.get(
+    `/articles/search?keyword=${keyword}`
+  );
+  return response.data;
+};
+
+// 내가 쓴 글
+export const getMyPosts = async (params = {}) => {
+  const response = await axiosInstance.get('/articles/me', { params });
+  return response.data;
+};
