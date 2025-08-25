@@ -143,7 +143,10 @@ export default function LocationTrackingPage() {
 
         <RevenueChart monthlyRevenue={analysisData.categorySalesRanking} />
 
-        <OpenCloseAnalysis openCloseRate={analysisData.openCloseRatio} />
+        <OpenCloseAnalysis
+          openCloseRate={analysisData.openCloseRatio}
+          dong={analysisData.location.dong}
+        />
 
         <TrafficAnalysis footTraffic={analysisData.quarterlyFootfall} />
 

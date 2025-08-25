@@ -31,6 +31,14 @@ export const getOpenCloseRatio = async (dong) => {
   return response.data;
 };
 
+// 인근동 개폐업률
+export const getNearbyOpenCloseRatio = async (dong) => {
+  const response = await axiosInstance.get(
+    `business/districts/${dong}/ratio?withNeighbors=true&k=2`
+  );
+  return response.data;
+};
+
 // 상권 유형
 export const getCommercialDistrictType = async (dong) => {
   const response = await axiosInstance.get(`/business/districts/${dong}/type`);
