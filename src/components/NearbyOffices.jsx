@@ -1,0 +1,112 @@
+import { useEffect, useState, useMemo } from "react";
+import { useKakaoMap } from "../hooks/useKakaoMap";
+import { searchNearbyKeyword } from "../api/kakaoLocal";
+import MapIcon from "../assets/Map.svg"; // ← 아이콘
+
+export default function NearbyOffices() {
+  const [pos, setPos] = useState(null);           // { lat, lng }
+  const [items, setItems] = useState([]);
+  const [err, setErr] = useState("");
+
+  // km 포맷터 (m → km, 소수 1자리)
+  const toKm = (mStr) => {
+    if (!mStr && mStr !== 0) return null;
+    const m = Number(mStr);
+    if (Number.isNaN(m)) return null;
+    return (m / 1000).toFixed(m >= 1000 ? 1 : 2); // 1km 미만이면 소수 둘째자리
+  };
+
+  // 현재 위치
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (p) => setPos({ lat: p.coords.latitude, lng: p.coords.longitude }),
+      () => setPos({ lat: 37.5665, lng: 126.9780 }) // 실패 시 서울시청
+    );
+  }, []);
+
+  const center = useMemo(
+    () => pos || { lat: 37.5665, lng: 126.9780 },
+    [pos]
+  );
+
+  const map = useKakaoMap("kakao-map", center);
+
+  // 검색
+  useEffect(() => {
+    if (!pos) return;
+    (async () => {
+      try {
+        const docs = await searchNearbyKeyword({
+          query: "출입국외국인청",
+          lat: pos.lat,
+          lng: pos.lng,
+          radius: 100000,
+        });
+        setItems(docs);
+      } catch (e) {
+        setErr(String(e));
+      }
+    })();
+  }, [pos]);
+
+  // 마커
+  useEffect(() => {
+    if (!map || items.length === 0) return;
+    const { kakao } = window;
+    const bounds = new kakao.maps.LatLngBounds();
+    const markers = items.map((p) => {
+      const mk = new kakao.maps.Marker({
+        map,
+        position: new kakao.maps.LatLng(Number(p.y), Number(p.x)),
+        title: p.place_name,
+      });
+      bounds.extend(mk.getPosition());
+      return mk;
+    });
+    map.setBounds(bounds);
+    return () => markers.forEach((m) => m.setMap(null));
+  }, [map, items]);
+
+  return (
+    <section className="mt-6">
+      {/* 타이틀: 박스 바깥 */}
+      <div className="flex items-center gap-2 px-1">
+        <img src={MapIcon} alt="지도" className="w-5 h-5" />
+        <h2 className="text-[15px] font-semibold">주변 관할기관</h2>
+      </div>
+
+      {/* 카드 박스 */}
+      <div className="mt-2 rounded-2xl border border-gray-200 overflow-hidden bg-white">
+        {/* 지도: 기존 h-56(224px) → 1.5배 ≈ 336px */}
+        <div id="kakao-map" className="w-full h-[336px] bg-gray-100" />
+
+        {err && (
+          <p className="px-4 py-3 text-sm text-red-600 break-words">
+            에러: {err}
+          </p>
+        )}
+
+        {/* 리스트: 3개 높이만 보이게 스크롤 (대략 3*88px = 264px 뷰포트) */}
+        <ul className="divide-y max-h-[264px] overflow-y-auto">
+          {items.map((p) => {
+            const km = toKm(p.distance);
+            return (
+              <li key={p.id} className="p-4">
+                <p className="text-[15px] font-semibold">{p.place_name}</p>
+                <p className="text-sm text-gray-500">
+                  {p.road_address_name || p.address_name}
+                </p>
+                <div className="mt-1 text-xs text-gray-400">
+                  {km ? `${km}km` : ""} · {p.phone || "전화번호 없음"}
+                </div>
+              </li>
+            );
+          })}
+          {items.length === 0 && !err && (
+            <li className="p-4 text-sm text-gray-500">주변에 결과가 없어요.</li>
+          )}
+        </ul>
+      </div>
+    </section>
+  );
+}

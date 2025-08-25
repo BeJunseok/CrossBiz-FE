@@ -18,6 +18,19 @@ import MyPage from '@/pages/community/MyPage';
 import AdditionalInfoPage from '@/pages/community/AdditionalInfoPage';
 import MapView from '@/pages/analysis/MapView';
 import LocationTrackingPage from '@/pages/analysis/LocationTrakingPage';
+import VisaRecommend from './pages/Visa/VisaRecommend';
+import ConfirmCheck from './pages/Visa/ConfirmCheck';
+import ConfirmMore from './pages/Visa/ConfirmMore';
+import ConfirmVisa from './pages/Visa/ConfirmVisa';
+import LoadingPreviousInfo from './pages/Visa/LoadingPreviousInfo';
+import VisaLoading from './pages/Visa/VisaLoading';
+import VisaInfo from './pages/Visa/VisaInfo';
+import VisaHistory from './pages/Visa/VisaHistory';
+import HistoryMatch from './pages/Visa/HistoryMatch';
+import VisaHome from './pages/Visa/VisaHome';
+import ScrollToTop from './components/scrollTop';
+
+
 
 function App() {
   return (
@@ -38,12 +51,23 @@ function App() {
         <Route path="/recommend" element={<RecommendPage />} />
         <Route path="/schedule/new" element={<NewSchedulePage />} />
         <Route path="/analysis/:id" element={<LocationTrackingPage />} />
+        <Route path='/loading-prev' element={<LoadingPreviousInfo />} />
+        <Route path='/visa-loading' element={<VisaLoading />} />
+        <Route path='/visa-info' element={<VisaInfo />} />
+        <Route path='/history-match' element={<HistoryMatch />} />
 
         {/* Navbar가 있는 페이지 */}
         <Route element={<LayoutWithNavbar />}>
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/tax" element={<Tax />} />
           <Route path="/analysis" element={<MapView />} />
+          <Route path='/' element={<VisaHome />} />
+          <Route path='/confirm-more' element={<ConfirmMore />} />
+          <Route path='/confirm-visa' element={<ConfirmVisa />} />
+          <Route path='/confirm-check' element={<ConfirmCheck />} />
+          <Route path='/visa-recommend' element={<VisaRecommend />} />
+          <Route path='/visa-history' element={<VisaHistory />} />
+        
         </Route>
       </Route>
     </Routes>

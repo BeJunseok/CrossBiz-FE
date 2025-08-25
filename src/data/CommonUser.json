@@ -1,0 +1,113 @@
+{
+  "request": {
+  "basicInfo": {
+    "userId": 1,
+    "age": 32,
+    "bizStatus": "PREPARING",
+    "nationality": "USA",
+    "status": "D-10",
+    "bizCategory": "IT",
+    "estimatePeriod": 12,
+    "workExperience": 5,
+    "degree": "Bachelor",
+    "koreanLevel": "TOPIK 4"
+  },
+  "withoutVisaInfo": {
+    "career": "Software Engineer",
+    "expectedBusinessType": "AI Startup",
+    "hasIntellectualProperty": true,
+    "businessFund": 10000000,
+    "oasisScore": 73.5
+  }
+  },
+  "response": 
+{
+    "summary": "미국 국적의 32세 외국인이 한국에서 IT 분야의 AI 스타트업을 설립하고자 합니다. 이 외국인은 D-10 비자를 보유하고 있으며, 한국어는 TOPIK 4급 수준입니다. 관련 업무 경력은 5년이며, 사업 준비금은 10,000,000원입니다. 오아시스 점수는 73.5점입니다.",
+    "recommendedVisas": [
+        {
+            "name": "D-8-4 비자",
+            "reason": "IT 분야의 스타트업 설립 계획과 지식재산권 보유, 충분한 준비금",
+            "purpose": "외국인 창업자들이 한국에서 창업할 수 있도록 지원",
+            "target": "한국에서 창업을 원하는 외국인",
+            "qualification": "지식재산권 보유, 사업 계획서 제출, 최소 자본금 충족",
+            "requiredDocuments": [
+                "사업계획서",
+                "지식재산권 증명서",
+                "자본금 증빙서류"
+            ],
+            "benefits": [
+                "장기 체류 가능",
+                "비자 연장 용이"
+            ],
+            "cautions": [
+                "사업이 지속적으로 유지되어야 함",
+                "정기적인 보고 의무"
+            ]
+        },
+        {
+            "name": "D-8-1 비자",
+            "reason": "외국인 투자자로서 한국에서 사업을 운영하고자 할 때 적합",
+            "purpose": "외국인 투자 유치를 통한 경제 활성화",
+            "target": "한국에서 사업을 운영하고자 하는 외국인 투자자",
+            "qualification": "법인 설립, 최소 투자 금액 충족",
+            "requiredDocuments": [
+                "법인 등록증",
+                "투자금 증빙서류"
+            ],
+            "benefits": [
+                "투자에 따른 세제 혜택",
+                "장기 체류 허용"
+            ],
+            "cautions": [
+                "투자금 관리 철저",
+                "사업 운영 지속성 유지"
+            ]
+        },
+        {
+            "name": "D-9 비자",
+            "reason": "비즈니스 활동을 위한 다양한 목적으로 사용 가능한 비자",
+            "purpose": "다양한 사업적 활동 지원",
+            "target": "한국에서 비즈니스 활동을 하고자 하는 외국인",
+            "qualification": "사업 계획 및 활동 계획 제출",
+            "requiredDocuments": [
+                "사업 계획서",
+                "활동 계획서"
+            ],
+            "benefits": [
+                "다양한 사업 활동 가능",
+                "비자 종류에 따라 체류 기간 다양"
+            ],
+            "cautions": [
+                "변경 시 비자 재신청 필요",
+                "사업 활동에 대한 정기 보고"
+            ]
+        }
+    ],
+    "visaCautions": [
+        "비자 종류에 따라 요구되는 조건이 다르므로 신청 전 철저한 확인 필요",
+        "비자 연장이나 변경 시 필요한 서류 준비 철저"
+    ],
+    "alternativeOptions": [
+        {
+            "name": "F-2-7 비자",
+            "description": "점수제에 의한 거주 비자로, 장기 체류 가능",
+            "qualification": "한국 체류 경력, 소득, 한국어 능력 등 일정 점수 충족"
+        },
+        {
+            "name": "F-5 비자",
+            "description": "영주권 비자로, 한국에서의 영구 체류 가능",
+            "qualification": "장기 체류자, 일정 소득, 한국어 능력 등 충족"
+        },
+        {
+            "name": "E-7 비자",
+            "description": "특정 직업군에 종사하는 외국인을 위한 비자",
+            "qualification": "전문직 종사자, 체류 목적 및 경력 충족"
+        },
+        {
+            "name": "D-7 비자",
+            "description": "해외 모기업의 한국 지사 주재원을 위한 비자",
+            "qualification": "모기업의 한국 지사 설립 및 운영"
+        }
+    ]
+}
+}
