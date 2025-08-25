@@ -10,12 +10,46 @@ export default function VisaHome() {
   const goMatch = () => nav("/loading-prev", {state: {from: "match"}});
   const goIssued = () => nav("loading-prev", {state: {from: "issued"}});
   
+  const handleClick = async () => {
+  try {
+    const res = await fetchVisaRecommendWith({
+  "basicInfo": {
+    "userId": 2,
+    "age": 35,
+    "bizStatus": "창업예정",
+    "nationality": "미국",
+    "status": "D-10",
+    "bizCategory": "음식점업",
+    "estimatePeriod": 24,
+    "workExperience": 5,
+    "degree": "석사",
+    "koreanLevel": "TOPIK 5급"
+  },
+  "withVisaInfo": {
+    "stayPeriod": "2년",
+    "visaType": "D-10",
+    "issuedDate": "2023-06-01",
+    "expiryDate": "2025-06-01",
+    "businessRegNumber": "123-45-67890",
+    "annualRevenue": 80000000,
+    "employeeCount": 3
+  }
+});
+    console.log("응답:",res)
+  } catch (e) {
+    console.log(
+      "status", e.response?.status,
+      "data:",e.response?.data,
+      "headers:",e.response?.headers, 
+    );
+  }
+  }
   
 
   
   return (
     <>
-      
+      <button className="text-2xl" onClick={handleClick}>비자 추천 요청</button>
       <section
         className="
           absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
