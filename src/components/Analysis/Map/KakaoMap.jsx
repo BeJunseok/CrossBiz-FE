@@ -15,7 +15,6 @@ const KakaoMap = ({ onDistrictClick, className = '' }) => {
     error: mapError,
     addPolygon,
     clearPolygons,
-    fitBounds,
   } = useKakaoMap(mapContainer);
 
   const {
@@ -24,7 +23,6 @@ const KakaoMap = ({ onDistrictClick, className = '' }) => {
     error: dataError,
   } = useDistrictData();
 
-  // 오버레이 인스턴스 저장 Ref
   const gradeOverlaysRef = useRef([]);
 
   useEffect(() => {
@@ -34,8 +32,9 @@ const KakaoMap = ({ onDistrictClick, className = '' }) => {
     gradeOverlaysRef.current = [];
 
     districts.forEach((district) => {
-      // 💡 수정된 부분: MultiPolygon 처리를 위해 geometry.coordinates 전체를 전달
       const center = calculatePolygonCenter(district.geometry);
+      if (!center) return;
+
       const position = new window.kakao.maps.LatLng(center.lat, center.lng);
 
       const contentNode = document.createElement('div');
@@ -79,9 +78,9 @@ const KakaoMap = ({ onDistrictClick, className = '' }) => {
     };
   }, [map, districts]);
 
-  const handlePolygonClick = (districtName) => {
+  const handlePolygonClick = (district) => {
     if (onDistrictClick) {
-      onDistrictClick(districtName);
+      onDistrictClick(district);
     }
   };
 

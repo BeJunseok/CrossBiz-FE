@@ -12,6 +12,12 @@ export const getDistrictGrade = async (dong) => {
   return response.data;
 };
 
+// 전체 입지 등급
+export const getAllDistrictGrades = async () => {
+  const response = await axiosInstance.get('/business/grade/all');
+  return response.data;
+};
+
 // 카테고리별 매출 순위
 export const getCategorySalesRanking = async (dong) => {
   // 항상 limit=6으로 호출

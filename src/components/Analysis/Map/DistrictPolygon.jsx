@@ -5,31 +5,27 @@ const DistrictPolygon = ({ district, map, onPolygonClick, addPolygon }) => {
   useEffect(() => {
     if (!map || !district || !addPolygon) return;
 
-    // MultiPolygon의 첫 번째 폴리곤의 외곽 링만 사용
-    const coordinates = district.geometry.coordinates[0][0];
+    
+    const isMultiPolygon = district.geometry.type === 'MultiPolygon';
+    const coordinates = isMultiPolygon
+      ? district.geometry.coordinates[0][0] // MultiPolygon의 경우
+      : district.geometry.coordinates[0]; // Polygon의 경우
 
-    // 좌표를 카카오맵 LatLng 객체로 변환
+    // coordinates가 유효하지 않으면 아무것도 하지 않음
+    if (!coordinates || coordinates.length === 0) return;
+
     const path = convertToKakaoLatLng(coordinates);
-
-    // 등급에 따른 스타일 생성
     const style = createPolygonStyle(district.grade);
 
-    // 클릭 핸들러
     const handleClick = () => {
       if (onPolygonClick) {
         onPolygonClick(district);
       }
     };
 
-    // 폴리곤 추가
     addPolygon(path, style, handleClick);
-
-    return () => {
-      // 컴포넌트 언마운트 시 폴리곤 제거는 상위 컴포넌트에서 처리
-    };
   }, [district, map, onPolygonClick, addPolygon]);
 
-  // 이 컴포넌트는 렌더링할 DOM 요소가 없음
   return null;
 };
 
