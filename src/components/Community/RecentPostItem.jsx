@@ -9,9 +9,23 @@ import { useNavigate } from 'react-router-dom';
 const RecentPostItem = ({ post }) => {
   const nav = useNavigate();
 
+  const postId = post.articleId || post.id;
+  const title = post.name || post.title;
+  const content = post.content;
+  const author = post.authorLoginId || post.author;
+  const views =
+    post.view || post.views || (post.stats && post.stats.views) || 0;
+  const likes =
+    post.like || post.likes || (post.stats && post.stats.likes) || 0;
+  const comments = post.comments || (post.stats && post.stats.comments) || 0;
+  const createdAt = post.createdAt || post.date;
+  const category = post.category || '일반';
+
   const handlePostClick = () => {
-    nav(`/community/post/${post.id}`);
+    console.log(post.businessType);
+    nav(`/community/post/${postId}`);
   };
+
   return (
     <div
       onClick={handlePostClick}
@@ -19,10 +33,10 @@ const RecentPostItem = ({ post }) => {
     >
       <div className="mb-1.5">
         <span
-          style={{ backgroundColor: getCategoryColor(post.category) }}
+          style={{ backgroundColor: getCategoryColor(category) }}
           className="text-white text-xs px-2 py-0.5 rounded"
         >
-          {post.category}
+          {category}
         </span>
       </div>
       <div className="flex gap-2.5 mb-3">
@@ -30,23 +44,23 @@ const RecentPostItem = ({ post }) => {
         <div className="flex-1">
           <div className="flex justify-between items-start">
             <div className="min-w-0 max-w-52">
-              <p className="text-xs text-black font-medium">{post.author}</p>
+              <p className="text-xs text-black font-medium">{author}</p>
               <p className="text-xs text-gray-600 font-semibold truncate">
-                {post.title}
+                {title}
               </p>
             </div>
             <span className="text-xs text-gray-400 flex-shrink-0 ml-2 whitespace-nowrap">
-              {getTimeAgo(post.createdAt)}
+              {getTimeAgo(createdAt)}
             </span>
           </div>
         </div>
       </div>
       <p className="text-xs text-gray-600 leading-relaxed mb-2 line-clamp-3">
-        {post.content
-          ? post.content.split('\n').map((line, index) => (
+        {content
+          ? content.split('\n').map((line, index) => (
               <React.Fragment key={index}>
                 {line}
-                {index < post.content.split('\n').length - 1 && <br />}
+                {index < content.split('\n').length - 1 && <br />}
               </React.Fragment>
             ))
           : '내용이 없습니다'}
@@ -57,19 +71,19 @@ const RecentPostItem = ({ post }) => {
           <div className="w-3 h-3 flex items-center justify-center">
             <Views />
           </div>
-          <span>{post.stats?.views || 0}</span>
+          <span>{views}</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 flex items-center justify-center">
             <Comments />
           </div>
-          <span>{post.stats?.comments || 0}</span>
+          <span>{comments}</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 flex items-center justify-center">
             <Likes className="mb-0.5" />
           </div>
-          <span>{post.stats?.likes || 0}</span>
+          <span>{likes}</span>
         </div>
       </div>
     </div>

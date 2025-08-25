@@ -5,22 +5,31 @@ import Likes from '@/assets/svg/community/Likes.svg?react';
 import { Link } from 'react-router-dom';
 
 const PostItem = ({ post }) => {
+  const postId = post.articleId || post.id;
+  const title = post.name || post.title;
+  const content = post.content;
+  const author = post.authorLoginId || post.author;
+  const views = post.view || post.views || 0;
+  const likes = post.like || post.likes || 0;
+  const comments = post.commentCount || 0;
+  const createdAt = post.createdAt || post.date;
+
   return (
     <Link
-      to={`/community/post/${post.id}`}
+      to={`/community/post/${postId}`}
       className="bg-white border-b border-gray-200 relative w-full cursor-pointer hover:opacity-80 transition-opacity"
     >
       <div className="px-6 py-4">
         <div className="flex flex-col gap-3">
           {/* 작성자 */}
-          <div className="text-black text-xs font-medium">{post.author}</div>
+          <div className="text-black text-xs font-medium">{author}</div>
 
           {/* 제목 */}
-          <div className="text-black text-sm font-medium">{post.title}</div>
+          <div className="text-black text-sm font-medium">{title}</div>
 
           {/* 내용 */}
-          <div className="text-gray-600 text-xs leading-relaxed">
-            {post.content}
+          <div className="text-gray-600 text-xs leading-relaxed truncate">
+            {content}
           </div>
 
           {/* 통계 */}
@@ -29,19 +38,19 @@ const PostItem = ({ post }) => {
               <div className="flex items-center gap-1">
                 <Views className="text-gray-500" />
                 <span className="text-gray-500 text-xs font-medium">
-                  {post.views.toLocaleString()}
+                  {views.toLocaleString()}
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <Comments className="text-gray-500" />
                 <span className="text-gray-500 text-xs font-medium">
-                  {post.comments}
+                  {comments}
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <Likes className="text-gray-500 pb-0.5" />
                 <span className="text-gray-500 text-xs font-medium">
-                  {post.likes}
+                  {likes}
                 </span>
               </div>
             </div>
@@ -50,7 +59,7 @@ const PostItem = ({ post }) => {
             <div className="flex items-center gap-3">
               <div className="w-px h-2.5 bg-gray-300"></div>
               <span className="text-gray-500 text-xs font-medium">
-                {getTimeAgo(post.date)}
+                {getTimeAgo(createdAt)}
               </span>
             </div>
           </div>

@@ -5,11 +5,11 @@ const SearchResultItem = ({ result, searchTerm, isHighlighted = false }) => {
   const nav = useNavigate();
 
   const handleClick = () => {
-    nav(`/community/post/${result.id}`);
+    nav(`/community/post/${result.articleId}`);
   };
 
   const highlightText = (text, term) => {
-    if (!term) return text;
+    if (!term || !text) return text;
 
     const regex = new RegExp(`(${term})`, 'gi');
     const parts = text.split(regex);
@@ -33,18 +33,18 @@ const SearchResultItem = ({ result, searchTerm, isHighlighted = false }) => {
       <div className="px-6 py-4">
         <div className="flex flex-col">
           <div className="text-black text-xs font-medium mb-1">
-            {result.author}
+            {result.authorLoginId}
           </div>
           <div className="text-black text-base font-medium mb-2">
-            {highlightText(result.title, searchTerm)}
+            {highlightText(result.name, searchTerm)}
           </div>
-          <div className="text-gray-600 text-xs leading-relaxed mb-4">
+          <div className="text-gray-600 text-xs leading-relaxed mb-4 line-clamp-2">
             {highlightText(result.content, searchTerm)}
           </div>
           <div className="flex items-center gap-2 text-gray-400 text-xs font-medium">
-            <span>{getTimeAgo(result.date)}</span>
-            <span>조회 {result.views}</span>
-            <span>댓글 {result.comments}</span>
+            <span>{getTimeAgo(result.createdAt)}</span>
+            <span>조회 {result.view}</span>
+            <span>댓글 {result.commentCount}</span>
           </div>
         </div>
       </div>

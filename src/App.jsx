@@ -5,7 +5,7 @@ import OnboardingPage from '@/pages/onboarding/Onboarding';
 import LoginPage from '@/pages/login/Login';
 import CommunityPage from '@/pages/Community/CommunityPage';
 import SearchPage from '@/pages/community/SearchPage';
-import PostDetailPage from '@/pages/community/PostDetailPgae';
+import PostDetailPage from '@/pages/community/PostDetailPage';
 import RegisterPage from '@/pages/register/RegisterPage';
 import PersonalInfoPage from '@/pages/register/PersonalInfoPage';
 import VisaInfoPage from '@/pages/register/VisaInfoPage';

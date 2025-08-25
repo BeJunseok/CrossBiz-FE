@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'; // useCallback 추가
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import mockSearchResults from '@/mock/communitySearch.json';
+import { searchPosts } from '@/api/community/postApi';
 import SearchHeader from '@/components/Community/Search/SearchHeader';
 import SearchResults from '@/components/Community/Search/SearchResults';
 import RecentSearches from '@/components/Community/Search/RecentSearches';
@@ -9,7 +9,7 @@ import { useSearchHistory } from '@/hooks/useSearchHistory';
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
@@ -22,30 +22,24 @@ const SearchPage = () => {
     clearAllSearches,
   } = useSearchHistory();
 
-  const performSearch = useCallback(
-    (term) => {
-      if (!term.trim()) return;
+  const performSearch = useCallback(async (term) => {
+    if (!term.trim()) return;
 
-      setIsSearching(true);
-      setHasSearched(true);
+    setIsSearching(true);
+    setHasSearched(true);
+    setSearchResults([]); // 검색 시작 시 이전 결과 초기화
 
-      setTimeout(() => {
-        const currentTerm = searchParams.get('q');
-        if (term !== currentTerm) {
-          return; // 검색어가 변경되었으면 이전 결과를 무시
-        }
+    try {
+      const response = await searchPosts(term);
 
-        const filteredResults = mockSearchResults.filter(
-          (result) =>
-            result.title.toLowerCase().includes(term.toLowerCase()) ||
-            result.content.toLowerCase().includes(term.toLowerCase())
-        );
-        setSearchResults(filteredResults);
-        setIsSearching(false);
-      }, 500);
-    },
-    [searchParams]
-  );
+      setSearchResults(response);
+    } catch (error) {
+      console.error('검색 실패:', error);
+      setSearchResults([]); // 에러 발생 시 결과 없음 처리
+    } finally {
+      setIsSearching(false);
+    }
+  }, []);
 
   useEffect(() => {
     const queryParams = searchParams.get('q');

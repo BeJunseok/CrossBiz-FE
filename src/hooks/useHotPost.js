@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react';
+import { getHotPosts } from '@/api/community/postApi';
 
-export const useHotPosts = (initialPosts = []) => {
-  const [hotPosts, setHotPosts] = useState(initialPosts);
+export const useHotPosts = () => {
+  const [hotPosts, setHotPosts] = useState(null); // 초기값을 null로 변경
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const fetchHotPosts = async () => {
     setLoading(true);
     setError(null);
-
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      setHotPosts(initialPosts);
+      const response = await getHotPosts({ page: 0, size: 5 }); 
+      setHotPosts(response);
     } catch (err) {
+      console.error('HOT 게시글 로딩 실패:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -20,9 +21,7 @@ export const useHotPosts = (initialPosts = []) => {
   };
 
   useEffect(() => {
-    if (initialPosts.length === 0) {
-      fetchHotPosts();
-    }
+    fetchHotPosts();
   }, []);
 
   return {
