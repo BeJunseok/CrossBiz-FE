@@ -1,17 +1,31 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { boundaryData } from '@/data/boundary';
 import Search from '@/assets/svg/common/Search0.svg?react';
 import ChevronDown from '@/assets/svg/common/ChevronDown.svg?react';
 
 const MapHeader = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchTerm.trim() === '') {
+    const trimmedSearchTerm = searchTerm.trim();
+    if (trimmedSearchTerm === '') {
       alert('검색어를 입력해주세요.');
       return;
     }
-    alert(`'${searchTerm}'에 대한 상세 페이지로 이동합니다.`);
+
+    const foundDistrict = boundaryData.features.find(
+      (feature) => feature.properties.adm_nm === trimmedSearchTerm
+    );
+
+    if (foundDistrict) {
+      const districtId = foundDistrict.properties.adm_cd2;
+      navigate(`/analysis/${districtId}`);
+    } else {
+      alert(`'${trimmedSearchTerm}'에 해당하는 지역을 찾을 수 없습니다.`);
+    }
   };
 
   // 공통 기본 스타일 (
