@@ -1,8 +1,20 @@
-// src/pages/LoadingPreviousInfo.jsx
 import React from "react";
-import loadingIcon from "../../assets/loading.svg"; // 네가 저장한 SVG
+import loadingIcon from "../../assets/loading.svg";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function LoadingPreviousInfo() {
+  const nav = useNavigate();
+  const location = useLocation();
+  
+
+  useEffect(()=>{
+    const t = setTimeout(()=>{
+    nav("/confirm-check",{replace: true, state:location.state,});
+  },2000);
+  return () => clearTimeout(t);
+},[nav,location.state])
+
   return (
     <main className="min-h-screen w-full bg-white flex items-center justify-center">
       <section

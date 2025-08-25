@@ -1,17 +1,38 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import {fetchVisaRecommendWith} from "../../api/visa";
+
+
 
 export default function VisaHome() {
+  const nav = useNavigate();
+  const goMatch = () => nav("/loading-prev", {state: {from: "match"}});
+  const goIssued = () => nav("loading-prev", {state: {from: "issued"}});
+  
+  
+
+  
   return (
     <>
-      {/* ───────── 어두운 카드: 화면 정확히 가운데 ───────── */}
+      
       <section
         className="
           absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
           w-[352px] h-[390px] rounded-[28px]
-          bg-gradient-to-b from-[#191D24] to-[#2E2D39]
+          bg-gradient-to-b from-[#454451] to-[#191D24]
           shadow-[0_12px_24px_rgba(0,0,0,0.25)]
+          p-3
         "
       >
+        <div
+          className="absolute inset-0 opacity-70"
+          style={{
+          backgroundImage: "url('/back1.svg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+        />
         {/* 카드 내부 레이아웃:
             - content: 카드 전체를 채움(inset-0)
             - 제목: flex-1 영역 정중앙
@@ -28,16 +49,22 @@ export default function VisaHome() {
             </h1>
           </div>
 
-          {/* 2) 부문구 + 버튼 : 제목 기준 margin-top으로 배치 */}
-          <p className="text-[13px] text-[#C5CBD4] underline underline-offset-2 mt-7 cursor-pointer">
+         
+          <p
+          role="button"
+          tabIndex={0}
+          onClick={goIssued}
+          onKeyDown={(e) => e.key === "Enter" && goIssued()}
+          className="text-[13px] text-[#C5CBD4] underline underline-offset-2 mt-7 cursor-pointer">
             이미 발급받은 비자가 있으세요?
           </p>
 
           <button
             type="button"
             className="w-full h-12 rounded-full font-bold
-                       bg-white text-black shadow-[0_2px_0_rgba(0,0,0,0.06)]
-                       active:translate-y-[1px] mt-5 mb-6 hover:scale-101"
+                       bg-[#C9CAF1] text-black shadow-[0_2px_0_rgba(0,0,0,0.06)]
+                       active:translate-y-[1px] mt-5 mb-3 hover:scale-101 py-3"
+            onClick={goMatch}
           >
             비자 매칭받기
           </button>

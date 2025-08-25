@@ -1,12 +1,18 @@
+// src/components/CardList.jsx
 import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import GoodIcon from "../assets/good.svg";
 import WarnIcon from "../assets/warning.svg";
 import HotBadge from "../assets/Hot.svg";
-import PurpleIcon from "../assets/purpleIcon.svg"; // 저장한 아이콘
+import PurpleIcon from "../assets/purpleIcon.svg";
 
-export default function CardList({ items = [] }) {
+
+export default function CardList({ items = [], from: fromProp }) {
   const [selectedIdx, setSelectedIdx] = useState(null);
   const [open, setOpen] = useState(false);
+  const nav = useNavigate();
+  const { state: locState } = useLocation();
+  const from = fromProp ?? locState?.from ?? "history";
 
   const onSelect = useCallback((idx) => {
     setSelectedIdx(idx);
@@ -21,6 +27,15 @@ export default function CardList({ items = [] }) {
   }, []);
 
   const selectedItem = selectedIdx != null ? items[selectedIdx] : null;
+
+  // 상세로 이동 (from을 함께 전달)
+  const goDetail = (item) => {
+    const name = item?.code || item?.name || "";
+    const encoded = encodeURIComponent(name);
+    nav(`/visa-info?name=${encoded}`, { state: { from } });
+    // 필요하면 모달도 닫기
+    // setOpen(false);
+  };
 
   return (
     <>
@@ -48,7 +63,7 @@ export default function CardList({ items = [] }) {
                     src={HotBadge}
                     alt="가장 유력한 후보"
                     className="pointer-events-none absolute z-10 drop-shadow-md h-15 w-auto -left-6 -top-16"
-                  />
+                />
                 )}
 
                 {/* 헤더: 1번 파랑, 나머지 회색 */}
@@ -80,7 +95,7 @@ export default function CardList({ items = [] }) {
                   </section>
                 )}
 
-                {/* 주의: list-style 제거 + 간격 유지 */}
+                {/* 주의 */}
                 {item.warnings?.length > 0 && (
                   <section className="mt-3">
                     <header className="flex items-center gap-2 mb-1">
@@ -101,53 +116,57 @@ export default function CardList({ items = [] }) {
           );
         })}
       </div>
-       {/* --- 하단 모달 (fixed) --- */}
-<div
-  className={[
-    "fixed inset-x-0 bottom-0 z-50",
-    "transform transition-transform duration-300 ease-out",
-    open ? "translate-y-0" : "translate-y-full",
-  ].join(" ")}
->
-  <div className="mx-auto max-w-md rounded-t-2xl bg-white shadow-[0_-8px_24px_rgba(0,0,0,0.15)]">
-    <div className="p-5">
-      {selectedItem ? (
-        <>
-          {/* 상단: 왼쪽 텍스트 / 오른쪽 아이콘 */}
-          <div className="flex items-center justify-between relative">
-            {/* 텍스트 영역 */}
-            <h4 className="text-[15px] font-bold text-gray-900 self-center mt-2">
-              {selectedItem.code} {selectedItem.name}
-            </h4>
 
-            {/* 아이콘 크게 + 여백 처리 */}
-            <div className="shrink-0 flex ml-3 self-center">
-              <img src={PurpleIcon} alt="저장" className="absolute -right-4 top-1/2 -translate-x-1/2 w-10 h-10" />
-            </div>
+      {/* --- 하단 모달 (fixed) --- */}
+      <div
+        className={[
+          "fixed inset-x-0 bottom-0 z-50",
+          "transform transition-transform duration-300 ease-out",
+          open ? "translate-y-0" : "translate-y-full",
+        ].join(" ")}
+      >
+        <div className="mx-auto max-w-md rounded-t-2xl bg-white shadow-[0_-8px_24px_rgba(0,0,0,0.15)]">
+          <div className="p-5">
+            {selectedItem ? (
+              <>
+                {/* 상단: 왼쪽 텍스트 / 오른쪽 아이콘 */}
+                <div className="flex items-center justify-between relative">
+                  <h4 className="text-[15px] font-bold text-gray-900 self-center mt-2">
+                    {selectedItem.code || selectedItem.name}
+                  </h4>
+
+                  {/* 아이콘 (클릭 시 상세로 이동 + from 전달) */}
+                  <div className="shrink-0 flex ml-3 self-center">
+                    <img
+                      src={PurpleIcon}
+                      alt="저장"
+                      className="absolute -right-4 top-1/2 -translate-x-1/2 w-10 h-10 cursor-pointer"
+                      onClick={() => goDetail(selectedItem)}
+                    />
+                  </div>
+                </div>
+
+                {/* 링크 */}
+                <p
+                  className="mt-1 inline-block text-[12px] font-medium"
+                  style={{ color: "#654EFF" }}
+                >
+                  상세 설명 및 준비서류 보러가기
+                </p>
+
+                {/* 요약 있으면 출력 */}
+                {selectedItem.summary && (
+                  <p className="mt-3 text-[12px] leading-5 text-gray-700">
+                    {selectedItem.summary}
+                  </p>
+                )}
+              </>
+            ) : (
+              <p className="text-center text-[12px] text-gray-500">카드를 선택하세요.</p>
+            )}
           </div>
-
-          {/* 링크 */}
-          <a
-            href={selectedItem.detailUrl || "#"}
-            className="mt-1 inline-block text-[12px] font-medium"
-            style={{ color: "#654EFF" }}
-          >
-            상세 설명 및 준비서류 보러가기
-          </a>
-
-          {/* 요약 있으면 출력 */}
-          {selectedItem.summary && (
-            <p className="mt-3 text-[12px] leading-5 text-gray-700">
-              {selectedItem.summary}
-            </p>
-          )}
-        </>
-      ) : (
-        <p className="text-center text-[12px] text-gray-500">카드를 선택하세요.</p>
-      )}
-    </div>
-  </div>
-</div>
+        </div>
+      </div>
     </>
   );
 }
