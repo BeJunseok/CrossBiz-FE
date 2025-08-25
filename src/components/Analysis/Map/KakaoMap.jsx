@@ -2,8 +2,11 @@ import React, { useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { useKakaoMap } from '@/hooks/useKakaoMap';
 import { useDistrictData } from '@/hooks/useDistrictData';
-import { calculatePolygonCenter } from '@/utils/mapUtils';
-import DistrictPolygon from '@/components/Analysis/Map/DistrictPolygon';
+import {
+  calculatePolygonCenter,
+  convertToKakaoLatLng,
+  createPolygonStyle,
+} from '@/utils/mapUtils';
 import Loading from '@/components/common/Loading';
 import GradeMarker from '@/components/Analysis/Map/GradeMarker';
 
@@ -28,32 +31,43 @@ const KakaoMap = ({ onDistrictClick, className = '' }) => {
   useEffect(() => {
     if (!map || districts.length === 0) return;
 
+    // 기존에 그려진 폴리곤과 마커를 지움
+    clearPolygons();
     gradeOverlaysRef.current.forEach((overlay) => overlay.setMap(null));
     gradeOverlaysRef.current = [];
 
     districts.forEach((district) => {
+      const isMultiPolygon = district.geometry.type === 'MultiPolygon';
+      const coordinates = isMultiPolygon
+        ? district.geometry.coordinates[0][0]
+        : district.geometry.coordinates[0];
+
+      if (coordinates && coordinates.length > 0) {
+        const path = convertToKakaoLatLng(coordinates);
+        const style = createPolygonStyle(district.grade);
+        addPolygon(path, style, () => onDistrictClick(district));
+      }
+
+      // CustomOverlay
       const center = calculatePolygonCenter(district.geometry);
-      if (!center) return;
-
-      const position = new window.kakao.maps.LatLng(center.lat, center.lng);
-
-      const contentNode = document.createElement('div');
-      const root = ReactDOM.createRoot(contentNode);
-      root.render(<GradeMarker grade={district.grade} />);
-
-      const customOverlay = new window.kakao.maps.CustomOverlay({
-        position: position,
-        content: contentNode,
-        map: null,
-      });
-
-      gradeOverlaysRef.current.push(customOverlay);
+      if (center) {
+        const position = new window.kakao.maps.LatLng(center.lat, center.lng);
+        const contentNode = document.createElement('div');
+        const root = ReactDOM.createRoot(contentNode);
+        root.render(<GradeMarker grade={district.grade} />);
+        const customOverlay = new window.kakao.maps.CustomOverlay({
+          position,
+          content: contentNode,
+          map: null,
+        });
+        gradeOverlaysRef.current.push(customOverlay);
+      }
     });
 
+    // 지도 줌에 따라 마커를 표신
     const handleZoomChange = () => {
       const level = map.getLevel();
       const isZoomedIn = level <= 6;
-
       gradeOverlaysRef.current.forEach((overlay) => {
         overlay.setMap(isZoomedIn ? map : null);
       });
@@ -65,6 +79,7 @@ const KakaoMap = ({ onDistrictClick, className = '' }) => {
       'zoom_changed',
       zoomChangeListener
     );
+
     handleZoomChange();
 
     return () => {
@@ -76,19 +91,7 @@ const KakaoMap = ({ onDistrictClick, className = '' }) => {
         );
       }
     };
-  }, [map, districts]);
-
-  const handlePolygonClick = (district) => {
-    if (onDistrictClick) {
-      onDistrictClick(district);
-    }
-  };
-
-  useEffect(() => {
-    if (map && districts.length > 0) {
-      clearPolygons();
-    }
-  }, [map, districts, clearPolygons]);
+  }, [map, districts, clearPolygons, addPolygon, onDistrictClick]);
 
   const isLoading = mapLoading || dataLoading;
   const hasError = mapError || dataError;
@@ -119,26 +122,6 @@ const KakaoMap = ({ onDistrictClick, className = '' }) => {
       {isLoading && (
         <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
           <Loading message="지도를 불러오는 중..." />
-        </div>
-      )}
-
-      {map &&
-        districts.map((district) => (
-          <DistrictPolygon
-            key={district.id}
-            district={district}
-            map={map}
-            onPolygonClick={handlePolygonClick}
-            addPolygon={addPolygon}
-          />
-        ))}
-
-      {!isLoading && districts.length > 0 && (
-        <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-md p-3 z-10">
-          <div className="text-sm text-gray-600">
-            총 <span className="font-semibold">{districts.length}</span>개
-            행정구역
-          </div>
         </div>
       )}
     </div>
