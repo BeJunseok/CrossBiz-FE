@@ -11,7 +11,7 @@ const PostItem = ({ post }) => {
   const author = post.authorLoginId || post.author;
   const views = post.view || post.views || 0;
   const likes = post.like || post.likes || 0;
-  const comments = post.comments || 0;
+  const comments = post.commentCount || 0;
   const createdAt = post.createdAt || post.date;
 
   return (
@@ -28,7 +28,9 @@ const PostItem = ({ post }) => {
           <div className="text-black text-sm font-medium">{title}</div>
 
           {/* 내용 */}
-          <div className="text-gray-600 text-xs leading-relaxed">{content}</div>
+          <div className="text-gray-600 text-xs leading-relaxed truncate">
+            {content}
+          </div>
 
           {/* 통계 */}
           <div className="flex items-center gap-4">

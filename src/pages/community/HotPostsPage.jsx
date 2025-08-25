@@ -1,10 +1,9 @@
 import HotPostsHeader from '@/components/Community/HotPost/HotPostHeader';
 import HotPostsList from '@/components/Community/HotPost/HotPostList';
 import { useHotPosts } from '@/hooks/useHotPost';
-import mockHotPosts from '@/mock/communityHotPost.json';
 
 const HotPostsPage = () => {
-  const { hotPosts, loading, error } = useHotPosts(mockHotPosts);
+  const { hotPosts, loading, error } = useHotPosts();
 
   if (loading) {
     return (
@@ -25,7 +24,8 @@ const HotPostsPage = () => {
   return (
     <div className="min-h-screen w-full bg-gray-50">
       <HotPostsHeader />
-      <HotPostsList posts={hotPosts} maxItems={5} />
+      {/* hotPosts 객체 전체를 props로 전달합니다. */}
+      <HotPostsList posts={hotPosts} />
     </div>
   );
 };
