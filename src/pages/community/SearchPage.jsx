@@ -9,7 +9,7 @@ import { useSearchHistory } from '@/hooks/useSearchHistory';
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
@@ -32,7 +32,7 @@ const SearchPage = () => {
     try {
       const response = await searchPosts(term);
 
-      setSearchResults(response.content || []);
+      setSearchResults(response);
     } catch (error) {
       console.error('검색 실패:', error);
       setSearchResults([]); // 에러 발생 시 결과 없음 처리

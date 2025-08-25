@@ -2,22 +2,25 @@ import Search from '@/assets/svg/community/Search1.svg?react';
 import SearchResultItem from '@/components/Community/Search/SearchResultItem';
 
 const SearchResults = ({ searchResults, searchTerm, isSearching }) => {
+  const posts = searchResults?.content || [];
+  const totalElements = searchResults?.totalElements || 0;
+
   return (
     <div className="bg-gray-50">
       {/* 검색 결과 개수 */}
       <div className="h-8 overflow-hidden px-6 pt-3 pb-1">
         <div className="text-gray-500 text-xs font-medium">
-          {isSearching ? '검색 중...' : `${searchResults.length} 건`}
+          {isSearching ? '검색 중...' : `${totalElements} 건`}
         </div>
       </div>
 
       {/* 검색 결과 목록 */}
       {!isSearching && (
         <div className="flex flex-col">
-          {searchResults.length > 0 ? (
-            searchResults.map((result, index) => (
+          {posts.length > 0 ? (
+            posts.map((result, index) => (
               <SearchResultItem
-                key={result.id}
+                key={result.articleId}
                 result={result}
                 searchTerm={searchTerm}
                 isHighlighted={index % 2 === 1}
