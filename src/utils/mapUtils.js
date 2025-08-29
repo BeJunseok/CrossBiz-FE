@@ -1,5 +1,5 @@
 import { gradeColors, defaultPolygonStyle } from '../data/gradeConfig';
-
+import { polygonCentroid } from 'd3-polygon';
 /**
  * 카카오 지도 API 스크립트 로드
  */
@@ -34,60 +34,15 @@ export const convertToKakaoLatLng = (coordinates) => {
 /**
  * 폴리곤의 중심점 계산
  */
-export const calculatePolygonCenter = (geometry) => {
-  const { type, coordinates } = geometry;
+export const calculatePolygonCenter = (polygonCoordinates) => {
+  const polygonRing = polygonCoordinates[0];
 
-  if (
-    !coordinates ||
-    coordinates.length === 0 ||
-    !coordinates[0] ||
-    coordinates[0].length === 0
-  ) {
-    console.error('Invalid coordinates data received:', coordinates);
-    return null;
-  }
-
-  let mainPolygon;
-  const isMultiPolygon = type === 'MultiPolygon';
-
-  if (isMultiPolygon) {
-    let maxArea = 0;
-    mainPolygon = coordinates[0];
-    coordinates.forEach((polygon) => {
-      const currentArea = polygonArea(polygon[0]);
-      if (currentArea > maxArea) {
-        maxArea = currentArea;
-        mainPolygon = polygon;
-      }
-    });
-  } else {
-    mainPolygon = coordinates;
-  }
-
-  // 폴리곤의 모든 꼭지점의 평균 좌표로 중심점 계산
-  const centerPoint = calculateCentroid(mainPolygon[0]);
+  const centerPoint = polygonCentroid(polygonRing);
 
   return {
     lat: centerPoint[1],
     lng: centerPoint[0],
   };
-};
-
-/**
- * 폴리곤의 중심점(centroid) 계산 - 간단한 평균 좌표 방식
- */
-const calculateCentroid = (ring) => {
-  let sumX = 0;
-  let sumY = 0;
-  const count = ring.length - 1; // 마지막 점은 첫 번째 점과 같으므로 제외
-
-  for (let i = 0; i < count; i++) {
-    const [x, y] = ring[i];
-    sumX += x;
-    sumY += y;
-  }
-
-  return [sumX / count, sumY / count];
 };
 
 /**
@@ -158,14 +113,3 @@ export const debounce = (func, wait) => {
   };
 };
 
-// 폴리곤의 면적을 계산하는 헬퍼 함수 (Shoelace formula)
-const polygonArea = (ring) => {
-  let area = 0;
-  for (let i = 0; i < ring.length; i++) {
-    const j = (i + 1) % ring.length;
-    area += ring[i][0] * ring[j][1];
-    area -= ring[j][0] * ring[i][1];
-  }
-
-  return Math.abs(area / 2);
-};
