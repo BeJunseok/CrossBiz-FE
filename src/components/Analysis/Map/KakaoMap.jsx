@@ -16,7 +16,7 @@ import GradeMarker from '@/components/Analysis/Map/GradeMarker';
 
 const KAKAO_API_KEY = import.meta.env.VITE_KAKAO_MAP_API_KEY;
 
-const KakaoMap = ({ onDistrictClick, className = '' }) => {
+const KakaoMap = ({ onDistrictClick, className = '', selectedGrade }) => {
   const [scriptLoading, scriptError] = useKakaoLoader({
     appkey: KAKAO_API_KEY,
   });
@@ -40,6 +40,14 @@ const KakaoMap = ({ onDistrictClick, className = '' }) => {
       level: 6,
     };
   }, [districts]);
+
+  const filteredDistricts = useMemo(() => {
+    if (!selectedGrade || selectedGrade === 'all') {
+      return districts;
+    }
+    const gradeNumber = parseInt(selectedGrade, 10);
+    return districts.filter((district) => district.grade === gradeNumber);
+  }, [districts, selectedGrade]);
 
   // 지도 줌에 따라 마커를 표시
   const handleZoomChange = () => {
@@ -75,7 +83,7 @@ const KakaoMap = ({ onDistrictClick, className = '' }) => {
           onCreate={setMap}
           onZoomChanged={handleZoomChange}
         >
-          {districts.map((district) => {
+          {filteredDistricts.map((district) => {
             const style = createPolygonStyle(district.grade);
             const path = district.geometry.coordinates[0][0].map((coord) => ({
               lat: coord[1],
@@ -103,7 +111,7 @@ const KakaoMap = ({ onDistrictClick, className = '' }) => {
           })}
 
           {showMarkers &&
-            districts.map((district) => {
+            filteredDistricts.map((district) => {
               const center = calculatePolygonCenter(
                 district.geometry.coordinates[0][0]
               );
