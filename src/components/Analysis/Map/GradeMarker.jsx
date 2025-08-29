@@ -1,10 +1,10 @@
 const GradeMarker = ({ grade }) => {
   const gradeStyle = {
-    1: { background: 'rgba(17, 205, 92, 0.40)' },
-    2: { background: 'rgba(92, 195, 22, 0.35)' },
-    3: { background: 'rgba(255, 102, 0, 0.35)' },
-    4: { background: 'rgba(255, 102, 0, 0.35)' },
-    5: { background: 'rgba(255, 0, 0, 0.35)' },
+    1: { background: 'rgba(86, 185, 154, 1)' },
+    2: { background: 'rgba(128, 207, 76, 1)' },
+    3: { background: 'rgba(241, 209, 80, 1)' },
+    4: { background: 'rgba(255, 145, 72, 1)' },
+    5: { background: 'rgba(255, 103, 103, 1)' },
   };
 
   const defaultStyle = { background: 'rgb(107,114,128}' };
