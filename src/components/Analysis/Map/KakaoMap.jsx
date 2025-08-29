@@ -1,100 +1,54 @@
-import React, { useRef, useEffect } from 'react';
-import ReactDOM from 'react-dom/client';
-import { useKakaoMap } from '@/hooks/useKakaoMap';
+import { useState, useEffect, useMemo } from 'react';
+import {
+  Map,
+  Polygon,
+  CustomOverlayMap,
+  useKakaoLoader,
+} from 'react-kakao-maps-sdk';
 import { useDistrictData } from '@/hooks/useDistrictData';
 import {
   calculatePolygonCenter,
-  convertToKakaoLatLng,
   createPolygonStyle,
+  calculateMapBounds,
 } from '@/utils/mapUtils';
 import Loading from '@/components/common/Loading';
 import GradeMarker from '@/components/Analysis/Map/GradeMarker';
 
-const KakaoMap = ({ onDistrictClick, className = '' }) => {
-  const mapContainer = useRef(null);
-  const {
-    map,
-    isLoading: mapLoading,
-    error: mapError,
-    addPolygon,
-    clearPolygons,
-  } = useKakaoMap(mapContainer);
+const KAKAO_API_KEY = import.meta.env.VITE_KAKAO_MAP_API_KEY;
 
+const KakaoMap = ({ onDistrictClick, className = '' }) => {
+  const [scriptLoading, scriptError] = useKakaoLoader({
+    appkey: KAKAO_API_KEY,
+  });
+
+  const [map, setMap] = useState(null);
+  const [showMarkers, setShowMarkers] = useState(false);
   const {
     districts,
     isLoading: dataLoading,
     error: dataError,
   } = useDistrictData();
 
-  const gradeOverlaysRef = useRef([]);
+  const initialMapState = useMemo(() => {
+    if (districts.length > 0) {
+      const { center, bounds } = calculateMapBounds(districts);
+      return { center, level: 7 };
+    }
 
-  useEffect(() => {
-    if (!map || districts.length === 0) return;
-
-    // 기존에 그려진 폴리곤과 마커를 지움
-    clearPolygons();
-    gradeOverlaysRef.current.forEach((overlay) => overlay.setMap(null));
-    gradeOverlaysRef.current = [];
-
-    districts.forEach((district) => {
-      const isMultiPolygon = district.geometry.type === 'MultiPolygon';
-      const coordinates = isMultiPolygon
-        ? district.geometry.coordinates[0][0]
-        : district.geometry.coordinates[0];
-
-      if (coordinates && coordinates.length > 0) {
-        const path = convertToKakaoLatLng(coordinates);
-        const style = createPolygonStyle(district.grade);
-        addPolygon(path, style, () => onDistrictClick(district));
-      }
-
-      // CustomOverlay
-      const center = calculatePolygonCenter(district.geometry);
-      if (center) {
-        const position = new window.kakao.maps.LatLng(center.lat, center.lng);
-        const contentNode = document.createElement('div');
-        const root = ReactDOM.createRoot(contentNode);
-        root.render(<GradeMarker grade={district.grade} />);
-        const customOverlay = new window.kakao.maps.CustomOverlay({
-          position,
-          content: contentNode,
-          map: null,
-        });
-        gradeOverlaysRef.current.push(customOverlay);
-      }
-    });
-
-    // 지도 줌에 따라 마커를 표신
-    const handleZoomChange = () => {
-      const level = map.getLevel();
-      const isZoomedIn = level <= 6;
-      gradeOverlaysRef.current.forEach((overlay) => {
-        overlay.setMap(isZoomedIn ? map : null);
-      });
+    return {
+      center: { lat: 37.5502295, lng: 126.9246317 }, // 기본값(홍익대 T동)
+      level: 6,
     };
+  }, [districts]);
 
-    const zoomChangeListener = () => handleZoomChange();
-    window.kakao.maps.event.addListener(
-      map,
-      'zoom_changed',
-      zoomChangeListener
-    );
+  // 지도 줌에 따라 마커를 표시
+  const handleZoomChange = () => {
+    const level = map.getLevel();
+    setShowMarkers(level <= 6);
+  };
 
-    handleZoomChange();
-
-    return () => {
-      if (map) {
-        window.kakao.maps.event.removeListener(
-          map,
-          'zoom_changed',
-          zoomChangeListener
-        );
-      }
-    };
-  }, [map, districts, clearPolygons, addPolygon, onDistrictClick]);
-
-  const isLoading = mapLoading || dataLoading;
-  const hasError = mapError || dataError;
+  const isLoading = scriptLoading || dataLoading;
+  const hasError = scriptError || dataError;
 
   if (hasError) {
     return (
@@ -104,7 +58,7 @@ const KakaoMap = ({ onDistrictClick, className = '' }) => {
             <h3 className="text-lg font-semibold text-red-600 mb-2">
               지도를 불러올 수 없습니다
             </h3>
-            <p className="text-gray-600">{mapError || dataError}</p>
+            <p className="text-gray-600">{String(hasError)}</p>
           </div>
         </div>
       </div>
@@ -113,11 +67,54 @@ const KakaoMap = ({ onDistrictClick, className = '' }) => {
 
   return (
     <div className={`relative ${className} w-full h-full`}>
-      <div
-        ref={mapContainer}
-        className="w-full h-full bg-gray-100"
-        style={{ minHeight: '400px' }}
-      />
+      {!isLoading && (
+        <Map
+          center={initialMapState.center}
+          level={initialMapState.level}
+          style={{ width: '100%', height: '100%' }}
+          onCreate={setMap}
+          onZoomChanged={handleZoomChange}
+        >
+          {districts.map((district) => {
+            const style = createPolygonStyle(district.grade);
+            const path = district.geometry.coordinates[0][0].map((coord) => ({
+              lat: coord[1],
+              lng: coord[0],
+            }));
+
+            return (
+              <Polygon
+                key={district.id}
+                path={path}
+                strokeWeight={style.strokeWeight}
+                strokeColor={style.strokeColor}
+                strokeOpacity={style.strokeOpacity}
+                fillColor={style.fillColor}
+                fillOpacity={style.fillOpacity}
+                onClick={() => onDistrictClick(district)}
+                onMouseover={(polygon) =>
+                  polygon.setOptions({ fillOpacity: style.fillOpacity + 0.2 })
+                }
+                onMouseout={(polygon) =>
+                  polygon.setOptions({ fillOpacity: style.fillOpacity })
+                }
+              />
+            );
+          })}
+
+          {showMarkers &&
+            districts.map((district) => {
+              const center = calculatePolygonCenter(
+                district.geometry.coordinates[0][0]
+              );
+              return (
+                <CustomOverlayMap key={district.id} position={center}>
+                  <GradeMarker grade={district.grade} />
+                </CustomOverlayMap>
+              );
+            })}
+        </Map>
+      )}
 
       {isLoading && (
         <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">

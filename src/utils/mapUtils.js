@@ -1,43 +1,11 @@
-import { gradeColors, defaultPolygonStyle } from '../data/gradeConfig';
+import { gradeColors, defaultPolygonStyle } from '@/data/gradeConfig';
 import { polygonCentroid } from 'd3-polygon';
-/**
- * 카카오 지도 API 스크립트 로드
- */
-export const loadKakaoMapScript = (appKey) => {
-  return new Promise((resolve, reject) => {
-    if (window.kakao && window.kakao.maps) {
-      resolve();
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&autoload=false`;
-    script.onload = () => {
-      window.kakao.maps.load(() => {
-        resolve();
-      });
-    };
-    script.onerror = reject;
-    document.head.appendChild(script);
-  });
-};
-
-/**
- * 좌표 배열을 카카오맵 LatLng 객체 배열로 변환
- */
-export const convertToKakaoLatLng = (coordinates) => {
-  return coordinates.map(
-    (coord) => new window.kakao.maps.LatLng(coord[1], coord[0])
-  );
-};
 
 /**
  * 폴리곤의 중심점 계산
  */
 export const calculatePolygonCenter = (polygonCoordinates) => {
-  const polygonRing = polygonCoordinates[0];
-
-  const centerPoint = polygonCentroid(polygonRing);
+  const centerPoint = polygonCentroid(polygonCoordinates);
 
   return {
     lat: centerPoint[1],
@@ -63,18 +31,20 @@ export const createPolygonStyle = (grade) => {
  * 지도의 적절한 중심점과 줌 레벨 계산
  */
 export const calculateMapBounds = (features) => {
+  if (!features || features.length === 0) {
+    return {
+      center: { lat: 37.5502295, lng: 126.9246317 }, // 기본값(홍익대 T동)
+      level: 6,
+    };
+  }
+
   let minLat = Infinity,
     maxLat = -Infinity;
   let minLng = Infinity,
     maxLng = -Infinity;
 
   features.forEach((feature) => {
-    // MultiPolygon을 고려하여 모든 좌표를 순회
-    const polygons =
-      feature.geometry.type === 'Polygon'
-        ? feature.geometry.coordinates
-        : feature.geometry.coordinates.flat(1);
-
+    const polygons = feature.geometry.coordinates.flat(1);
     polygons.forEach((ring) => {
       ring.forEach((coord) => {
         const [lng, lat] = coord;
@@ -86,15 +56,13 @@ export const calculateMapBounds = (features) => {
     });
   });
 
-  const sw = new window.kakao.maps.LatLng(minLat, minLng);
-  const ne = new window.kakao.maps.LatLng(maxLat, maxLng);
-
   return {
     center: {
       lat: (minLat + maxLat) / 2,
       lng: (minLng + maxLng) / 2,
     },
-    bounds: new window.kakao.maps.LatLngBounds(sw, ne),
+    sw: { lat: minLat, lng: minLng },
+    ne: { lat: maxLat, lng: maxLng },
   };
 };
 
@@ -112,4 +80,3 @@ export const debounce = (func, wait) => {
     timeout = setTimeout(later, wait);
   };
 };
-
