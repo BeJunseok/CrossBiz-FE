@@ -117,7 +117,9 @@ const KakaoMap = ({ onDistrictClick, className = '', selectedGrade }) => {
               );
               return (
                 <CustomOverlayMap key={district.id} position={center}>
-                  <GradeMarker grade={district.grade} />
+                  <div onClick={() => onDistrictClick(district)}>
+                    <GradeMarker grade={district.grade} />
+                  </div>
                 </CustomOverlayMap>
               );
             })}
