@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Logo from '@/components/common/Logo';
@@ -14,13 +14,15 @@ const OnboardingPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const nav = useNavigate();
 
+  useEffect(() => {
+    setSelectedLangCode(i18n.language.split('-')[0]);
+  }, [i18n.language]);
+
   const selectedLanguageName = useMemo(() => {
     return languages.find((l) => l.code === selectedLangCode)?.name || 'Korean';
   }, [selectedLangCode]);
 
   const handleLanguageSelect = (language) => {
-    setSelectedLangCode(language.code);
-    localStorage.setItem('selectedLanguage', language.code);
     i18n.changeLanguage(language.code);
     setIsDropdownOpen(false);
   };

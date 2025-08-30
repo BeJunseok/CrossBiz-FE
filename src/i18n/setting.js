@@ -4,24 +4,21 @@ import { initReactI18next } from 'react-i18next';
 import TranslationEn from '@/i18n/resource/en.json';
 import TranslationKo from '@/i18n/resource/ko.json';
 
-const resources = {
-  en: {
-    translation: TranslationEn,
-  },
-  ko: {
-    translation: TranslationKo,
-  },
-};
-
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources,
-    lng: localStorage.getItem('selectedLanguage') || 'ko',
+    resources: {
+      en: { translation: TranslationEn },
+      ko: { translation: TranslationKo },
+    },
     fallbackLng: 'ko',
     interpolation: {
       escapeValue: false,
+    },
+    detection: {
+      order: ['localStorage', 'navigator'], // localStorage -> 브라우저 언어 순으로 감지
+      caches: ['localStorage'], // 언어 선택을 localStorage에 저장
     },
   });
 

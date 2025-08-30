@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Logo from '@/components/common/Logo';
 import { login } from '@/api/auth/Auth';
 import { useAuthStore } from '@/stores/authStore';
 
 const LoginPage = () => {
+  const { t } = useTranslation();
   const nav = useNavigate();
   const { login: setAuth } = useAuthStore();
   const [formData, setFormData] = useState({
@@ -28,7 +30,7 @@ const LoginPage = () => {
     e.preventDefault();
 
     if (!formData.loginId || !formData.password) {
-      setError('아이디와 비밀번호를 모두 입력해주세요.');
+      setError(t('login.errorMessage'));
       return;
     }
 
@@ -48,11 +50,11 @@ const LoginPage = () => {
       console.error('로그인 오류:', error);
 
       if (error.response?.status === 401) {
-        setError('아이디 또는 비밀번호가 올바르지 않습니다.');
+        setError(t('login.invalidCredentials'));
       } else if (error.response?.status >= 500) {
-        setError('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        setError(t('login.serverError'));
       } else {
-        setError('로그인 중 오류가 발생했습니다.');
+        setError(t('login.loginError'));
       }
     } finally {
       setIsLoading(false);
@@ -81,7 +83,7 @@ const LoginPage = () => {
               name="loginId"
               value={formData.loginId}
               onChange={handleInputChange}
-              placeholder="아이디"
+              placeholder={t('login.loginIdPlaceholder')}
               required
               autoComplete="username"
               disabled={isLoading}
@@ -93,7 +95,7 @@ const LoginPage = () => {
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              placeholder="비밀번호"
+              placeholder={t('login.passwordPlaceholder')}
               required
               autoComplete="current-password"
               disabled={isLoading}
@@ -115,7 +117,7 @@ const LoginPage = () => {
               disabled={isLoading}
               className="text-[#b1b1b1] text-xs font-normal hover:text-gray-600 transition-colors disabled:opacity-50"
             >
-              비밀번호를 잊었나요?
+              {t('login.forgotPassword')}
             </button>
           </div>
 
@@ -125,7 +127,7 @@ const LoginPage = () => {
             disabled={!formData.loginId || !formData.password || isLoading}
             className="w-full h-16 bg-black text-white text-xl font-semibold rounded-[40px] hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
           >
-            {isLoading ? '로그인 중...' : '로그인'}
+            {isLoading ? t('login.signingIn') : t('login.signIn')}
           </button>
         </div>
       </form>
@@ -138,7 +140,7 @@ const LoginPage = () => {
           disabled={isLoading}
           className="text-[#898989] text-xs font-normal hover:text-gray-600 transition-colors disabled:opacity-50"
         >
-          회원가입하기
+          {t('login.register')}
         </button>
       </div>
     </div>

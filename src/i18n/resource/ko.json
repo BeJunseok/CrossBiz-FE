@@ -4,5 +4,17 @@
     "subtitle2": "나만의 비즈니스 도우미",
     "register": "회원가입",
     "login": "로그인"
+  },
+  "login": {
+    "loginIdPlaceholder": "아이디",
+    "passwordPlaceholder": "비밀번호",
+    "errorMessage": "아이디와 비밀번호를 모두 입력해주세요.",
+    "invalidCredentials": "아이디 또는 비밀번호가 올바르지 않습니다.",
+    "serverError": "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+    "loginError": "로그인 중 오류가 발생했습니다.",
+    "forgotPassword": "비밀번호를 잊었나요?",
+    "signIn": "로그인",
+    "signingIn": "로그인 중...",
+    "register": "회원가입하기"
   }
 }

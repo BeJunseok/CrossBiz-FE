@@ -4,5 +4,17 @@
     "subtitle2": "Your own business assistant",
     "register": "Sign Up",
     "login": "Login"
+  },
+  "login": {
+    "loginIdPlaceholder": "ID",
+    "passwordPlaceholder": "Password",
+    "errorMessage": "Please enter both ID and password.",
+    "invalidCredentials": "The ID or password is not correct.",
+    "serverError": "A server error occurred. Please try again later.",
+    "loginError": "An error occurred during login.",
+    "forgotPassword": "Forgot your password?",
+    "signIn": "Login",
+    "signingIn": "Logging in...",
+    "register": "Sign up"
   }
 }
