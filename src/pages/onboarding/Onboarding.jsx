@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Logo from '@/components/common/Logo';
 import ChevronDown from '@/assets/svg/common/ChevronDown.svg?react';
 import Globe from '@/assets/svg/onboarding/globe.svg?react';
@@ -7,6 +8,7 @@ import { getInitialLanguage } from '@/utils/initialLanguage';
 import { languages } from '@/constants/language';
 
 const OnboardingPage = () => {
+  const { t, i18n } = useTranslation();
   const [selectedLangCode, setSelectedLangCode] =
     useState(getInitialLanguage());
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -19,6 +21,7 @@ const OnboardingPage = () => {
   const handleLanguageSelect = (language) => {
     setSelectedLangCode(language.code);
     localStorage.setItem('selectedLanguage', language.code);
+    i18n.changeLanguage(language.code);
     setIsDropdownOpen(false);
   };
 
@@ -36,8 +39,8 @@ const OnboardingPage = () => {
       <Logo className="mb-3" />
       <h1 className="font-bold text-3xl mb-2">CrossBiz</h1>
       <div className="font-semibold text-sm text-center leading-tight mb-[73px] text-gray-500">
-        <p>비자 · 세금부터 상권 트래킹까지.</p>
-        <p>나만의 비즈니스 도우미</p>
+        <p>{t('onboarding.subtitle1')}</p>
+        <p>{t('onboarding.subtitle2')}</p>
       </div>
 
       {/* 언어 선택 드롭다운 */}
@@ -81,7 +84,7 @@ const OnboardingPage = () => {
           onClick={handleRegister}
           className="w-full h-16 bg-black text-white text-xl font-semibold rounded-[40px] hover:bg-gray-800 transition-colors"
         >
-          회원가입
+          {t('onboarding.register')}
         </button>
 
         {/* 로그인 버튼 */}
@@ -89,7 +92,7 @@ const OnboardingPage = () => {
           onClick={handleLogin}
           className="w-full h-16 bg-white text-black text-xl font-semibold rounded-[40px] border border-black hover:bg-gray-50 transition-colors"
         >
-          로그인
+          {t('onboarding.login')}
         </button>
       </div>
 
