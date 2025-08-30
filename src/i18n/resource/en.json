@@ -185,6 +185,28 @@
           "url": "https://www.mss.go.kr/site/eng/main.do"
         }
       ]
+    },
+    "postDetail": {
+      "invalidAccess": "Invalid access.",
+      "postNotFound": "Post not found.",
+      "serverError": "A server error occurred. Please try again later.",
+      "loadFailed": "Failed to load the post.",
+      "loginRequired": "Login is required.",
+      "enterComment": "Please enter a comment.",
+      "commentFailed": "Failed to post the comment.",
+      "likeFailed": "Failed to process like.",
+      "reportPreparing": "Report feature is coming soon.",
+      "urlCopied": "URL has been copied.",
+      "urlCopyFailed": "Failed to copy URL.",
+      "loading": "Loading...",
+      "report": "Report",
+      "shareUrl": "Share URL",
+      "views": "views",
+      "comments": "Comments",
+      "likes": "Likes",
+      "writeCommentPlaceholder": "Write a comment...",
+      "loginToWriteComment": "You can write a comment after logging in.",
+      "submitComment": "Post Comment"
     }
   }
 }
