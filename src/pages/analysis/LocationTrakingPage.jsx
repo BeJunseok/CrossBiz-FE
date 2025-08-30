@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import { calculatePolygonCenter } from '@/utils/mapUtils';
+import { boundaryData } from '@/data/boundary';
+
 import DashboardHeader from '@/components/Analysis/DashBoard/DashboardHeader';
 import BusinessDistribution from '@/components/Analysis/DashBoard/BusinessDistribution';
 import OpenCloseAnalysis from '@/components/Analysis/DashBoard/OpenCloseAnalysis';
@@ -28,11 +31,13 @@ import {
   formatTimeTraffic,
   formatQuarterlyFootfall,
 } from '@/utils/analysisDataFormatter';
-import { boundaryData } from '@/data/boundary';
+
+const CENTERS_CACHE_KEY = 'district_centers';
 
 export default function LocationTrackingPage() {
   const { id } = useParams();
   const [analysisData, setAnalysisData] = useState(null);
+  const [districtCenter, setDistrictCenter] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -55,6 +60,29 @@ export default function LocationTrackingPage() {
         if (!districtFeature) {
           throw new Error('해당 지역 정보를 찾을 수 없습니다.');
         }
+
+        // 구역의 중심점을 로컬스토리지에서 가져옴
+        const allCenters =
+          JSON.parse(localStorage.getItem(CENTERS_CACHE_KEY)) || {};
+        let center = allCenters[districtFeature.properties.adm_cd];
+
+        // 로컬스토리지에 없으면 직접 계산
+        if (!center) {
+          center = calculatePolygonCenter(
+            districtFeature.geometry.coordinates[0][0]
+          );
+
+          const updatedCenters = {
+            ...allCenters,
+            [districtFeature.properties.adm_cd]: center,
+          };
+          localStorage.setItem(
+            CENTERS_CACHE_KEY,
+            JSON.stringify(updatedCenters)
+          );
+        }
+
+        setDistrictCenter(center);
 
         const dong = districtFeature.properties.adm_nm;
 
@@ -133,7 +161,10 @@ export default function LocationTrackingPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <DashboardHeader locationData={analysisData.location} />
+      <DashboardHeader
+        locationData={analysisData.location}
+        districtCenter={districtCenter}
+      />
 
       <div className="max-w-6xl mx-auto pb-8">
         <BusinessDistribution

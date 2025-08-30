@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Map,
   Polygon,
@@ -15,6 +15,7 @@ import Loading from '@/components/common/Loading';
 import GradeMarker from '@/components/Analysis/Map/GradeMarker';
 
 const KAKAO_API_KEY = import.meta.env.VITE_KAKAO_MAP_API_KEY;
+const CENTERS_CACHE_KEY = 'district_centers';
 
 const KakaoMap = ({ onDistrictClick, className = '', selectedGrade }) => {
   const [scriptLoading, scriptError] = useKakaoLoader({
@@ -41,6 +42,7 @@ const KakaoMap = ({ onDistrictClick, className = '', selectedGrade }) => {
     };
   }, [districts]);
 
+  // 드롭다운에서 선택된 구역만 지도에 표시
   const filteredDistricts = useMemo(() => {
     if (!selectedGrade || selectedGrade === 'all') {
       return districts;
@@ -48,6 +50,31 @@ const KakaoMap = ({ onDistrictClick, className = '', selectedGrade }) => {
     const gradeNumber = parseInt(selectedGrade, 10);
     return districts.filter((district) => district.grade === gradeNumber);
   }, [districts, selectedGrade]);
+
+  // 로컬스토리지 저장 기능이 포함된 폴리곤 중심점 계산
+  const districtCenters = useMemo(() => {
+    if (districts.length === 0) return {};
+
+    const cachedCenters =
+      JSON.parse(localStorage.getItem(CENTERS_CACHE_KEY)) || {};
+    const newCenters = { ...cachedCenters };
+    let needsCacheUpdate = false;
+
+    districts.forEach((district) => {
+      if (!newCenters[district.id]) {
+        newCenters[district.id] = calculatePolygonCenter(
+          district.geometry.coordinates[0][0]
+        );
+        needsCacheUpdate = true;
+      }
+    });
+
+    if (needsCacheUpdate) {
+      localStorage.setItem(CENTERS_CACHE_KEY, JSON.stringify(newCenters));
+    }
+
+    return newCenters;
+  }, [districts]);
 
   // 지도 줌에 따라 마커를 표시
   const handleZoomChange = () => {
@@ -112,9 +139,7 @@ const KakaoMap = ({ onDistrictClick, className = '', selectedGrade }) => {
 
           {showMarkers &&
             filteredDistricts.map((district) => {
-              const center = calculatePolygonCenter(
-                district.geometry.coordinates[0][0]
-              );
+              const center = districtCenters[district.id];
               return (
                 <CustomOverlayMap key={district.id} position={center}>
                   <div onClick={() => onDistrictClick(district)}>
