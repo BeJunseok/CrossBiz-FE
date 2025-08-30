@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import HotPostItem from '@/components/Community/HotpostItem';
 import Fire from '@/assets/svg/community/Fire.svg?react';
+import { useTranslation } from 'react-i18next';
 
 const HotPostsSection = ({ hotPosts }) => {
+  const { t } = useTranslation();
   const posts = Array.isArray(hotPosts) ? hotPosts : [];
   const displayPosts = posts.slice(0, 3);
 
@@ -11,13 +13,15 @@ const HotPostsSection = ({ hotPosts }) => {
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-1.5">
           <Fire />
-          <h3 className="text-base font-semibold text-black">HOT 글</h3>
+          <h3 className="text-base font-semibold text-black">
+            {t('community.main.hotPosts')}
+          </h3>
         </div>
         <Link
           to={`/community/hotpost`}
           className="text-xs text-gray-400 cursor-pointer"
         >
-          더보기
+          {t('community.main.more')}
         </Link>
       </div>
 
@@ -28,7 +32,7 @@ const HotPostsSection = ({ hotPosts }) => {
           ))
         ) : (
           <div className="p-8 text-center text-gray-500 text-sm">
-            인기 게시글이 없습니다.
+            {t('community.main.noHotPosts')}
           </div>
         )}
       </div>
