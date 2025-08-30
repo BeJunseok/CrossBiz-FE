@@ -207,6 +207,11 @@
       "writeCommentPlaceholder": "Write a comment...",
       "loginToWriteComment": "You can write a comment after logging in.",
       "submitComment": "Post Comment"
+    },
+    "hotPost": {
+      "title": "HOT Posts",
+      "loading": "Loading...",
+      "error": "An error has occurred:"
     }
   }
 }

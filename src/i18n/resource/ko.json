@@ -207,6 +207,11 @@
       "writeCommentPlaceholder": "댓글을 작성해주세요...",
       "loginToWriteComment": "로그인 후 댓글을 작성할 수 있습니다.",
       "submitComment": "댓글 작성"
+    },
+    "hostPost": {
+      "title": "HOT 글",
+      "loading": "로딩중...",
+      "error": "오류가 발생했습니다:"
     }
   }
 }
