@@ -1,10 +1,10 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import Visa from '@/assets/svg/layout/visa.svg?react';
 import VisaON from '@/assets/svg/layout/visa-active.svg?react';
-import Analytics from '@/assets/svg/layout/analytics.svg?react';
-import AnalyticsON from '@/assets/svg/layout/analytics-active.svg?react';
-import Calendar from '@/assets/svg/layout/calendar.svg?react';
-import CalendarON from '@/assets/svg/layout/calendar-active.svg?react';
+import Analysis from '@/assets/svg/layout/analysis.svg?react';
+import AnalysisON from '@/assets/svg/layout/analysis-active.svg?react';
+import Tax from '@/assets/svg/layout/tax.svg?react';
+import TaxON from '@/assets/svg/layout/tax-active.svg?react';
 import Community from '@/assets/svg/layout/community.svg?react';
 import CommunityON from '@/assets/svg/layout/community-active.svg?react';
 
@@ -15,25 +15,29 @@ const BottomNavbar = () => {
   const navigationItems = [
     {
       id: 'visa',
-      path: '/visa',
+      label: '비자',
+      path: '/',
       icon: Visa,
       activeIcon: VisaON,
     },
     {
-      id: 'analytics',
-      path: '/analytics',
-      icon: Analytics,
-      activeIcon: AnalyticsON,
+      id: 'analysis',
+      label: '상권리포트',
+      path: '/analysis',
+      icon: Analysis,
+      activeIcon: AnalysisON,
     },
 
     {
-      id: 'calendar',
-      path: '/calendar',
-      icon: Calendar,
-      activeIcon: CalendarON,
+      id: 'tax',
+      label: '세무',
+      path: '/tax',
+      icon: Tax,
+      activeIcon: TaxON,
     },
     {
       id: 'community',
+      label: '커뮤니티',
       path: '/community',
       icon: Community,
       activeIcon: CommunityON,
@@ -51,14 +55,17 @@ const BottomNavbar = () => {
     return (
       <button
         onClick={() => handleNavigation(item.path)}
-        className={`flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200 bg-[#f3f3f3] ${
+        className={`w-[70px] h-16 flex flex-col items-center justify-center py-2 px-3 rounded-xl transition-all duration-200  ${
           isActive
-            ? 'transform scale-105 shadow-lg'
-            : 'hover:bg-gray-200'
+            ? 'bg-[#EBEAFF] transform scale-105 shadow-lg'
+            : 'bg-[#f3f3f3] hover:bg-gray-200'
         }`}
       >
-        <div className="w-10 h-10 flex items-center justify-center">
-          <IconComponent className="w-8 h-8" />
+        <div className="flex flex-col items-center justify-center">
+          <IconComponent className="w-12 h-8" />
+          <span className="mt-1 text-[10px] font-medium text-gray-600">
+            {item.label}
+          </span>
         </div>
       </button>
     );
