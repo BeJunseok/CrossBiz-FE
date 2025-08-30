@@ -19,7 +19,7 @@ export const GRADE_MAX = 5;
 
 // 기본 폴리곤 스타일
 export const defaultPolygonStyle = {
-  strokeWeight: 1,
+  strokeWeight: 1.8,
   strokeOpacity: 0.8,
   fillOpacity: 0.6,
 };

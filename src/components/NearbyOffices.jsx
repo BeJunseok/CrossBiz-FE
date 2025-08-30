@@ -1,12 +1,19 @@
-import { useEffect, useState, useMemo } from "react";
-import { useKakaoMap } from "../hooks/useKakaoMap";
-import { searchNearbyKeyword } from "../api/kakaoLocal";
-import MapIcon from "../assets/Map.svg"; // ← 아이콘
+import { useEffect, useState, useMemo } from 'react';
+import { Map, MapMarker, useKakaoLoader } from 'react-kakao-maps-sdk';
+import { searchNearbyKeyword } from '../api/kakaoLocal';
+import MapIcon from '../assets/Map.svg'; // ← 아이콘
+
+const KAKAO_API_KEY = import.meta.env.VITE_KAKAO_MAP_API_KEY;
 
 export default function NearbyOffices() {
-  const [pos, setPos] = useState(null);           // { lat, lng }
+  const [scriptLoading, scriptError] = useKakaoLoader({
+    appkey: KAKAO_API_KEY,
+  });
+
+  const [pos, setPos] = useState(null); // { lat, lng }
   const [items, setItems] = useState([]);
-  const [err, setErr] = useState("");
+  const [err, setErr] = useState('');
+  const [map, setMap] = useState(null);
 
   // km 포맷터 (m → km, 소수 1자리)
   const toKm = (mStr) => {
@@ -20,16 +27,9 @@ export default function NearbyOffices() {
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (p) => setPos({ lat: p.coords.latitude, lng: p.coords.longitude }),
-      () => setPos({ lat: 37.5665, lng: 126.9780 }) // 실패 시 서울시청
+      () => setPos({ lat: 37.5665, lng: 126.978 }) // 실패 시 서울시청
     );
   }, []);
-
-  const center = useMemo(
-    () => pos || { lat: 37.5665, lng: 126.9780 },
-    [pos]
-  );
-
-  const map = useKakaoMap("kakao-map", center);
 
   // 검색
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function NearbyOffices() {
     (async () => {
       try {
         const docs = await searchNearbyKeyword({
-          query: "출입국외국인청",
+          query: '출입국외국인청',
           lat: pos.lat,
           lng: pos.lng,
           radius: 100000,
@@ -52,20 +52,14 @@ export default function NearbyOffices() {
   // 마커
   useEffect(() => {
     if (!map || items.length === 0) return;
-    const { kakao } = window;
-    const bounds = new kakao.maps.LatLngBounds();
-    const markers = items.map((p) => {
-      const mk = new kakao.maps.Marker({
-        map,
-        position: new kakao.maps.LatLng(Number(p.y), Number(p.x)),
-        title: p.place_name,
-      });
-      bounds.extend(mk.getPosition());
-      return mk;
+    const bounds = new window.kakao.maps.LatLngBounds();
+    items.forEach((item) => {
+      bounds.extend(new window.kakao.maps.LatLng(item.y, item.x));
     });
     map.setBounds(bounds);
-    return () => markers.forEach((m) => m.setMap(null));
   }, [map, items]);
+
+  const error = err || scriptError;
 
   return (
     <section className="mt-6">
@@ -78,11 +72,24 @@ export default function NearbyOffices() {
       {/* 카드 박스 */}
       <div className="mt-2 rounded-2xl border border-gray-200 overflow-hidden bg-white">
         {/* 지도: 기존 h-56(224px) → 1.5배 ≈ 336px */}
-        <div id="kakao-map" className="w-full h-[336px] bg-gray-100" />
+        <Map
+          center={pos || { lat: 37.5665, lng: 126.978 }}
+          style={{ width: '100%', height: '336px' }}
+          onCreate={setMap}
+        >
+          {/* 4. items를 순회하며 MapMarker를 선언적으로 렌더링 */}
+          {items.map((item) => (
+            <MapMarker
+              key={item.id}
+              position={{ lat: item.y, lng: item.x }}
+              title={item.place_name}
+            />
+          ))}
+        </Map>
 
-        {err && (
+        {error && (
           <p className="px-4 py-3 text-sm text-red-600 break-words">
-            에러: {err}
+            에러: {String(error)}
           </p>
         )}
 
@@ -97,12 +104,12 @@ export default function NearbyOffices() {
                   {p.road_address_name || p.address_name}
                 </p>
                 <div className="mt-1 text-xs text-gray-400">
-                  {km ? `${km}km` : ""} · {p.phone || "전화번호 없음"}
+                  {km ? `${km}km` : ''} · {p.phone || '전화번호 없음'}
                 </div>
               </li>
             );
           })}
-          {items.length === 0 && !err && (
+          {items.length === 0 && !error && (
             <li className="p-4 text-sm text-gray-500">주변에 결과가 없어요.</li>
           )}
         </ul>

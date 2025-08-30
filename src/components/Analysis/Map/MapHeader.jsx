@@ -4,7 +4,7 @@ import { boundaryData } from '@/data/boundary';
 import Search from '@/assets/svg/common/Search0.svg?react';
 import ChevronDown from '@/assets/svg/common/ChevronDown.svg?react';
 
-const MapHeader = () => {
+const MapHeader = ({ selectedGrade, onGradeChange }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
@@ -35,12 +35,18 @@ const MapHeader = () => {
     'focus:border-2 focus:border-blue-500 focus:font-semibold ';
 
   // 드롭다운 컴포넌트
-  const Dropdown = ({ label, options, className = '' }) => (
+  const Dropdown = ({ label, options, value, onChange, className = '' }) => (
     <div className="relative">
-      <select className={`${baseFilterButtonClass} ${className}`}>
-        <option>{label}</option>
+      <select
+        className={`${baseFilterButtonClass} ${className}`}
+        value={value}
+        onChange={onChange}
+      >
+        <option value="all">{label}</option>
         {options?.map((opt) => (
-          <option key={opt}>{opt}</option>
+          <option key={opt} value={opt.replace('등급', '')}>
+            {opt}
+          </option>
         ))}
       </select>
       <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 cursor-pointer text-gray-500" />
@@ -72,6 +78,8 @@ const MapHeader = () => {
             label="입지 등급"
             options={['1등급', '2등급', '3등급', '4등급', '5등급']}
             className="w-[85px]"
+            value={selectedGrade}
+            onChange={onGradeChange}
           />
           <Dropdown
             label="업종"
