@@ -16,5 +16,141 @@
     "signIn": "Login",
     "signingIn": "Logging in...",
     "register": "Sign up"
+  },
+  "register": {
+    "basic": {
+      "idPlaceholder": "ID",
+      "passwordPlaceholder": "Password",
+      "confirmPasswordPlaceholder": "Confirm Password",
+      "confirmButton": "Confirm",
+      "loginPrompt": "Already have an account?",
+      "validation": {
+        "loginIdRequired": "Please enter an ID.",
+        "loginIdMin": "ID must be at least 4 characters.",
+        "loginIdRegex": "ID can only contain lowercase letters and numbers.",
+        "passwordRequired": "Please enter a password.",
+        "passwordMin": "Password must be at least 8 characters.",
+        "confirmPasswordRequired": "Please enter the password.",
+        "passwordMismatch": "Password does not match."
+      }
+    },
+    "personalInfo": {
+      "greeting": "Hello !",
+      "promptLine1": "To provide you with personalized information,",
+      "promptLine2": "please enter your details.",
+      "nameLabel": "Name",
+      "ageLabel": "Age",
+      "nationalityLabel": "Nationality",
+      "businessInfoLabel": "Business Information",
+      "selectPlaceholder": "Please select",
+      "nextButton": "Next",
+      "processingButton": "Processing...",
+      "errorNoLoginData": "Registration information not found. Please start over.",
+      "errorAlreadyExists": "This ID already exists.",
+      "errorBadRequest": "Please check your input.",
+      "errorServer": "A server error occurred. Please try again later.",
+      "errorGeneral": "An error occurred during sign-up.",
+      "validation": {
+        "nameRequired": "Please enter your name.",
+        "ageRequired": "Please select your age.",
+        "nationalityRequired": "Please select or enter your nationality.",
+        "statusRequired": "Please select or enter your business information."
+      }
+    },
+    "visaInfo": {
+      "titleLine1": "To provide customized data,",
+      "titleLine2": "we need more detailed information.",
+      "titleLine3": "(Optional)",
+      "residenceStatusLabel": "Residence Status",
+      "expectedStayPeriodLabel": "Expected Period of Stay",
+      "workExperienceLabel": "Work Experience",
+      "degreeLabel": "Degree",
+      "koreanProficiencyLabel": "Korean Proficiency",
+      "selectPlaceholder": "Please select",
+      "confirmButton": "Confirm",
+      "skipButton": "Skip",
+      "processingButton": "Processing...",
+      "successMessage": "Sign-up completed successfully.",
+      "errorServer": "A server error occurred. Please try again later.",
+      "errorGeneral": "An error occurred while registering information."
+    }
+  },
+  "dropdown": {
+    "directInputPlaceholder": "Please enter it yourself",
+    "age": {
+      "under10": "Under 10",
+      "20s30s": "20-30s",
+      "40s50s": "40-50s",
+      "60s_and_up": "60s or older"
+    },
+    "nationality": {
+      "china": "China",
+      "usa": "USA",
+      "turkey": "Turkey",
+      "thailand": "Thailand",
+      "other": "Other"
+    },
+    "businessInfo": {
+      "selfEmployed": "Self-employed",
+      "prospective": "Prospective Entrepreneur",
+      "other": "Other"
+    },
+    "category": {
+      "qna": "Q&A",
+      "discussion": "Discussion",
+      "help": "Help",
+      "tips": "Tips"
+    },
+    "residenceStatus": {
+      "student": "Student",
+      "jobSeeker": "Job Seeker",
+      "investor": "Business Investor",
+      "shortTerm": "Short-term General",
+      "training": "General Training",
+      "other": "Other"
+    },
+    "expectedStay": {
+      "under3m": "Under 3 months",
+      "under6m": "Under 6 months",
+      "under1y": "Under 1 year",
+      "under2y": "Under 2 years",
+      "under3y": "Under 3 years",
+      "under5y": "Under 5 years",
+      "permanent": "Permanent",
+      "unknown": "Unknown"
+    },
+    "workExperience": {
+      "none": "None",
+      "1y_plus": "1+ year",
+      "2y_plus": "2+ years",
+      "3y_plus": "3+ years",
+      "5y_plus": "5+ years",
+      "10y_plus": "10+ years"
+    },
+    "degree": {
+      "none": "None",
+      "highSchool": "High School Diploma",
+      "associate": "Associate Degree",
+      "bachelor": "Bachelor's Degree",
+      "master": "Master's Degree",
+      "doctorate": "Doctorate",
+      "other": "Other"
+    },
+    "koreanProficiency": {
+      "none": "None",
+      "basic": "Basic Conversation (TOPIK 1-2)",
+      "intermediate": "Intermediate (TOPIK 3-4)",
+      "advanced": "Advanced (TOPIK 5-6)",
+      "university": "Graduated from Korean University",
+      "other": "Other"
+    },
+    "industry": {
+      "restaurant": "Restaurant",
+      "retail": "Retail/Distribution",
+      "service": "Service",
+      "it": "IT",
+      "culture": "Culture/Art",
+      "other": "Other"
+    }
   }
 }
