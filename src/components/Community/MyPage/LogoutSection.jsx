@@ -1,12 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
+import { useTranslation } from 'react-i18next';
 
 const LogoutSection = ({ onLogout }) => {
+  const { t } = useTranslation();
   const nav = useNavigate();
   const { logout, isLoggedIn } = useAuthStore();
 
   const handleLogout = async () => {
-    if (!confirm('로그아웃 하시겠습니까?')) {
+    if (!confirm(t('community.myPage.logoutConfirm'))) {
       return;
     }
 
@@ -49,7 +51,7 @@ const LogoutSection = ({ onLogout }) => {
         onClick={handleLogout}
         className="w-full py-4 border border-gray-300 rounded-2xl text-gray-600 text-base font-semibold hover:bg-gray-50"
       >
-        로그아웃
+        {t('community.myPage.logout')}
       </button>
     </div>
   );

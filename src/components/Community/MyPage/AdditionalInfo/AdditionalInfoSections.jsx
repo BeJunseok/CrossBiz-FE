@@ -1,4 +1,5 @@
 import { InputField } from '@/components/common/InputField';
+import { useTranslation } from 'react-i18next';
 
 // 비자 정보
 export const VisaSection = ({
@@ -9,23 +10,25 @@ export const VisaSection = ({
   onIssueDateChange,
   onExpiryDateChange,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-8">
       <InputField
-        label="발급받은 비자 종류"
+        label={t('community.additionalInfo.visaTypeLabel')}
         value={visaType}
         onChange={onVisaTypeChange}
       />
 
       <div className="grid grid-cols-2 gap-8">
         <InputField
-          label="발급일"
+          label={t('community.additionalInfo.issueDateLabel')}
           value={issueDate}
           onChange={onIssueDateChange}
           type="date"
         />
         <InputField
-          label="만료일"
+          label={t('community.additionalInfo.expiryDateLabel')}
           value={expiryDate}
           onChange={onExpiryDateChange}
           type="date"
@@ -44,20 +47,22 @@ export const BusinessInfoSection = ({
   onAnnualRevenueChange,
   onEmployeeCountChange,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-8">
       <InputField
-        label="사업자등록번호"
+        label={t('community.additionalInfo.regNumberLabel')}
         value={businessRegistrationNumber}
         onChange={onBusinessRegistrationNumberChange}
       />
       <InputField
-        label="연매출"
+        label={t('community.additionalInfo.annualRevenueLabel')}
         value={annualRevenue}
         onChange={onAnnualRevenueChange}
       />
       <InputField
-        label="고용 인원"
+        label={t('community.additionalInfo.employeeCountLabel')}
         value={employeeCount}
         onChange={onEmployeeCountChange}
       />

@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import ChevronLeft from '@/assets/svg/common/ChevronLeft.svg?react';
+import { useTranslation } from 'react-i18next';
 
 const MyPageHeader = ({ onSave }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -17,7 +19,7 @@ const MyPageHeader = ({ onSave }) => {
         onClick={onSave}
         className="text-base font-medium text-black hover:text-gray-700"
       >
-        저장
+        {t('community.myPage.save')}
       </button>
     </div>
   );

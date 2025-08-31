@@ -235,6 +235,47 @@
       "noRecentSearches": "No recent search history.",
       "views": "Views",
       "comments": "Comments"
+    },
+    "myPage": {
+      "loading": "Loading information...",
+      "dataFetchError": "Failed to load data.",
+      "save": "Save",
+      "myInfo": "My Info",
+      "nameLabel": "Name",
+      "ageLabel": "Age",
+      "nationalityLabel": "Nationality",
+      "businessInfoLabel": "Business Information",
+      "residenceStatusLabel": "Residence Status",
+      "expectedStayPeriodLabel": "Expected Period of Stay",
+      "workExperienceLabel": "Work Experience",
+      "degreeLabel": "Degree",
+      "koreanProficiencyLabel": "Korean Proficiency",
+      "more": "more",
+      "myPosts": "My Posts",
+      "noPosts": "You have not written any posts.",
+      "logout": "Logout",
+      "logoutConfirm": "Are you sure you want to log out?",
+      "profileSaveSuccess": "Profile saved successfully.",
+      "profileSaveError": "Failed to save: {{message}}"
+    },
+    "additionalInfo": {
+      "saving": "Saving...",
+      "saveSuccess": "Additional information saved successfully.",
+      "saveError": "Failed to save.",
+      "businessTypeLabel": "Planned Business Type",
+      "patentLabel": "Patent/IP Ownership",
+      "patentYes": "Yes",
+      "patentNo": "No",
+      "operatingFundLabel": "Operating Funds",
+      "oasisScoreLabel": "OASIS Score (Optional)",
+      "visaInfoTitle": "Visa Information",
+      "visaTypeLabel": "Issued Visa Type",
+      "issueDateLabel": "Date of Issue",
+      "expiryDateLabel": "Date of Expiry",
+      "businessInfoTitle": "Business Information",
+      "regNumberLabel": "Business Registration Number",
+      "annualRevenueLabel": "Annual Revenue",
+      "employeeCountLabel": "Number of Employees"
     }
   }
 }

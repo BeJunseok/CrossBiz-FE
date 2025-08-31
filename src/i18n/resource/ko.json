@@ -208,7 +208,7 @@
       "loginToWriteComment": "로그인 후 댓글을 작성할 수 있습니다.",
       "submitComment": "댓글 작성"
     },
-    "hostPost": {
+    "hotPost": {
       "title": "HOT 글",
       "loading": "로딩중...",
       "error": "오류가 발생했습니다:"
@@ -235,6 +235,47 @@
       "noRecentSearches": "최근 검색 기록이 없습니다.",
       "views": "조회",
       "comments": "댓글"
+    },
+    "myPage": {
+      "loading": "정보를 불러오는 중...",
+      "dataFetchError": "데이터를 불러오는 데 실패했습니다.",
+      "save": "저장",
+      "myInfo": "내 정보",
+      "nameLabel": "이름",
+      "ageLabel": "나이",
+      "nationalityLabel": "국적",
+      "businessInfoLabel": "사업자 정보",
+      "residenceStatusLabel": "체류 자격",
+      "expectedStayPeriodLabel": "예상 체류 기간",
+      "workExperienceLabel": "근무 경력",
+      "degreeLabel": "학위",
+      "koreanProficiencyLabel": "한국어 능력",
+      "more": "더보기",
+      "myPosts": "내가 쓴 글",
+      "noPosts": "작성한 글이 없습니다.",
+      "logout": "로그아웃",
+      "logoutConfirm": "로그아웃 하시겠습니까?",
+      "profileSaveSuccess": "프로필이 성공적으로 저장되었습니다.",
+      "profileSaveError": "저장에 실패했습니다: {{message}}"
+    },
+    "additionalInfo": {
+      "saving": "저장하는 중...",
+      "saveSuccess": "추가 정보가 저장되었습니다.",
+      "saveError": "저장에 실패했습니다.",
+      "businessTypeLabel": "예정 사업장 형태",
+      "patentLabel": "특허/지식재산권 보유 여부",
+      "patentYes": "예",
+      "patentNo": "아니오",
+      "operatingFundLabel": "영업준비금",
+      "oasisScoreLabel": "오아시스 점수 (선택)",
+      "visaInfoTitle": "비자 정보",
+      "visaTypeLabel": "발급받은 비자 종류",
+      "issueDateLabel": "발급일",
+      "expiryDateLabel": "만료일",
+      "businessInfoTitle": "사업자 정보",
+      "regNumberLabel": "사업자등록번호",
+      "annualRevenueLabel": "연매출",
+      "employeeCountLabel": "고용 인원"
     }
   }
 }

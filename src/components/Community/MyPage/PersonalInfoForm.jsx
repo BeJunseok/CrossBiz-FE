@@ -1,28 +1,90 @@
+import { useMemo } from 'react';
 import Dropdown from '@/components/common/Dropdown';
 import { dropdownOptions } from '@/constants/dropdownOptions';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-const {
-  AGE_OPTIONS,
-  NATIONALITY_OPTIONS,
-  BUSINESS_INFO_OPTIONS,
-  RESIDENCE_STATUS_OPTIONS,
-  EXPECTED_STAY_PERIOD_OPTIONS,
-  WORK_EXPERIENCE_OPTIONS,
-  DEGREE_OPTIONS,
-  KOREAN_PROFICIENCY_OPTIONS,
-} = dropdownOptions;
-
 const PersonalInfoForm = ({ formData, errors, onFieldChange }) => {
+  const { t } = useTranslation();
+
+  const ageOptions = useMemo(
+    () =>
+      dropdownOptions.AGE_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.age.${opt.key}`),
+      })),
+    [t]
+  );
+  const nationalityOptions = useMemo(
+    () =>
+      dropdownOptions.NATIONALITY_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.nationality.${opt.key}`),
+      })),
+    [t]
+  );
+  const businessInfoOptions = useMemo(
+    () =>
+      dropdownOptions.BUSINESS_INFO_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.businessInfo.${opt.key}`),
+      })),
+    [t]
+  );
+  const residenceStatusOptions = useMemo(
+    () =>
+      dropdownOptions.RESIDENCE_STATUS_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.residenceStatus.${opt.key}`),
+      })),
+    [t]
+  );
+  const expectedStayPeriodOptions = useMemo(
+    () =>
+      dropdownOptions.EXPECTED_STAY_PERIOD_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.expectedStay.${opt.key}`),
+      })),
+    [t]
+  );
+  const workExperienceOptions = useMemo(
+    () =>
+      dropdownOptions.WORK_EXPERIENCE_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.workExperience.${opt.key}`),
+      })),
+    [t]
+  );
+  const degreeOptions = useMemo(
+    () =>
+      dropdownOptions.DEGREE_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.degree.${opt.key}`),
+      })),
+    [t]
+  );
+  const koreanProficiencyOptions = useMemo(
+    () =>
+      dropdownOptions.KOREAN_PROFICIENCY_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.koreanProficiency.${opt.key}`),
+      })),
+    [t]
+  );
+
   return (
     <div className="px-8 pb-14">
-      <h3 className="text-base font-semibold text-black mb-5">내 정보</h3>
+      <h3 className="text-base font-semibold text-black mb-5">
+        {t('community.myPage.myInfo')}
+      </h3>
 
       <div className="space-y-8">
         {/* 이름 */}
         <div className="space-y-6">
           <div>
-            <label className="block text-gray-600 text-sm mb-6">이름</label>
+            <label className="block text-gray-600 text-sm mb-6">
+              {t('community.myPage.nameLabel')}
+            </label>
             <div className="border-b border-gray-200 pb-2">
               <input
                 type="text"
@@ -36,9 +98,11 @@ const PersonalInfoForm = ({ formData, errors, onFieldChange }) => {
 
         {/* 나이 */}
         <div>
-          <label className="block text-gray-600 text-sm mb-3">나이</label>
+          <label className="block text-gray-600 text-sm mb-3">
+            {t('community.myPage.ageLabel')}
+          </label>
           <Dropdown
-            options={AGE_OPTIONS}
+            options={ageOptions}
             value={formData.age}
             onChange={(value) => onFieldChange('age', value)}
             error={errors.age}
@@ -47,9 +111,11 @@ const PersonalInfoForm = ({ formData, errors, onFieldChange }) => {
 
         {/* 국적 */}
         <div>
-          <label className="block text-gray-600 text-sm mb-3">국적</label>
+          <label className="block text-gray-600 text-sm mb-3">
+            {t('community.myPage.nationalityLabel')}
+          </label>
           <Dropdown
-            options={NATIONALITY_OPTIONS}
+            options={nationalityOptions}
             value={formData.nationality}
             onChange={(value) => onFieldChange('nationality', value)}
             error={errors.nationality}
@@ -59,10 +125,10 @@ const PersonalInfoForm = ({ formData, errors, onFieldChange }) => {
         {/* 사업자 정보 */}
         <div>
           <label className="block text-gray-600 text-sm mb-3">
-            사업자 정보
+            {t('community.myPage.businessInfoLabel')}
           </label>
           <Dropdown
-            options={BUSINESS_INFO_OPTIONS}
+            options={businessInfoOptions}
             value={formData.businessInfo}
             onChange={(value) => onFieldChange('businessInfo', value)}
             error={errors.businessInfo}
@@ -70,24 +136,24 @@ const PersonalInfoForm = ({ formData, errors, onFieldChange }) => {
         </div>
 
         {/* 체류 자격과 예상 체류 기간 */}
-        <div className="grid grid-cols-5 gap-4">
-          <div className="col-span-2">
+        <div className="grid grid-cols-7 gap-4">
+          <div className="col-span-3">
             <label className="block text-gray-600 text-sm mb-3">
-              체류 자격
+              {t('community.myPage.residenceStatusLabel')}
             </label>
             <Dropdown
-              options={RESIDENCE_STATUS_OPTIONS}
+              options={residenceStatusOptions}
               value={formData.residenceStatus}
               onChange={(value) => onFieldChange('residenceStatus', value)}
               error={errors.residenceStatus}
             />
           </div>
-          <div className="col-span-3">
+          <div className="col-span-4">
             <label className="block text-gray-600 text-sm mb-3">
-              예상 체류 기간
+              {t('community.myPage.expectedStayPeriodLabel')}
             </label>
             <Dropdown
-              options={EXPECTED_STAY_PERIOD_OPTIONS}
+              options={expectedStayPeriodOptions}
               value={formData.expectedStayPeriod}
               onChange={(value) => onFieldChange('expectedStayPeriod', value)}
               error={errors.expectedStayPeriod}
@@ -96,22 +162,24 @@ const PersonalInfoForm = ({ formData, errors, onFieldChange }) => {
         </div>
 
         {/* 근무 경력과 학위 */}
-        <div className="grid grid-cols-5 gap-4">
-          <div className="col-span-2">
+        <div className="grid grid-cols-7 gap-4">
+          <div className="col-span-3">
             <label className="block text-gray-600 text-sm mb-3">
-              근무 경력
+              {t('community.myPage.workExperienceLabel')}
             </label>
             <Dropdown
-              options={WORK_EXPERIENCE_OPTIONS}
+              options={workExperienceOptions}
               value={formData.workExperience}
               onChange={(value) => onFieldChange('workExperience', value)}
               error={errors.workExperience}
             />
           </div>
-          <div className="col-span-3">
-            <label className="block text-gray-600 text-sm mb-3">학위</label>
+          <div className="col-span-4">
+            <label className="block text-gray-600 text-sm mb-3">
+              {t('community.myPage.degreeLabel')}
+            </label>
             <Dropdown
-              options={DEGREE_OPTIONS}
+              options={degreeOptions}
               value={formData.education}
               onChange={(value) => onFieldChange('education', value)}
               error={errors.education}
@@ -122,10 +190,10 @@ const PersonalInfoForm = ({ formData, errors, onFieldChange }) => {
         {/* 한국어 능력 */}
         <div>
           <label className="block text-gray-600 text-sm mb-3">
-            한국어 능력
+            {t('community.myPage.koreanProficiencyLabel')}
           </label>
           <Dropdown
-            options={KOREAN_PROFICIENCY_OPTIONS}
+            options={koreanProficiencyOptions}
             value={formData.koreanProficiency}
             onChange={(value) => onFieldChange('koreanProficiency', value)}
             error={errors.koreanProficiency}
@@ -136,7 +204,7 @@ const PersonalInfoForm = ({ formData, errors, onFieldChange }) => {
       {/* 더보기 텍스트 */}
       <div className="text-right mt-8">
         <Link to="/community/my/edit" className="text-gray-600 text-sm">
-          더보기
+          {t('community.myPage.more')}
         </Link>
       </div>
     </div>
