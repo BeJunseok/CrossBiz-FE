@@ -1,10 +1,18 @@
+import i18n from '@/i18n/setting';
+
+const parseUTCDate = (dateString) => {
+  if (typeof dateString === 'string' && !dateString.endsWith('Z')) {
+    return new Date(dateString + 'Z');
+  }
+
+  return new Date(dateString);
+};
+
 export const getTimeAgo = (createdAt) => {
+  const { t, language } = i18n;
+
   const now = new Date();
-  const created = new Date(
-    typeof createdAt === 'string' && !createdAt.endsWith('Z')
-      ? createdAt + 'Z'
-      : createdAt,
-  );
+  const created = parseUTCDate(createdAt);
 
   const diffInMs = now.getTime() - created.getTime();
   const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
@@ -12,13 +20,13 @@ export const getTimeAgo = (createdAt) => {
   const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
   if (diffInMinutes < 1) {
-    return '방금 전';
+    return t('time.justNow');
   } else if (diffInMinutes < 60) {
-    return `${diffInMinutes} 분 전`;
+    return t('time.minuteAgo', { count: diffInMinutes });
   } else if (diffInHours < 24) {
-    return `${diffInHours} 시간 전`;
+    return t('time.hourAgo', { count: diffInHours });
   } else if (diffInDays < 7) {
-    return `${diffInDays} 일 전`;
+    return t('time.dayAgo', { count: diffInDays });
   } else {
     // 올해인지 체크
     const nowYear = now.getFullYear();
@@ -26,13 +34,13 @@ export const getTimeAgo = (createdAt) => {
 
     if (nowYear === createdYear) {
       // 올해면 월, 일만 표시
-      return created.toLocaleDateString('ko-KR', {
+      return created.toLocaleDateString(language, {
         month: 'long',
         day: 'numeric',
       });
     } else {
       // 이전 연도면 연도까지 표시
-      return created.toLocaleDateString('ko-KR', {
+      return created.toLocaleDateString(language, {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -42,26 +50,22 @@ export const getTimeAgo = (createdAt) => {
 };
 
 export const formatDateTime = (dateString) => {
-  const date = new Date(
-    typeof dateString === 'string' && !dateString.endsWith('Z')
-      ? dateString + 'Z'
-      : dateString,
-  );
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  return `${month}/${day} ${hours}:${minutes}`;
+  const date = parseUTCDate(dateString);
+
+  return date.toLocaleString(i18n.language, {
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
 };
 
 export const formatDateOnly = (dateString) => {
-  const date = new Date(
-    typeof dateString === 'string' && !dateString.endsWith('Z')
-      ? dateString + 'Z'
-      : dateString,
-  );
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  const date = parseUTCDate(dateString);
 
-  return `${month}/${day}`;
+  return date.toLocaleString(i18n.language, {
+    month: '2-digit',
+    day: '2-digit',
+  });
 };

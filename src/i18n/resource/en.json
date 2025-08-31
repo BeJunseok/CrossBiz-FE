@@ -277,5 +277,14 @@
       "annualRevenueLabel": "Annual Revenue",
       "employeeCountLabel": "Number of Employees"
     }
+  },
+  "time": {
+    "justNow": "Just now",
+    "minuteAgo_one": "{{count}} minute ago",
+    "minuteAgo_other": "{{count}} minutes ago",
+    "hourAgo_one": "{{count}} hour ago",
+    "hourAgo_other": "{{count}} hours ago",
+    "dayAgo_one": "{{count}} day ago",
+    "dayAgo_other": "{{count}} days ago"
   }
 }
