@@ -1,7 +1,9 @@
 import { getTimeAgo } from '@/utils/dateUtils';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 const SearchResultItem = ({ result, searchTerm, isHighlighted = false }) => {
+  const { t } = useTranslation();
   const nav = useNavigate();
 
   const handleClick = () => {
@@ -43,8 +45,12 @@ const SearchResultItem = ({ result, searchTerm, isHighlighted = false }) => {
           </div>
           <div className="flex items-center gap-2 text-gray-400 text-xs font-medium">
             <span>{getTimeAgo(result.createdAt)}</span>
-            <span>조회 {result.view}</span>
-            <span>댓글 {result.commentCount}</span>
+            <span>
+              {t('community.search.views')} {result.view}
+            </span>
+            <span>
+              {t('community.search.comments')} {result.commentCount}
+            </span>
           </div>
         </div>
       </div>

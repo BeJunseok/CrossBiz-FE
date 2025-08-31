@@ -1,8 +1,10 @@
 import Search from '@/assets/svg/community/Search1.svg?react';
 import SearchResultItem from '@/components/Community/Search/SearchResultItem';
 import Loading from '@/components/common/Loading';
+import { useTranslation } from 'react-i18next';
 
 const SearchResults = ({ searchResults, searchTerm, isSearching }) => {
+  const { t } = useTranslation();
   const posts = searchResults?.content || [];
   const totalElements = searchResults?.totalElements || 0;
 
@@ -11,7 +13,7 @@ const SearchResults = ({ searchResults, searchTerm, isSearching }) => {
     if (isSearching) {
       return (
         <div className="flex justify-center py-20">
-          <Loading message="검색 중..." />
+          <Loading message={t('community.search.searching')} />
         </div>
       );
     }
@@ -21,8 +23,10 @@ const SearchResults = ({ searchResults, searchTerm, isSearching }) => {
       return (
         <div className="flex flex-col items-center justify-center py-20 text-gray-500">
           <Search className="mb-4 text-gray-300 w-12 h-12" />
-          <p className="text-sm">검색 결과가 없습니다.</p>
-          <p className="text-xs mt-2">다른 검색어를 입력해보세요!</p>
+          <p className="text-sm">{t('community.search.noResults')}</p>
+          <p className="text-xs mt-2">
+            {t('community.search.tryDifferentKeyword')}
+          </p>
         </div>
       );
     }
@@ -47,7 +51,7 @@ const SearchResults = ({ searchResults, searchTerm, isSearching }) => {
       {/* 검색 결과 개수 */}
       <div className="h-8 overflow-hidden px-6 pt-3 pb-1">
         <div className="text-gray-500 text-xs font-medium">
-          {totalElements} 건
+          {t('community.search.resultsCount', { count: totalElements })}
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import X from '@/assets/svg/community/X.svg?react';
 import Search from '@/assets/svg/community/Search1.svg?react';
+import { useTranslation } from 'react-i18next';
 
 const RecentSearches = ({
   recentSearches,
@@ -7,11 +8,13 @@ const RecentSearches = ({
   onRemoveSearch,
   onClearAll,
 }) => {
+  const { t } = useTranslation();
+
   if (recentSearches.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-gray-500">
         <Search className="mb-4 text-gray-300 w-12 h-12" />
-        <p className="text-sm">최근 검색 기록이 없습니다.</p>
+        <p className="text-sm">{t('community.search.noRecentSearches')}</p>
       </div>
     );
   }
@@ -19,12 +22,14 @@ const RecentSearches = ({
   return (
     <div className="px-4 py-6 bg-white">
       <div className="flex justify-between items-center mb-4 pb-4 border-b border-[#E8E8E8]">
-        <h3 className="text-base font-medium text-gray-900">최근 검색어</h3>
+        <h3 className="text-base font-medium text-gray-900">
+          {t('community.search.recentSearches')}
+        </h3>
         <button
           onClick={onClearAll}
           className="text-xs text-gray-500 hover:text-gray-700"
         >
-          전체삭제
+          {t('community.search.clearAll')}
         </button>
       </div>
 

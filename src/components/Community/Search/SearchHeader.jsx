@@ -1,5 +1,6 @@
 import ChevronLeft from '@/assets/svg/common/ChevronLeft.svg?react';
 import Search from '@/assets/svg/community/Search1.svg?react';
+import { useTranslation } from 'react-i18next';
 
 const SearchHeader = ({
   searchTerm,
@@ -8,6 +9,8 @@ const SearchHeader = ({
   onSearch,
   onKeyDown,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="flex items-center p-2.5 h-18">
       <div className="flex items-center gap-2">
@@ -22,7 +25,7 @@ const SearchHeader = ({
               value={searchTerm}
               onChange={onSearchTermChange}
               onKeyDown={onKeyDown}
-              placeholder="글 제목, 내용"
+              placeholder={t('community.search.placeholder')}
               className="text-gray-800 text-sm font-medium flex-1 outline-none border-none bg-transparent leading-10"
               autoFocus
             />

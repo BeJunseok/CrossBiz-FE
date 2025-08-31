@@ -223,6 +223,18 @@
       "validationError": "Please fill in all fields.",
       "submitSuccess": "Post submitted successfully.",
       "submitError": "Failed to submit post: {{message}}"
+    },
+    "search": {
+      "placeholder": "Title, content",
+      "searching": "Searching...",
+      "resultsCount": "{{count}} results",
+      "noResults": "No search results found.",
+      "tryDifferentKeyword": "Try a different keyword!",
+      "recentSearches": "Recent Searches",
+      "clearAll": "Clear All",
+      "noRecentSearches": "No recent search history.",
+      "views": "Views",
+      "comments": "Comments"
     }
   }
 }
