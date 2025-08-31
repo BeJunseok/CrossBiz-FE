@@ -212,6 +212,17 @@
       "title": "HOT 글",
       "loading": "로딩중...",
       "error": "오류가 발생했습니다:"
+    },
+    "newPost": {
+      "submitButton": "등록",
+      "categoryPlaceholder": "카테고리 선택",
+      "industryPlaceholder": "업종 선택",
+      "titlePlaceholder": "제목을 입력해주세요.",
+      "contentPlaceholder": "내용을 입력해주세요.",
+      "submitting": "글을 등록하는 중...",
+      "validationError": "모든 필드를 입력해주세요.",
+      "submitSuccess": "게시글이 성공적으로 등록되었습니다.",
+      "submitError": "글 등록에 실패했습니다: {{message}}"
     }
   }
 }

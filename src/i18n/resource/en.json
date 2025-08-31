@@ -212,6 +212,17 @@
       "title": "HOT Posts",
       "loading": "Loading...",
       "error": "An error has occurred:"
+    },
+    "newPost": {
+      "submitButton": "Submit",
+      "categoryPlaceholder": "Select Category",
+      "industryPlaceholder": "Select Industry",
+      "titlePlaceholder": "Title",
+      "contentPlaceholder": "Please enter the content.",
+      "submitting": "Submitting post...",
+      "validationError": "Please fill in all fields.",
+      "submitSuccess": "Post submitted successfully.",
+      "submitError": "Failed to submit post: {{message}}"
     }
   }
 }

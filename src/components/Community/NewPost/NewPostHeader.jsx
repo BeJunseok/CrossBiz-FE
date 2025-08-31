@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import ChevronLeft from '@/assets/svg/common/ChevronLeft.svg?react';
+import { useTranslation } from 'react-i18next';
 
 const NewPostHeader = ({ onSubmit, isFormValid }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -23,7 +25,7 @@ const NewPostHeader = ({ onSubmit, isFormValid }) => {
               : 'text-gray-400 cursor-not-allowed'
           }`}
         >
-          등록
+          {t('community.newPost.submitButton')}
         </button>
       </div>
     </div>
