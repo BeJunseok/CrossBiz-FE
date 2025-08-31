@@ -1,4 +1,10 @@
 {
+  "bottomNav": {
+    "visa": "Visa",
+    "report": "Analysis",
+    "tax": "Tax",
+    "community": "Community"
+  },
   "onboarding": {
     "subtitle1": "From visa · taxes to commercial district tracking.",
     "subtitle2": "Your own business assistant",

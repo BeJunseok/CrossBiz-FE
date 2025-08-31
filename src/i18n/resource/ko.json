@@ -1,4 +1,10 @@
 {
+  "bottomNav": {
+    "visa": "비자",
+    "report": "상권리포트",
+    "tax": "세무",
+    "community": "커뮤니티"
+  },
   "onboarding": {
     "subtitle1": "비자 · 세금부터 상권 트래킹까지.",
     "subtitle2": "나만의 비즈니스 도우미",
