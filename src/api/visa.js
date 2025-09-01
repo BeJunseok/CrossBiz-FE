@@ -1,8 +1,15 @@
 // src/api/visa.js
-const BASE = "https://crossbiz.store"; // or "https://www.crossbiz.store"
+import axiosInstance from "@/lib/axiosInstance";
 
-export async function fetchVisaRecommendWith() {
-  const payload = {
+/** 프로덕션에서는 과도한 로그 억제 */
+const log = (...args) => {
+  if (import.meta.env.DEV) console.log(...args);
+};
+const logErr = (...args) => console.error(...args);
+
+/** 공통 payload 빌더 */
+export function buildVisaPayload(partial = {}) {
+  const base = {
     basicInfo: {
       userId: 2,
       age: 35,
@@ -26,25 +33,21 @@ export async function fetchVisaRecommendWith() {
     },
   };
 
+  return {
+    basicInfo: { ...base.basicInfo, ...(partial.basicInfo || {}) },
+    withVisaInfo: { ...base.withVisaInfo, ...(partial.withVisaInfo || {}) },
+  };
+}
+
+/** 서버 POST만 사용 (저장/로드 공용) */
+export async function postVisaRecommendWith(partial = {}) {
+  const payload = buildVisaPayload(partial);
   try {
-    const res = await fetch(`${BASE}/api/visa/recommend/without`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    // 상태코드 확인
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      throw new Error(`HTTP ${res.status} ${res.statusText} :: ${text}`);
-    }
-
-    const data = await res.json();
-    console.log("✅ /api/visa/recommend/with 응답:", data);
-    return data;
+    const res = await axiosInstance.post("/visa/recommend/with", payload);
+    log("✅ /visa/recommend/with 응답:", res?.data);
+    return { data: res?.data ?? null, payload };
   } catch (err) {
-    // CORS / 네트워크 오류 로그
-    console.error("❌ API 호출 실패:", err);
-    return null;
+    logErr("❌ /visa/recommend/with 실패:", err?.message || err);
+    return { data: null, payload, error: err };
   }
 }

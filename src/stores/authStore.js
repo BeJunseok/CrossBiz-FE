@@ -9,7 +9,7 @@ export const useAuthStore = create(
       user: null,
       userId: null, 
 
-      login: (accessToken, userData) => {
+      login: (accessToken, userData, refreshToken) => {
         set({
           isLoggedIn: true,
           accessToken,

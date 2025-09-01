@@ -5,6 +5,7 @@ import commonUser from "../../data/commonUser.json"; // ✅ 추가
 
 export default function ConfirmMore() {
   const navigate = useNavigate();
+  console.log("ConfirmMore mounted");
 
   // ✅ CommonUser.json에서 기본값 추출
   const wv = commonUser?.request?.withoutVisaInfo ?? {};

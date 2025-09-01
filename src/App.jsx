@@ -19,16 +19,16 @@ import MyPage from '@/pages/community/MyPage';
 import AdditionalInfoPage from '@/pages/community/AdditionalInfoPage';
 import MapView from '@/pages/analysis/MapView';
 import LocationTrackingPage from '@/pages/analysis/LocationTrakingPage';
-import VisaRecommend from './pages/Visa/VisaRecommend';
-import ConfirmCheck from './pages/Visa/ConfirmCheck';
-import ConfirmMore from './pages/Visa/ConfirmMore';
-import ConfirmVisa from './pages/Visa/ConfirmVisa';
-import LoadingPreviousInfo from './pages/Visa/LoadingPreviousInfo';
-import VisaLoading from './pages/Visa/VisaLoading';
-import VisaInfo from './pages/Visa/VisaInfo';
-import VisaHistory from './pages/Visa/VisaHistory';
-import HistoryMatch from './pages/Visa/HistoryMatch';
-import VisaHome from './pages/Visa/VisaHome';
+import VisaRecommend from '@/pages/Visa/VisaRecommend';
+import ConfirmCheck from '@/pages/Visa/ConfirmCheck.jsx';
+import ConfirmMore from '@/pages/Visa/ConfirmMore.jsx';
+import ConfirmVisa from '@/pages/Visa/ConfirmVisa.jsx';
+import LoadingPreviousInfo from '@/pages/Visa/LoadingPreviousInfo';
+import VisaLoading from '@/pages/Visa/VisaLoading';
+import VisaInfo from '@/pages/Visa/VisaInfo';
+import VisaHistory from '@/pages/Visa/VisaHistory';
+import HistoryMatch from '@/pages/Visa/HistoryMatch';
+import VisaHome from '@/pages/Visa/VisaHome';
 
 function App() {
   return (

@@ -13,7 +13,7 @@ export default function VisaLoading({ userName = "Anna" }) {
 
   // 부모가 넘긴 값 (없으면 기본 "history")
   const from = location.state?.from ?? "history";
-  const raw  = location.state?.raw;
+  const raw  = location.state?.raw ?? location.state?.recommendData ?? null;
 
   // 3초 후 추천 페이지로 이동
   useEffect(() => {
