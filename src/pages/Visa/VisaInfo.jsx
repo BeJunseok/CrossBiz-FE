@@ -16,7 +16,7 @@ import URLIcon from '../../assets/URL.svg';
 import CancelIcon from '../../assets/Cancel.svg';
 
 import visaUser from '../../data/visaUser.json';
-import commonUser from '../../data/commonUser.json';
+import commonUser from '@/data/CommonUser.json';
 
 const A = (v) => (Array.isArray(v) ? v : v ? [v] : []);
 const normalize = (s = '') =>
