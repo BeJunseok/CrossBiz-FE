@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Header from '@/components/Community/Header';
 import NewsSection from '@/components/Community/NewsSection';
-import HotPostsSection from '@/components/Community/HotPostsSection';
+import HotPostsSection from '@/components/Community/HotpostsSection';
 import RecentPostsSection from '@/components/Community/RecentPostsSection';
 import Write from '@/assets/svg/community/Write.svg?react';
 import { useNavigate } from 'react-router-dom';
