@@ -1,21 +1,15 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import Dropdown from '@/components/common/Dropdown';
 import { visaInfoSchema } from '@/utils/validation';
 import { dropdownOptions } from '@/constants/dropdownOptions';
-import { signupDetail } from '@/api/auth/Auth'; // API 함수 경로 확인 필요
-
-const {
-  DEGREE_OPTIONS,
-  RESIDENCE_STATUS_OPTIONS, // API의 bizCategory 필드에 해당
-  KOREAN_PROFICIENCY_OPTIONS,
-  EXPECTED_STAY_PERIOD_OPTIONS,
-  WORK_EXPERIENCE_OPTIONS,
-} = dropdownOptions;
+import { signupDetail } from '@/api/auth/Auth';
+import { useTranslation } from 'react-i18next';
 
 const VisaInfoPage = () => {
+  const { t } = useTranslation();
   const nav = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -24,6 +18,51 @@ const VisaInfoPage = () => {
     resolver: zodResolver(visaInfoSchema),
     mode: 'onChange',
   });
+
+  const residenceStatusOptions = useMemo(
+    () =>
+      dropdownOptions.RESIDENCE_STATUS_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.residenceStatus.${opt.key}`),
+      })),
+    [t]
+  );
+
+  const expectedStayPeriodOptions = useMemo(
+    () =>
+      dropdownOptions.EXPECTED_STAY_PERIOD_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.expectedStay.${opt.key}`),
+      })),
+    [t]
+  );
+
+  const workExperienceOptions = useMemo(
+    () =>
+      dropdownOptions.WORK_EXPERIENCE_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.workExperience.${opt.key}`),
+      })),
+    [t]
+  );
+
+  const degreeOptions = useMemo(
+    () =>
+      dropdownOptions.DEGREE_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.degree.${opt.key}`),
+      })),
+    [t]
+  );
+
+  const koreanProficiencyOptions = useMemo(
+    () =>
+      dropdownOptions.KOREAN_PROFICIENCY_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.koreanProficiency.${opt.key}`),
+      })),
+    [t]
+  );
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
@@ -44,22 +83,22 @@ const VisaInfoPage = () => {
         Object.entries(apiData).filter(([_, value]) => value)
       );
 
-      console.log('추가 정보 API 데이터:', filteredData);
+      //console.log('추가 정보 API 데이터:', filteredData);
 
       // 전송할 추가 정보가 있을 경우에만 API를 호출합니다.
       if (Object.keys(filteredData).length > 0) {
         await signupDetail(filteredData);
       }
 
-      alert('회원가입이 성공적으로 완료되었습니다.');
+      alert(t('register.visaInfo.successMessage'));
       nav('/login');
     } catch (error) {
       console.error('추가 정보 등록 오류:', error);
       if (error.response?.status >= 500) {
-        setError('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        setError(t('register.visaInfo.errorServer'));
       } else {
         setError(
-          error.response?.data?.message || '정보 등록 중 오류가 발생했습니다.'
+          error.response?.data?.message || t('register.visaInfo.errorGeneral')
         );
       }
     } finally {
@@ -69,7 +108,7 @@ const VisaInfoPage = () => {
 
   // '건너뛰기' 버튼을 누르면 바로 로그인 페이지로 이동합니다.
   const handleSkip = () => {
-    alert('회원가입이 성공적으로 완료되었습니다.');
+    alert(t('register.visaInfo.successMessage'));
     nav('/login');
   };
 
@@ -81,30 +120,30 @@ const VisaInfoPage = () => {
       <div className="px-9 pt-6">
         <div className="mb-8 text-center">
           <p className="text-2xl font-medium text-black leading-8">
-            고객님에게 맞춤화된 자료를
+            {t('register.visaInfo.titleLine1')}
             <br />
-            제공하기 위해 더 자세한 정보가
+            {t('register.visaInfo.titleLine2')}
             <br />
-            필요해요. (선택)
+            {t('register.visaInfo.titleLine3')}
           </p>
         </div>
 
         {/* 폼 */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid grid-cols-5 gap-3">
+          <div className="grid grid-cols-7 gap-3">
             {/* 체류 자격 */}
-            <div className="col-span-2">
+            <div className="col-span-3">
               <label className="block text-sm font-normal text-[#5b5b5b] mb-5">
-                체류 자격
+                {t('register.visaInfo.residenceStatusLabel')}
               </label>
               <Controller
                 name="bizCategory"
                 control={control}
                 render={({ field }) => (
                   <Dropdown
-                    options={RESIDENCE_STATUS_OPTIONS}
+                    options={residenceStatusOptions}
                     {...field}
-                    placeholder="선택해주세요"
+                    placeholder={t('register.visaInfo.selectPlaceholder')}
                     disabled={isSubmitting}
                   />
                 )}
@@ -112,18 +151,18 @@ const VisaInfoPage = () => {
             </div>
 
             {/* 예상 체류 기간  */}
-            <div className="col-span-3">
+            <div className="col-span-4">
               <label className="block text-sm font-normal text-[#5b5b5b] mb-5">
-                예상 체류 기간
+                {t('register.visaInfo.expectedStayPeriodLabel')}
               </label>
               <Controller
                 name="estimatePeriod"
                 control={control}
                 render={({ field }) => (
                   <Dropdown
-                    options={EXPECTED_STAY_PERIOD_OPTIONS}
+                    options={expectedStayPeriodOptions}
                     {...field}
-                    placeholder="선택해주세요"
+                    placeholder={t('register.visaInfo.selectPlaceholder')}
                     disabled={isSubmitting}
                   />
                 )}
@@ -135,16 +174,16 @@ const VisaInfoPage = () => {
             {/* 근무 경력 */}
             <div className="col-span-2">
               <label className="block text-sm font-normal text-[#5b5b5b] mb-5">
-                근무 경력
+                {t('register.visaInfo.workExperienceLabel')}
               </label>
               <Controller
                 name="workExperience"
                 control={control}
                 render={({ field }) => (
                   <Dropdown
-                    options={WORK_EXPERIENCE_OPTIONS}
+                    options={workExperienceOptions}
                     {...field}
-                    placeholder="선택해주세요"
+                    placeholder={t('register.visaInfo.selectPlaceholder')}
                     disabled={isSubmitting}
                   />
                 )}
@@ -154,16 +193,16 @@ const VisaInfoPage = () => {
             {/* 학위 */}
             <div className="col-span-3">
               <label className="block text-sm font-normal text-[#5b5b5b] mb-5">
-                학위
+                {t('register.visaInfo.degreeLabel')}
               </label>
               <Controller
                 name="degree"
                 control={control}
                 render={({ field }) => (
                   <Dropdown
-                    options={DEGREE_OPTIONS}
+                    options={degreeOptions}
                     {...field}
-                    placeholder="선택해주세요"
+                    placeholder={t('register.visaInfo.selectPlaceholder')}
                     disabled={isSubmitting}
                   />
                 )}
@@ -174,16 +213,16 @@ const VisaInfoPage = () => {
           {/* 한국어 능력 */}
           <div>
             <label className="block text-sm font-normal text-[#5b5b5b] mb-5">
-              한국어 능력
+              {t('register.visaInfo.koreanProficiencyLabel')}
             </label>
             <Controller
               name="koreanLevel"
               control={control}
               render={({ field }) => (
                 <Dropdown
-                  options={KOREAN_PROFICIENCY_OPTIONS}
+                  options={koreanProficiencyOptions}
                   {...field}
-                  placeholder="선택해주세요"
+                  placeholder={t('register.visaInfo.selectPlaceholder')}
                   disabled={isSubmitting}
                 />
               )}
@@ -202,7 +241,9 @@ const VisaInfoPage = () => {
               disabled={isSubmitting}
               className="w-80 h-16 bg-black text-white text-xl font-semibold rounded-[40px] hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
-              {isSubmitting ? '처리 중...' : '확인'}
+              {isSubmitting
+                ? t('register.visaInfo.processingButton')
+                : t('register.visaInfo.confirmButton')}
             </button>
             <button
               type="button"
@@ -210,7 +251,7 @@ const VisaInfoPage = () => {
               disabled={isSubmitting}
               className="w-80 h-16 bg-white text-black text-xl font-semibold rounded-[40px] border border-[#d0d0d0] hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors"
             >
-              건너뛰기
+              {t('register.visaInfo.skipButton')}
             </button>
           </div>
         </form>

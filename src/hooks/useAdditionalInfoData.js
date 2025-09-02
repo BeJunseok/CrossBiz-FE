@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const useAdditionalInfoData = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     businessType: '',
     hasPatent: '',
@@ -29,10 +31,10 @@ export const useAdditionalInfoData = () => {
       console.log('추가 정보 저장:', formData);
       // API 호출
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      alert('추가 정보가 저장되었습니다.');
+      alert(t('community.additionalInfo.saveSuccess'));
     } catch (error) {
       console.error('저장 실패:', error);
-      alert('저장에 실패했습니다.');
+      alert(t('community.additionalInfo.saveError'));
     } finally {
       setLoading(false);
     }

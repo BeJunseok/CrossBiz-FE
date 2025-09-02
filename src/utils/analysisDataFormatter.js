@@ -3,21 +3,21 @@ export const calculatePeakTime = (weeklyData, timeData) => {
   if (!weeklyData || !timeData) return { day: '', time: '' };
 
   const dayMapping = {
-    pplMonday: '월요일',
-    pplTuesday: '화요일',
-    pplWednesday: '수요일',
-    pplThursday: '목요일',
-    pplFriday: '금요일',
-    pplSaturday: '토요일',
-    pplSunday: '일요일',
+    pplMonday: 'monday',
+    pplTuesday: 'tuesday',
+    pplWednesday: 'wednesday',
+    pplThursday: 'thursday',
+    pplFriday: 'friday',
+    pplSaturday: 'saturday',
+    pplSunday: 'sunday',
   };
   const timeMapping = {
-    pplTime0006: '00-06시',
-    pplTime0611: '06-11시',
-    pplTime1114: '11-14시',
-    pplTime1417: '14-17시',
-    pplTime1721: '17-21시',
-    pplTime2124: '21-24시',
+    pplTime0006: 't0006',
+    pplTime0611: 't0611',
+    pplTime1114: 't1114',
+    pplTime1417: 't1417',
+    pplTime1721: 't1721',
+    pplTime2124: 't2124',
   };
 
   const weeklyCounts = (({ dong, ...rest }) => rest)(weeklyData);
@@ -31,8 +31,8 @@ export const calculatePeakTime = (weeklyData, timeData) => {
   );
 
   return {
-    day: dayMapping[peakDayKey] || '',
-    time: timeMapping[peakTimeKey] || '',
+    dayKey: dayMapping[peakDayKey] || '',
+    timeKey: timeMapping[peakTimeKey] || '',
   };
 };
 
@@ -40,13 +40,13 @@ export const calculatePeakTime = (weeklyData, timeData) => {
 export const formatWeeklyTraffic = (data) => {
   if (!data) return [];
   return [
-    { day: '월', count: data.pplMonday },
-    { day: '화', count: data.pplTuesday },
-    { day: '수', count: data.pplWednesday },
-    { day: '목', count: data.pplThursday },
-    { day: '금', count: data.pplFriday },
-    { day: '토', count: data.pplSaturday },
-    { day: '일', count: data.pplSunday },
+    { day: 'mon', count: data.pplMonday },
+    { day: 'tue', count: data.pplTuesday },
+    { day: 'wed', count: data.pplWednesday },
+    { day: 'thu', count: data.pplThursday },
+    { day: 'fri', count: data.pplFriday },
+    { day: 'sat', count: data.pplSaturday },
+    { day: 'sun', count: data.pplSunday },
   ];
 };
 

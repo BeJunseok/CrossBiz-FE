@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { formatDateTime } from '@/utils/dateUtils';
 import ChevronLeft from '@/assets/svg/common/ChevronLeft.svg?react';
 import Likes from '@/assets/svg/community/LikesFill.svg?react';
@@ -19,6 +20,7 @@ import { useAuthStore } from '@/stores/authStore';
 import userProfileImage from '@/assets/svg/common/profileImage.svg';
 
 const PostDetailPage = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const textareaRef = useRef();
   const nav = useNavigate();
@@ -39,7 +41,7 @@ const PostDetailPage = () => {
   useEffect(() => {
     const loadPostData = async () => {
       if (!id) {
-        setError('잘못된 접근입니다.');
+        setError(t('community.postDetail.invalidAccess'));
         setLoading(false);
         return;
       }
@@ -71,11 +73,11 @@ const PostDetailPage = () => {
       } catch (err) {
         console.error('게시글 조회 실패:', err);
         if (err.response?.status === 404) {
-          setError('게시글을 찾을 수 없습니다.');
+          setError(t('community.postDetail.postNotFound'));
         } else if (err.response?.status >= 500) {
-          setError('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+          setError(t('community.postDetail.serverError'));
         } else {
-          setError('게시글을 불러오는데 실패했습니다.');
+          setError(t('community.postDetail.loadFailed'));
         }
       } finally {
         setLoading(false);
@@ -83,7 +85,7 @@ const PostDetailPage = () => {
     };
 
     loadPostData();
-  }, [id]);
+  }, [id, t]);
 
   // 댓글 데이터 불러오기
   useEffect(() => {
@@ -115,7 +117,7 @@ const PostDetailPage = () => {
 
   const handleComment = () => {
     if (!isLoggedIn) {
-      alert('로그인이 필요합니다.');
+      alert(t('community.postDetail.loginRequired'));
       nav('/login');
       return;
     }
@@ -131,13 +133,13 @@ const PostDetailPage = () => {
 
   const handlePostComment = async () => {
     if (!isLoggedIn) {
-      alert('로그인이 필요합니다.');
+      alert(t('community.postDetail.loginRequired'));
       nav('/login');
       return;
     }
 
     if (!newComment.trim()) {
-      alert('댓글을 입력해주세요.');
+      alert(t('community.postDetail.enterComment'));
       return;
     }
 
@@ -163,13 +165,13 @@ const PostDetailPage = () => {
       setNewComment('');
     } catch (error) {
       console.error('댓글 작성 실패:', error);
-      alert('댓글 작성에 실패했습니다.');
+      alert(t('community.postDetail.commentFailed'));
     }
   };
 
   const handleLike = async () => {
     if (!isLoggedIn) {
-      alert('로그인이 필요합니다.');
+      alert(t('community.postDetail.loginRequired'));
       nav('/login');
       return;
     }
@@ -187,18 +189,18 @@ const PostDetailPage = () => {
       setIsLiked((prev) => !prev);
     } catch (error) {
       console.error('좋아요 처리 실패:', error);
-      alert('좋아요 처리에 실패했습니다.');
+      alert(t('community.postDetail.likeFailed'));
     }
   };
 
   const handleReport = () => {
     setIsDropdownOpen(false);
     if (!isLoggedIn) {
-      alert('로그인이 필요합니다.');
+      alert(t('community.postDetail.loginRequired'));
       nav('/login');
       return;
     }
-    alert('신고하기 기능을 준비 중입니다.');
+    alert(t('community.postDetail.reportPreparing'));
   };
 
   const handleShare = () => {
@@ -207,17 +209,17 @@ const PostDetailPage = () => {
     navigator.clipboard
       .writeText(currentUrl)
       .then(() => {
-        alert('URL이 복사되었습니다.');
+        alert(t('community.postDetail.urlCopied'));
       })
       .catch(() => {
-        alert('URL 복사에 실패했습니다.');
+        alert(t('community.postDetail.urlCopyFailed'));
       });
   };
 
   if (loading) {
     return (
       <div className="min-h-screen w-full bg-white flex items-center justify-center">
-        <div className="text-gray-500">로딩중...</div>
+        <div className="text-gray-500">{t('community.postDetail.loading')}</div>
       </div>
     );
   }
@@ -226,7 +228,7 @@ const PostDetailPage = () => {
     return (
       <div className="min-h-screen w-full bg-white flex items-center justify-center">
         <div className="text-red-500">
-          {error || '게시글을 찾을 수 없습니다.'}
+          {error || t('community.postDetail.postNotFound')}
         </div>
       </div>
     );
@@ -258,13 +260,13 @@ const PostDetailPage = () => {
                     onClick={handleReport}
                     className="w-full px-6 py-3 text-center text-sm font-medium text-[#323232] hover:bg-gray-50 border-b border-gray-200"
                   >
-                    신고하기
+                    {t('community.postDetail.report')}
                   </button>
                   <button
                     onClick={handleShare}
                     className="w-full px-6 py-3 text-center text-sm font-medium text-[#323232] hover:bg-gray-50"
                   >
-                    URL 공유하기
+                    {t('community.postDetail.shareUrl')}
                   </button>
                 </div>
               </>
@@ -300,7 +302,9 @@ const PostDetailPage = () => {
             </h3>
             <div className="flex items-center gap-8 text-sm text-gray-400">
               <span>{formatDateTime(postData.createdAt)}</span>
-              <span>조회 {postData.views}</span>
+              <span>
+                {t('community.postDetail.views')} {postData.views}
+              </span>
             </div>
           </div>
         </div>
@@ -324,7 +328,7 @@ const PostDetailPage = () => {
             >
               <Comments className="w-5 h-5" />
               <span className="text-xs font-semibold">
-                댓글 {postData.commentCount}
+                {t('community.postDetail.comments')} {postData.commentCount}
               </span>
             </button>
             <button
@@ -336,7 +340,9 @@ const PostDetailPage = () => {
               ) : (
                 <Likes className="w-5 h-5 mb-0.5" />
               )}
-              <span className="text-xs font-semibold">좋아요 {likeCount}</span>
+              <span className="text-xs font-semibold">
+                {t('community.postDetail.likes')} {likeCount}
+              </span>
             </button>
           </div>
         </div>
@@ -384,8 +390,8 @@ const PostDetailPage = () => {
             onChange={(e) => setNewComment(e.target.value)}
             placeholder={
               isLoggedIn
-                ? '댓글을 작성해주세요...'
-                : '로그인 후 댓글을 작성할 수 있습니다.'
+                ? t('community.postDetail.writeCommentPlaceholder')
+                : t('community.postDetail.loginToWriteComment')
             }
             className="w-full h-20 p-3 border border-gray-200 rounded-lg resize-none text-sm placeholder-gray-400 focus:outline-none focus:border-blue-500"
             disabled={!isLoggedIn}
@@ -396,7 +402,7 @@ const PostDetailPage = () => {
               disabled={!isLoggedIn}
               className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              댓글 작성
+              {t('community.postDetail.submitComment')}
             </button>
           </div>
         </div>

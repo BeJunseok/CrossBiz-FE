@@ -1,10 +1,12 @@
+import userProfileImage from '@/assets/svg/common/profileImage.svg';
+
 const ProfileSection = ({ profileData }) => {
   return (
     <div className="flex flex-col items-center pt-14 pb-14">
       {/* 프로필 이미지 */}
       <div className="w-28 h-28 rounded-full bg-gray-200 mb-3 overflow-hidden">
         <img
-          src={profileData.profileImage || '/api/placeholder/112/112'}
+          src={userProfileImage}
           alt="Profile"
           className="w-full h-full object-cover"
         />

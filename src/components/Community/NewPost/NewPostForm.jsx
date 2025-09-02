@@ -1,11 +1,11 @@
 import SimpleDropdown from '@/components/Community/NewPost/SimpleDropdown';
 import { dropdownOptions } from '@/constants/dropdownOptions';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useRef } from 'react';
-
-const { CATEGORY_OPTIONS, INDUSTRY_OPTIONS } = dropdownOptions;
+import { useTranslation } from 'react-i18next';
 
 const NewPostForm = ({ formData, onChange }) => {
+  const { t } = useTranslation();
   const textareaRef = useRef();
   const handleFieldChange = (field, value) => {
     onChange({
@@ -13,6 +13,22 @@ const NewPostForm = ({ formData, onChange }) => {
       [field]: value,
     });
   };
+
+  const categoryOptions = useMemo(
+    () =>
+      dropdownOptions.CATEGORY_OPTIONS.map((opt) =>
+        t(`dropdown.category.${opt.key}`)
+      ),
+    [t]
+  );
+
+  const industryOptions = useMemo(
+    () =>
+      dropdownOptions.INDUSTRY_OPTIONS.map((opt) =>
+        t(`dropdown.industry.${opt.key}`)
+      ),
+    [t]
+  );
 
   // content의 길이에 따라 textarea 높이 변경
   useEffect(() => {
@@ -27,20 +43,20 @@ const NewPostForm = ({ formData, onChange }) => {
       {/* 카테고리 선택 */}
       <div className="space-y-2">
         <SimpleDropdown
-          options={CATEGORY_OPTIONS}
+          options={categoryOptions}
           value={formData.category}
           onChange={(value) => handleFieldChange('category', value)}
-          placeholder="카테고리 선택"
+          placeholder={t('community.newPost.categoryPlaceholder')}
         />
       </div>
 
       {/* 업종 선택 */}
       <div className="space-y-2">
         <SimpleDropdown
-          options={INDUSTRY_OPTIONS}
+          options={industryOptions}
           value={formData.industry}
           onChange={(value) => handleFieldChange('industry', value)}
-          placeholder="업종 선택"
+          placeholder={t('community.newPost.industryPlaceholder')}
         />
       </div>
 
@@ -50,7 +66,7 @@ const NewPostForm = ({ formData, onChange }) => {
           type="text"
           value={formData.title}
           onChange={(e) => handleFieldChange('title', e.target.value)}
-          placeholder="제목을 입력해주세요."
+          placeholder={t('community.newPost.titlePlaceholder')}
           className="w-full py-3 text-lg font-semibold border-b border-gray-300 focus:outline-none focus:border-b-blue-500 placeholder-gray-400"
         />
       </div>
@@ -61,7 +77,7 @@ const NewPostForm = ({ formData, onChange }) => {
           ref={textareaRef}
           value={formData.content}
           onChange={(e) => handleFieldChange('content', e.target.value)}
-          placeholder="내용을 입력해주세요."
+          placeholder={t('community.newPost.contentPlaceholder')}
           rows={12}
           className="w-full py-3 rounded-lg focus:outline-none focus:border-blue-500 placeholder-gray-400 resize-none"
         />

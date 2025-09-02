@@ -1,21 +1,17 @@
 import clsx from 'clsx';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { personalInfoSchema } from '@/utils/validation';
+import { getPersonalInfoSchema } from '@/utils/validation';
 import { dropdownOptions } from '@/constants/dropdownOptions';
 import Dropdown from '@/components/common/Dropdown';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { signupBasic } from '@/api/auth/Auth';
 import { useAuthStore } from '@/stores/authStore';
-
-const {
-  AGE_OPTIONS,
-  NATIONALITY_OPTIONS,
-  BUSINESS_INFO_OPTIONS, // API의 status 필드에 해당
-} = dropdownOptions;
+import { useTranslation } from 'react-i18next';
 
 const PersonalInfoPage = () => {
+  const { t } = useTranslation();
   const nav = useNavigate();
   const location = useLocation();
   const { login } = useAuthStore();
@@ -24,6 +20,35 @@ const PersonalInfoPage = () => {
   const [error, setError] = useState('');
 
   const { loginData } = location.state || {};
+
+  const personalInfoSchema = useMemo(() => getPersonalInfoSchema(t), [t]);
+
+  const ageOptions = useMemo(
+    () =>
+      dropdownOptions.AGE_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.age.${opt.key}`),
+      })),
+    [t]
+  );
+
+  const nationalityOptions = useMemo(
+    () =>
+      dropdownOptions.NATIONALITY_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.nationality.${opt.key}`),
+      })),
+    [t]
+  );
+
+  const businessInfoOptions = useMemo(
+    () =>
+      dropdownOptions.BUSINESS_INFO_OPTIONS.map((opt) => ({
+        ...opt,
+        label: t(`dropdown.businessInfo.${opt.key}`),
+      })),
+    [t]
+  );
 
   const {
     register,
@@ -37,7 +62,7 @@ const PersonalInfoPage = () => {
 
   const onSubmit = async (data) => {
     if (!loginData) {
-      alert('회원가입 정보가 없습니다. 처음부터 다시 시작해주세요.');
+      alert(t('register.personalInfo.errorNoLoginData'));
       nav('/register');
       return;
     }
@@ -65,13 +90,13 @@ const PersonalInfoPage = () => {
     } catch (error) {
       console.error('기본 회원가입 오류:', error);
       if (error.response?.status === 409) {
-        setError('이미 존재하는 아이디입니다.');
+        setError(t('register.personalInfo.errorAlreadyExists'));
       } else if (error.response?.status === 400) {
-        setError('입력 정보를 확인해주세요.');
+        setError(t('register.personalInfo.errorBadRequest'));
       } else if (error.response?.status >= 500) {
-        setError('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        setError(t('register.personalInfo.errorServer'));
       } else {
-        setError('회원가입 중 오류가 발생했습니다.');
+        setError(t('register.personalInfo.errorGeneral'));
       }
     } finally {
       setIsLoading(false);
@@ -80,10 +105,10 @@ const PersonalInfoPage = () => {
 
   useEffect(() => {
     if (!loginData) {
-      alert('회원가입 정보가 없습니다. 처음부터 다시 시작해주세요');
+      alert(t('register.personalInfo.errorNoLoginData'));
       nav('/register');
     }
-  }, [loginData, nav]);
+  }, [loginData]);
 
   return (
     <div className="min-h-screen w-full bg-white">
@@ -91,18 +116,18 @@ const PersonalInfoPage = () => {
       <div className="px-9 pt-12">
         <div className="mb-12">
           <h1 className="text-3xl font-semibold text-black mb-5">
-            안녕하세요 !
+            {t('register.personalInfo.greeting')}
           </h1>
           <p className="text-2xl font-medium text-black leading-8">
-            고객님의 맞춤형 정보 제공을 위해
+            {t('register.personalInfo.promptLine1')}
             <br />
-            정보를 입력해주세요.
+            {t('register.personalInfo.promptLine2')}
           </p>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           <div>
             <label className="block text-base font-normal text-[#5b5b5b] mb-5">
-              이름
+              {t('register.personalInfo.nameLabel')}
             </label>
             <input
               type="text"
@@ -122,16 +147,16 @@ const PersonalInfoPage = () => {
           </div>
           <div>
             <label className="block text-base font-normal text-[#5b5b5b] mb-5">
-              나이
+              {t('register.personalInfo.ageLabel')}
             </label>
             <Controller
               name="age"
               control={control}
               render={({ field }) => (
                 <Dropdown
-                  options={AGE_OPTIONS}
+                  options={ageOptions}
                   {...field}
-                  placeholder="선택해주세요"
+                  placeholder={t('register.personalInfo.selectPlaceholder')}
                   error={errors.age}
                   disabled={isLoading}
                 />
@@ -140,16 +165,16 @@ const PersonalInfoPage = () => {
           </div>
           <div>
             <label className="block text-base font-normal text-[#5b5b5b] mb-5">
-              국적
+              {t('register.personalInfo.nationalityLabel')}
             </label>
             <Controller
               name="nationality"
               control={control}
               render={({ field }) => (
                 <Dropdown
-                  options={NATIONALITY_OPTIONS}
+                  options={nationalityOptions}
                   {...field}
-                  placeholder="선택해주세요"
+                  placeholder={t('register.personalInfo.selectPlaceholder')}
                   error={errors.nationality}
                   disabled={isLoading}
                 />
@@ -158,16 +183,16 @@ const PersonalInfoPage = () => {
           </div>
           <div>
             <label className="block text-base font-normal text-[#5b5b5b] mb-5">
-              사업자 정보
+              {t('register.personalInfo.businessInfoLabel')}
             </label>
             <Controller
               name="status"
               control={control}
               render={({ field }) => (
                 <Dropdown
-                  options={BUSINESS_INFO_OPTIONS}
+                  options={businessInfoOptions}
                   {...field}
-                  placeholder="선택해주세요"
+                  placeholder={t('register.personalInfo.selectPlaceholder')}
                   error={errors.status}
                   disabled={isLoading}
                 />
@@ -185,7 +210,9 @@ const PersonalInfoPage = () => {
               disabled={!isValid || isLoading}
               className="w-80 h-16 bg-black text-white text-xl font-semibold rounded-[40px] hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
-              {isLoading ? '처리 중...' : '다음'}
+              {isLoading
+                ? t('register.personalInfo.processingButton')
+                : t('register.personalInfo.nextButton')}
             </button>
           </div>
         </form>
