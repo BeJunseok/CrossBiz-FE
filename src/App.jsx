@@ -4,7 +4,7 @@ import MainLayout from '@/layouts/MainLayout';
 import LayoutWithNavbar from '@/layouts/LayoutWithNavbar';
 import OnboardingPage from '@/pages/onboarding/Onboarding';
 import LoginPage from '@/pages/login/Login';
-import CommunityPage from '@/pages/Community/CommunityPage';
+import CommunityPage from '@/pages/community/CommunityPage';
 import SearchPage from '@/pages/community/SearchPage';
 import PostDetailPage from '@/pages/community/PostDetailPage';
 import RegisterPage from '@/pages/register/RegisterPage';
