@@ -17,7 +17,7 @@ import {
   getComments,
 } from '@/api/community/postApi';
 import { useAuthStore } from '@/stores/authStore';
-import userProfileImage from '@/assets/svg/common/profileImage.svg';
+import userProfileImage from '@/assets/svg/common/ProfileImage.svg';
 
 const PostDetailPage = () => {
   const { t } = useTranslation();

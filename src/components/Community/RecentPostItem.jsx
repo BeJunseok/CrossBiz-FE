@@ -2,7 +2,7 @@ import React from 'react';
 import Views from '@/assets/svg/community/Views.svg?react';
 import Comments from '@/assets/svg/community/Comments.svg?react';
 import Likes from '@/assets/svg/community/Likes.svg?react';
-import userProfileImage from '@/assets/svg/common/profileImage.svg';
+import userProfileImage from '@/assets/svg/common/ProfileImage.svg';
 import { getTimeAgo } from '@/utils/dateUtils';
 import { getCategoryColor } from '@/utils/categoryColor';
 import { useNavigate } from 'react-router-dom';

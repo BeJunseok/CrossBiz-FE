@@ -1,4 +1,4 @@
-import userProfileImage from '@/assets/svg/common/profileImage.svg';
+import userProfileImage from '@/assets/svg/common/ProfileImage.svg';
 
 const ProfileSection = ({ profileData }) => {
   return (
