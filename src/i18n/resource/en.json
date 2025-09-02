@@ -292,5 +292,195 @@
     "hourAgo_other": "{{count}} hours ago",
     "dayAgo_one": "{{count}} day ago",
     "dayAgo_other": "{{count}} days ago"
+  },
+  "analysis": {
+    "districts": {
+      "yonggang": "Yonggang-dong",
+      "daeheung": "Daeheung-dong",
+      "yeomri": "Yeomri-dong",
+      "sinsu": "Sinsu-dong",
+      "seogyo": "Seogyo-dong",
+      "hapjeong": "Hapjeong-dong",
+      "mangwon1": "Mangwon 1-dong",
+      "mangwon2": "Mangwon 2-dong",
+      "yeonnam": "Yeonnam-dong",
+      "seongsan1": "Seongsan 1-dong",
+      "seongsan2": "Seongsan 2-dong",
+      "sangam": "Sangam-dong",
+      "dohwa": "Dohwa-dong",
+      "seogang": "Seogang-dong",
+      "gongdeok": "Gongdeok-dong",
+      "ahyeon": "Ahyeon-dong"
+    },
+    "mapHeader": {
+      "title": "District Report",
+      "searchPlaceholder": "Search region, building, address",
+      "searchError": "Please enter a search term.",
+      "noResult": "No results found for '{{term}}'.",
+      "grade": "Location Grade",
+      "allGrades": "Grades",
+      "gradeN": "Grade {{grade}}",
+      "industry": "Industry",
+      "allIndustries": "Industries",
+      "period": "Period",
+      "allPeriods": "Periods",
+      "industryOptions": {
+        "restaurant": "Restaurant",
+        "retail": "Retail",
+        "service": "Service",
+        "it": "IT",
+        "culture": "Culture",
+        "education": "Education",
+        "health": "Medical",
+        "realEstate": "Brokerage",
+        "other": "Other"
+      },
+      "periodOptions": {
+        "1m": "Last 1 month",
+        "3m": "Last 3 months",
+        "6m": "Last 6 months",
+        "1y": "Last 1 year"
+      },
+      "facilities": "Main Facilities"
+    },
+    "dashboardHeader": {
+      "mapLoading": "Loading map...",
+      "locationGrade": "Location Grade: {{grade}}",
+      "tooltipTitle": "[Weight*Sales + Weight*Footfall + Weight*Closure Stability + Weight*Opening Rate]",
+      "tooltipBody": "The final location score is divided into 5 grades.",
+      "grade1": "- Grade 1 (Excellent): 80+",
+      "grade2": "- Grade 2 (Good): 65-79",
+      "grade3": "- Grade 3 (Average): 50-64",
+      "grade4": "- Grade 4 (Poor): 35-49",
+      "grade5": "- Grade 5 (Very Poor): Below 34",
+      "locationPrefix": "Mapo-gu, Seoul, "
+    },
+    "businessDistribution": {
+      "title": "Industry Distribution",
+      "noData": "No industry distribution data available.",
+      "districtPrefix": "The selected area is",
+      "districtSuffix": "",
+      "commercialTypes": {
+        "complex": "\nComplex Commercial Area",
+        "balanced": "\nBalanced Commercial Area"
+      },
+      "distributionCategories": {
+        "koreanFood": "Korean Food",
+        "coffeeShop": "Cafe",
+        "convenienceStore": "Convenience Store",
+        "clinic": "Clinic",
+        "bar": "Bar",
+        "supermarket": "Supermarket",
+        "pharmacy": "Pharmacy",
+        "generalAcademy": "General Academy",
+        "fruitAndVegetable": "Fruit/Vegetable",
+        "meatStore": "Butcher Shop",
+        "homeAppliances": "Home Appliances",
+        "lighting": "Lighting",
+        "sideDishStore": "Side Dish Store",
+        "westernFood": "Western Food",
+        "japaneseFood": "Japanese Food",
+        "medicalDevices": "Medical Devices",
+        "artAcademy": "Art Academy",
+        "stationery": "Stationery",
+        "sportsEquipment": "Sports Equipment",
+        "dentalClinic": "Dental Clinic",
+        "clothing": "Apparel",
+        "furniture": "Furniture",
+        "computerSales": "Computer Sales",
+        "guesthouse": "Guesthouse",
+        "beautySalon": "Beauty Salon",
+        "realEstate": "Real Estate",
+        "photoStudio": "Photo Studio",
+        "taxOffice": "Tax Office",
+        "seafood": "Seafood",
+        "travelAgency": "Travel Agency",
+        "eCommerce": "E-commerce",
+        "bakery": "Bakery",
+        "cosmetics": "Cosmetics"
+      }
+    },
+    "revenueChart": {
+      "title": "Monthly Sales by Industry",
+      "amountUnit": "₩ {{amount}}B",
+      "tooltipLabel": "Sales"
+    },
+    "openCloseAnalysis": {
+      "title": "Store Opening/Closing Rate (3 Years)",
+      "closingRate": "Closing Rate",
+      "openingRate": "Opening Rate",
+      "nearbyComparison": "Nearby Districts Comparison",
+      "loading": "Loading data..."
+    },
+    "trafficAnalysis": {
+      "title": "Footfall Analysis (3 Years)",
+      "tooltipTextPart1": "'s footfall is",
+      "tooltipTextPart2": ".",
+      "defaultTextPart1": "The average daily footfall for selected period is",
+      "defaultTextPart2": ".",
+      "unitPeople": ""
+    },
+    "demographics": {
+      "byTime": "Footfall by Time",
+      "byDay": "Footfall by Day",
+      "days": {
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sunday": "Sunday"
+      },
+      "shortDays": {
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun"
+      },
+      "timeSlots": {
+        "t0006": "00-06h",
+        "t0611": "06-11h",
+        "t1114": "11-14h",
+        "t1417": "14-17h",
+        "t1721": "17-21h",
+        "t2124": "21-24h"
+      },
+      "peakTimeText": "The time with the most footfall is",
+      "peakTimeResult": "{{day}}, {{time}}.",
+      "peakTimeSuffix": "",
+      "populationType": "Footfall Demographics",
+      "ageGroup": {
+        "teens": "Teens",
+        "20s": "20s",
+        "30s": "30s",
+        "40s": "40s",
+        "50sPlus": "50s+"
+      },
+      "gender": { "male": "Male", "female": "Female" },
+      "tooltipUnitHour": "",
+      "tooltipUnitDay": "",
+      "tooltipPopulation": "Footfall: {{count,toLocaleString}}"
+    },
+    "nearbyAreas": {
+      "title": "Top 3 Districts by Footfall",
+      "loading": "Loading grade information...",
+      "locationPrefix": "Mapo-gu, Seoul, ",
+      "gradeLabel": "Grade: {{grade}}",
+      "populationUnit": "ppl"
+    },
+    "locationTracking": {
+      "loading": "Loading data...",
+      "error": "Error: {{error}}",
+      "noCodeError": "District code is missing in the URL.",
+      "noDistrictError": "Could not find information for this district.",
+      "dataLoadError": "Failed to load analysis data:",
+      "dataFetchError": "Failed to fetch data.",
+      "compareButton": "Compare Districts",
+      "featureComingSoon": "Feature coming soon."
+    }
   }
 }

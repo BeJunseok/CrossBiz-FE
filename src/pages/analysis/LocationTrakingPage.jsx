@@ -31,10 +31,13 @@ import {
   formatTimeTraffic,
   formatQuarterlyFootfall,
 } from '@/utils/analysisDataFormatter';
+import { useTranslation } from 'react-i18next';
+import { getDongI18nKey } from '@/utils/dongNameMap';
 
 const CENTERS_CACHE_KEY = 'district_centers';
 
 export default function LocationTrackingPage() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const [analysisData, setAnalysisData] = useState(null);
   const [districtCenter, setDistrictCenter] = useState(null);
@@ -43,7 +46,7 @@ export default function LocationTrackingPage() {
 
   useEffect(() => {
     if (!id) {
-      setError('지역 코드가 URL에 없습니다.');
+      setError(t('analysis.locationTracking.noCodeError'));
       setLoading(false);
       return;
     }
@@ -58,7 +61,7 @@ export default function LocationTrackingPage() {
         );
 
         if (!districtFeature) {
-          throw new Error('해당 지역 정보를 찾을 수 없습니다.');
+          throw new Error(t('analysis.locationTracking.noDistrictError'));
         }
 
         // 구역의 중심점을 로컬스토리지에서 가져옴
@@ -85,6 +88,7 @@ export default function LocationTrackingPage() {
         setDistrictCenter(center);
 
         const dong = districtFeature.properties.adm_nm;
+        const dongI18nKey = getDongI18nKey(dong);
 
         const [
           distribution,
@@ -114,7 +118,8 @@ export default function LocationTrackingPage() {
 
         setAnalysisData({
           location: {
-            dong: type.dong,
+            dong: type.dong, // 백엔드 호출에 이용할 한국어 동 이름
+            dongI18nKey: dongI18nKey, // UI 표시에 사용할 i18n 키
             type: type.label,
             rank: grade.grade,
           },
@@ -129,20 +134,20 @@ export default function LocationTrackingPage() {
           peakTime: calculatePeakTime(daily, time),
         });
       } catch (err) {
-        console.error('상권 분석 데이터 로딩 실패:', err);
-        setError(err.message || '데이터를 불러오는 데 실패했습니다.');
+        console.error(t('analysis.locationTracking.dataLoadError'), err);
+        setError(err.message || t('analysis.locationTracking.dataFetchError'));
       } finally {
         setLoading(false);
       }
     };
 
     fetchAnalysisData();
-  }, [id]);
+  }, [id, t]);
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        데이터를 불러오는 중...
+        {t('analysis.locationTracking.loading')}
       </div>
     );
   }
@@ -150,7 +155,7 @@ export default function LocationTrackingPage() {
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center text-red-500">
-        에러: {error}
+        {t('analysis.locationTracking.error', { error: error })}
       </div>
     );
   }
@@ -197,9 +202,11 @@ export default function LocationTrackingPage() {
           style={{
             background: 'linear-gradient(0deg, #191D24 0%, #2E2D39 100%)',
           }}
-          onClick={() => alert('기능을 준비 중입니다')}
+          onClick={() =>
+            alert(t('analysis.locationTracking.featureComingSoon'))
+          }
         >
-          상권 한눈에 비교하기
+          {t('analysis.locationTracking.compareButton')}
         </button>
       </div>
     </div>

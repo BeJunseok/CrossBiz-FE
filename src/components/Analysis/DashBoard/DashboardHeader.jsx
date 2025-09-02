@@ -4,8 +4,10 @@ import ChevronLeft from '@/assets/svg/common/ChevronLeft.svg?react';
 import Share from '@/assets/svg/analysis/Share.svg?react';
 import Question from '@/assets/svg/analysis/Question.svg?react';
 import { StaticMap, useKakaoLoader } from 'react-kakao-maps-sdk';
+import { useTranslation } from 'react-i18next';
 
 const GradeIndicator = ({ grade }) => {
+  const { t } = useTranslation();
   const getGradeColor = (grade) => {
     switch (grade) {
       case 1:
@@ -29,7 +31,7 @@ const GradeIndicator = ({ grade }) => {
       style={{ backgroundColor: getGradeColor(grade) }}
     >
       <span className="text-white text-sm font-semibold">
-        입지 등급: {grade}
+        {t('analysis.dashboardHeader.locationGrade', { grade })}
       </span>
     </div>
   );
@@ -38,6 +40,7 @@ const GradeIndicator = ({ grade }) => {
 const KAKAO_API_KEY = import.meta.env.VITE_KAKAO_MAP_API_KEY;
 
 export default function DashboardHeader({ locationData, districtCenter }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -50,7 +53,9 @@ export default function DashboardHeader({ locationData, districtCenter }) {
       <div className="relative h-44 w-full">
         {scriptLoading || !districtCenter ? (
           <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-            <p className="text-gray-500">지도 로딩 중...</p>
+            <p className="text-gray-500">
+              {t('analysis.dashboardHeader.mapLoading')}
+            </p>
           </div>
         ) : (
           <StaticMap
@@ -77,7 +82,8 @@ export default function DashboardHeader({ locationData, districtCenter }) {
       <div className="px-5 py-6 bg-white">
         <div className="mb-4">
           <h1 className="text-xl font-bold text-gray-900 mt-1">
-            서울시 마포구 {locationData.dong}
+            {t('analysis.dashboardHeader.locationPrefix')}{' '}
+            {t(`analysis.districts.${locationData.dongI18nKey}`)}
           </h1>
         </div>
 
@@ -91,20 +97,19 @@ export default function DashboardHeader({ locationData, districtCenter }) {
               <Question className="w-4 h-4 text-gray-400" />
             </button>
             {showTooltip && (
-              <div className="absolute left-0 top-8 bg-white p-3 rounded-lg shadow-lg w-64 text-xs z-10">
+              <div className="absolute -left-10 top-8 bg-white p-3 rounded-lg shadow-lg w-64 text-xs z-10">
                 <p className="mb-2">
-                  [가중치*매출액 + 가중치*유동인구 + 가중치*폐업 안정성 +
-                  가중치*개업률]
+                  {t('analysis.dashboardHeader.tooltipTitle')}
                 </p>
                 <p className="mb-2">
-                  최종 입지점수를 5등급으로 나눠 등급을 설정했습니다.
+                  {t('analysis.dashboardHeader.tooltipBody')}
                 </p>
                 <ul className="space-y-1">
-                  <li>-1등급 (매우 우수): 80점 이상</li>
-                  <li>-2등급 (우수): 65 ~ 79점</li>
-                  <li>-3등급 (보통): 50 ~ 64점</li>
-                  <li>-4등급 (미흡): 35 ~ 49점</li>
-                  <li>-5등급 (열악): 34점 이하</li>
+                  <li>{t('analysis.dashboardHeader.grade1')}</li>
+                  <li>{t('analysis.dashboardHeader.grade2')}</li>
+                  <li>{t('analysis.dashboardHeader.grade3')}</li>
+                  <li>{t('analysis.dashboardHeader.grade4')}</li>
+                  <li>{t('analysis.dashboardHeader.grade5')}</li>
                 </ul>
               </div>
             )}

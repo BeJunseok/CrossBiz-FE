@@ -1,4 +1,5 @@
 import { useState, useId } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -24,6 +25,7 @@ const ActiveDot = (props) => {
 };
 
 export default function TrafficAnalysis({ footTraffic }) {
+  const { t } = useTranslation();
   const [hoveredValue, setHoveredValue] = useState(null);
   const [hoveredLabel, setHoveredLabel] = useState(null);
 
@@ -39,7 +41,7 @@ export default function TrafficAnalysis({ footTraffic }) {
   return (
     <section className="px-4 py-6 mx-4 my-4 bg-white rounded-lg border border-gray-200 shadow-sm">
       <h2 className="text-sm font-semibold text-gray-900 mb-6">
-        유동인구 분석 (3개년)
+        {t('analysis.trafficAnalysis.title')}
       </h2>
 
       <div className="h-48">
@@ -95,24 +97,35 @@ export default function TrafficAnalysis({ footTraffic }) {
       <div className="text-sm text-center text-gray-900 mt-4">
         {hoveredLabel && hoveredValue ? (
           <>
-            <div>
-              <span className="font-bold text-blue-600">{hoveredLabel}</span>
-              <span className="text-gray-600"> 시점의 유동인구는</span>
-            </div>
-            <span className="font-bold text-blue-600">
-              {hoveredValue.toLocaleString()}명
-            </span>
-            <span className="text-gray-600"> 입니다.</span>
+            <>
+              <div>
+                <span className="font-bold text-blue-600">{hoveredLabel}</span>
+                <span className="text-gray-600">
+                  {t('analysis.trafficAnalysis.tooltipTextPart1')}
+                </span>
+              </div>
+              <span className="font-bold text-blue-600">
+                {hoveredValue.toLocaleString()}
+                {t('analysis.trafficAnalysis.unitPeople')}
+              </span>
+              <span className="text-gray-600">
+                {t('analysis.trafficAnalysis.tooltipTextPart2')}
+              </span>
+            </>
           </>
         ) : (
           <>
             <div>
               <span className="text-gray-600">
-                선택하신 시기의 유동인구는 일 평균
+                {t('analysis.trafficAnalysis.defaultTextPart1')}
               </span>
             </div>
-            <span className="font-bold text-blue-600">000명</span>
-            <span className="text-gray-600"> 입니다.</span>
+            <span className="font-bold text-blue-600">
+              000{t('analysis.trafficAnalysis.unitPeople')}
+            </span>
+            <span className="text-gray-600">
+              {t('analysis.trafficAnalysis.defaultTextPart2')}
+            </span>
           </>
         )}
       </div>

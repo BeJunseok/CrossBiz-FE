@@ -292,5 +292,195 @@
     "hourAgo_other": "{{count}} hours ago",
     "dayAgo_one": "{{count}} day ago",
     "dayAgo_other": "{{count}} days ago"
+  },
+  "analysis": {
+    "districts": {
+      "yonggang": "용강동",
+      "daeheung": "대흥동",
+      "yeomri": "염리동",
+      "sinsu": "신수동",
+      "seogyo": "서교동",
+      "hapjeong": "합정동",
+      "mangwon1": "망원1동",
+      "mangwon2": "망원2동",
+      "yeonnam": "연남동",
+      "seongsan1": "성산1동",
+      "seongsan2": "성산2동",
+      "sangam": "상암동",
+      "dohwa": "도화동",
+      "seogang": "서강동",
+      "gongdeok": "공덕동",
+      "ahyeon": "아현동"
+    },
+    "mapHeader": {
+      "title": "상권 리포트",
+      "searchPlaceholder": "지역, 건물, 주소 검색",
+      "searchError": "검색어를 입력해주세요.",
+      "noResult": "'{{term}}'에 해당하는 지역을 찾을 수 없습니다.",
+      "grade": "입지 등급",
+      "allGrades": "전체 등급",
+      "gradeN": "{{grade}}등급",
+      "industry": "업종",
+      "allIndustries": "전체 업종",
+      "period": "기간",
+      "allPeriods": "전체 기간",
+      "industryOptions": {
+        "restaurant": "외식업",
+        "retail": "소매·유통",
+        "service": "서비스업",
+        "it": "IT",
+        "culture": "문화·예술",
+        "education": "교육",
+        "health": "보건/의료",
+        "realEstate": "중개업",
+        "other": "기타"
+      },
+      "periodOptions": {
+        "1m": "최근 1개월",
+        "3m": "최근 3개월",
+        "6m": "최근 6개월",
+        "1y": "최근 1년"
+      },
+      "facilities": "주요시설만"
+    },
+    "dashboardHeader": {
+      "mapLoading": "지도 로딩 중...",
+      "locationGrade": "입지 등급: {{grade}}",
+      "tooltipTitle": "[가중치*매출액 + 가중치*유동인구 + 가중치*폐업 안정성 + 가중치*개업률]",
+      "tooltipBody": "최종 입지점수를 5등급으로 나눠 등급을 설정했습니다.",
+      "grade1": "-1등급 (매우 우수): 80점 이상",
+      "grade2": "-2등급 (우수): 65 ~ 79점",
+      "grade3": "-3등급 (보통): 50 ~ 64점",
+      "grade4": "-4등급 (미흡): 35 ~ 49점",
+      "grade5": "-5등급 (열악): 34점 이하",
+      "locationPrefix": "서울시 마포구"
+    },
+    "businessDistribution": {
+      "title": "업종 분포",
+      "noData": "업종 분포 데이터가 없습니다.",
+      "districtPrefix": "선택하신 지역은",
+      "districtSuffix": "입니다.",
+      "commercialTypes": {
+        "complex": "복합형 상권",
+        "balanced": "균형형 상권"
+      },
+      "distributionCategories": {
+        "koreanFood": "한식",
+        "coffeeShop": "카페",
+        "convenienceStore": "편의점",
+        "clinic": "일반의원",
+        "bar": "주점",
+        "supermarket": "슈퍼마켓",
+        "pharmacy": "의약품",
+        "generalAcademy": "일반교습학원",
+        "fruitAndVegetable": "청과상",
+        "meatStore": "육류판매",
+        "homeAppliances": "가전제품",
+        "lighting": "조명용품",
+        "sideDishStore": "반찬가게",
+        "westernFood": "양식",
+        "japaneseFood": "일식",
+        "medicalDevices": "의료기기",
+        "artAcademy": "예술학원",
+        "stationery": "문구",
+        "sportsEquipment": "운동용품",
+        "dentalClinic": "치과의원",
+        "clothing": "일반의류",
+        "furniture": "가구",
+        "computerSales": "컴퓨터판매",
+        "guesthouse": "게스트하우스",
+        "beautySalon": "미용실",
+        "realEstate": "부동산중개",
+        "photoStudio": "사진관",
+        "taxOffice": "세무사사무소",
+        "seafood": "수산물판매",
+        "travelAgency": "여행사",
+        "eCommerce": "전자상거래",
+        "bakery": "제과점",
+        "cosmetics": "화장품"
+      }
+    },
+    "revenueChart": {
+      "title": "업종별 한달 매출",
+      "amountUnit": "{{amount}}억",
+      "tooltipLabel": "매출"
+    },
+    "openCloseAnalysis": {
+      "title": "점포 개·폐업율 (3개년)",
+      "closingRate": "폐업률",
+      "openingRate": "개업률",
+      "nearbyComparison": "인근 동 비교",
+      "loading": "데이터를 불러오는 중입니다..."
+    },
+    "trafficAnalysis": {
+      "title": "유동인구 분석 (3개년)",
+      "tooltipTextPart1": " 시점의 유동인구는",
+      "tooltipTextPart2": " 입니다.",
+      "defaultTextPart1": "선택하신 시기의 유동인구는 일 평균",
+      "defaultTextPart2": " 입니다.",
+      "unitPeople": "명"
+    },
+    "demographics": {
+      "byTime": "시간대별 유동인구",
+      "byDay": "요일별 유동인구",
+      "days": {
+        "monday": "월요일",
+        "tuesday": "화요일",
+        "wednesday": "수요일",
+        "thursday": "목요일",
+        "friday": "금요일",
+        "saturday": "토요일",
+        "sunday": "일요일"
+      },
+      "shortDays": {
+        "mon": "월",
+        "tue": "화",
+        "wed": "수",
+        "thu": "목",
+        "fri": "금",
+        "sat": "토",
+        "sun": "일"
+      },
+      "timeSlots": {
+        "t0006": "00-06시",
+        "t0611": "06-11시",
+        "t1114": "11-14시",
+        "t1417": "14-17시",
+        "t1721": "17-21시",
+        "t2124": "21-24시"
+      },
+      "peakTimeText": "유동인구가 가장 많은 시간대는",
+      "peakTimeResult": "{{day}} {{time}}",
+      "peakTimeSuffix": "입니다.",
+      "populationType": "유동인구 유형",
+      "ageGroup": {
+        "teens": "10대",
+        "20s": "20대",
+        "30s": "30대",
+        "40s": "40대",
+        "50sPlus": "50대 이상"
+      },
+      "gender": { "male": "남성", "female": "여성" },
+      "tooltipUnitHour": "시",
+      "tooltipUnitDay": "요일",
+      "tooltipPopulation": "유동인구: {{count,toLocaleString}}명"
+    },
+    "nearbyAreas": {
+      "title": "동 자치구 내 유동인구 Top 3",
+      "loading": "등급 정보를 불러오는 중...",
+      "locationPrefix": "서울특별시 마포구",
+      "gradeLabel": "입지 등급: {{grade}}",
+      "populationUnit": "명"
+    },
+    "locationTracking": {
+      "loading": "데이터를 불러오는 중...",
+      "error": "에러: {{error}}",
+      "noCodeError": "지역 코드가 URL에 없습니다.",
+      "noDistrictError": "해당 지역 정보를 찾을 수 없습니다.",
+      "dataLoadError": "상권 분석 데이터 로딩 실패:",
+      "dataFetchError": "데이터를 불러오는 데 실패했습니다.",
+      "compareButton": "상권 한눈에 비교하기",
+      "featureComingSoon": "기능을 준비 중입니다"
+    }
   }
 }

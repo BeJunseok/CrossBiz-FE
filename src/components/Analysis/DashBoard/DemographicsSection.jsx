@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ResponsiveContainer,
   BarChart,
@@ -11,8 +12,8 @@ import {
   Cell,
 } from 'recharts';
 
-
 const CustomBarChart = ({ data, dataKey, xAxisKey, tooltipUnit }) => {
+  const { t } = useTranslation();
   const RoundedBar = (props) => {
     const { fill, x, y, width, height } = props;
     const radius = 8;
@@ -36,8 +37,12 @@ const CustomBarChart = ({ data, dataKey, xAxisKey, tooltipUnit }) => {
     if (active && payload && payload.length) {
       return (
         <div className="p-2 bg-white text-gray-700 rounded-md shadow-lg text-xs border">
-          <p className="font-bold">{`${label}${tooltipUnit}`}</p>
-          <p>{`유동인구: ${payload[0].value.toLocaleString()}명`}</p>
+          <p className="font-bold">{`${label}${t(tooltipUnit)}`}</p>
+          <p>
+            {t('analysis.demographics.tooltipPopulation', {
+              count: payload[0].value,
+            })}
+          </p>
         </div>
       );
     }
@@ -85,26 +90,42 @@ const CustomAgeTooltip = ({ active, payload }) => {
   return null;
 };
 
-
 export default function DemographicsSection({
   demographics,
   timeTraffic,
   weeklyTraffic,
   peak,
 }) {
- 
+  const { t } = useTranslation();
   if (!demographics || !timeTraffic || !weeklyTraffic || !peak) {
     return <div>Loading charts...</div>;
   }
 
+  const translatedWeeklyTraffic = weeklyTraffic.map((item) => ({
+    ...item,
+    day: t(`analysis.demographics.shortDays.${item.day}`),
+  }));
+
   // Pie/Doughnut Chart 데이터 가공
   const ageData = [
-    { name: '10대', value: demographics.age.pplAge10 },
-    { name: '20대', value: demographics.age.pplAge20 },
-    { name: '30대', value: demographics.age.pplAge30 },
-    { name: '40대', value: demographics.age.pplAge40 },
     {
-      name: '50대 이상',
+      name: t('analysis.demographics.ageGroup.teens'),
+      value: demographics.age.pplAge10,
+    },
+    {
+      name: t('analysis.demographics.ageGroup.20s'),
+      value: demographics.age.pplAge20,
+    },
+    {
+      name: t('analysis.demographics.ageGroup.30s'),
+      value: demographics.age.pplAge30,
+    },
+    {
+      name: t('analysis.demographics.ageGroup.40s'),
+      value: demographics.age.pplAge40,
+    },
+    {
+      name: t('analysis.demographics.ageGroup.50sPlus'),
       value: demographics.age.pplAge50 + demographics.age.pplAge60,
     },
   ];
@@ -112,8 +133,14 @@ export default function DemographicsSection({
   const AGE_COLORS = ['#3B82F6', '#EF4444', '#FFB95A', '#84CC16', '#22C55E'];
 
   const genderData = [
-    { name: '남성', value: demographics.gender.male },
-    { name: '여성', value: demographics.gender.female },
+    {
+      name: t('analysis.demographics.gender.male'),
+      value: demographics.gender.male,
+    },
+    {
+      name: t('analysis.demographics.gender.female'),
+      value: demographics.gender.female,
+    },
   ];
   const GENDER_COLORS = ['#3B82F6', '#FF4778'];
 
@@ -123,43 +150,51 @@ export default function DemographicsSection({
       <div className="grid grid-cols-2 gap-x-8">
         <div>
           <h3 className="text-sm font-semibold text-gray-900 text-center mb-4">
-            시간대별 유동인구
+            {t('analysis.demographics.byTime')}
           </h3>
           <div className="h-40">
             <CustomBarChart
               data={timeTraffic}
               dataKey="count"
               xAxisKey="time"
-              tooltipUnit="시"
+              tooltipUnit="analysis.demographics.tooltipUnitHour"
             />
           </div>
         </div>
         <div>
           <h3 className="text-sm font-semibold text-gray-900 text-center mb-4">
-            요일별 유동인구
+            {t('analysis.demographics.byDay')}
           </h3>
           <div className="h-40">
             <CustomBarChart
-              data={weeklyTraffic}
+              data={translatedWeeklyTraffic}
               dataKey="count"
               xAxisKey="day"
-              tooltipUnit="요일"
+              tooltipUnit="analysis.demographics.tooltipUnitDay"
             />
           </div>
         </div>
       </div>
       <div className="text-sm text-center text-gray-900 mt-6">
-        <span className="text-gray-600">유동인구가 가장 많은 시간대는</span>
+        <span className="text-gray-600">
+          {t('analysis.demographics.peakTimeText')}
+        </span>
         <br />
         <span className="font-bold text-blue-600">
-          {peak.day} {peak.time}
+          {t('analysis.demographics.peakTimeResult', {
+            day: t(`analysis.demographics.days.${peak.dayKey}`),
+            time: t(`analysis.demographics.timeSlots.${peak.timeKey}`),
+          })}
         </span>
-        <span className="text-gray-600"> 입니다.</span>
+        <span className="text-gray-600">
+          {' '}
+          {t('analysis.demographics.peakTimeSuffix')}
+        </span>
       </div>
 
       {/* 유동인구 유형 (파이/도넛 차트) */}
       <h2 className="text-sm font-semibold text-gray-900 text-center my-6 pt-6 border-t">
-        유동인구 유형
+        {t('analysis.demographics.populationType')}
       </h2>
       <div className="flex justify-center items-center gap-10">
         <div className="flex items-center ">
@@ -208,14 +243,18 @@ export default function DemographicsSection({
         <div className="flex flex-col items-center mb-5">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-600">남성</span>
+              <span className="text-xs text-gray-600">
+                {t('analysis.demographics.gender.male')}
+              </span>
               <div
                 className="w-2 h-2 rounded-full"
                 style={{ backgroundColor: GENDER_COLORS[0] }}
               ></div>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-600">여성</span>
+              <span className="text-xs text-gray-600">
+                {t('analysis.demographics.gender.female')}
+              </span>
               <div
                 className="w-2 h-2 rounded-full"
                 style={{ backgroundColor: GENDER_COLORS[1] }}
