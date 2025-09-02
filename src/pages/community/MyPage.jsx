@@ -1,8 +1,8 @@
-import MyPageHeader from '@/components/community/MyPage/MyPageHeader';
-import ProfileSection from '@/components/community/MyPage/ProfileSection';
-import PersonalInfoForm from '@/components/community/MyPage/PersonalInfoForm';
-import MyPostSection from '@/components/community/MyPage/MyPostSection';
-import LogoutSection from '@/components/community/MyPage/LogoutSection';
+import MyPageHeader from '@/components/Community/MyPage/MyPageHeader';
+import ProfileSection from '@/components/Community/MyPage/ProfileSection';
+import PersonalInfoForm from '@/components/Community/MyPage/PersonalInfoForm';
+import MyPostSection from '@/components/Community/MyPage/MyPostSection';
+import LogoutSection from '@/components/Community/MyPage/LogoutSection';
 import { useMyPageData } from '@/hooks/useMyPageData';
 import { useTranslation } from 'react-i18next';
 
