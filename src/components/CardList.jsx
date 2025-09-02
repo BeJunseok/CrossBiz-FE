@@ -29,6 +29,7 @@ export default function CardList({ items = [], from: fromProp, raw }) {
   const goDetail = (item) => {
     nav("/visa-info", {
       state: { from, raw, selected: item },
+      search: `?name=${encodeURIComponent(item?.name ?? "")}`,
     });
   };
 

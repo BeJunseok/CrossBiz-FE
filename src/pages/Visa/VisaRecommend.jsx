@@ -5,91 +5,196 @@ import HomeIcon from "../../assets/home.svg";
 import CardList from "../../components/CardList";
 import VisaMore from "./VisaMore";
 
-const A = (v) => (Array.isArray(v) ? v : v ? [v] : []);
+/* ---------- 유틸: 안전 파서 ---------- */
+const stripBOM = (s) =>
+  typeof s === "string" && s.charCodeAt(0) === 0xfeff ? s.slice(1) : s;
 
-// 문자열/래핑 정규화
-const normalize = (raw) => {
-  let v = raw;
-  if (typeof v === "string") {
-    try { v = JSON.parse(v); } catch {}
+// “스마트 따옴표” → 일반 쌍따옴표로 교정
+const deSmartQuote = (s) =>
+  typeof s === "string"
+    ? s.replace(/[“”]/g, '"').replace(/[‘’]/g, "'")
+    : s;
+
+// 문자열 안에서 JSON만 추출해서 파싱 시도
+const looseJsonParse = (maybeStr) => {
+  if (typeof maybeStr !== "string") return maybeStr;
+  let s = stripBOM(deSmartQuote(maybeStr)).trim();
+
+  // 앞뒤 잡음 제거
+  const start = Math.min(
+    ...["{", "["].map((ch) => (s.indexOf(ch) >= 0 ? s.indexOf(ch) : Infinity))
+  );
+  const end = Math.max(s.lastIndexOf("}"), s.lastIndexOf("]"));
+  if (start !== Infinity && end > start) {
+    s = s.slice(start, end + 1);
   }
-  // axios {data:{...}} 래핑 풀기
-  if (v && typeof v === "object" && v.data && !v.response && !v.recommendedVisas) v = v.data;
-  return v;
+
+  // trailing comma 제거
+  s = s.replace(/,\s*([}\]])/g, "$1");
+
+  try {
+    return JSON.parse(s);
+  } catch {
+    return maybeStr; // 실패 시 원본 반환
+  }
 };
 
-// 객체를 배열로 강제 변환 (ex: {0:{},1:{}} → [{},{}])
-const objToArrayIfNeeded = (x) => {
-  if (Array.isArray(x)) return x;
-  if (x && typeof x === "object") {
-    const keys = Object.keys(x);
-    if (keys.every((k) => /^\d+$/.test(k))) {
-      return keys.sort((a,b)=>Number(a)-Number(b)).map((k) => x[k]);
+const asArray = (v) => {
+  if (!v) return [];
+  if (Array.isArray(v)) return v;
+  if (typeof v === "object") {
+    const ks = Object.keys(v);
+    if (ks.length && ks.every((k) => /^\d+$/.test(k))) {
+      return ks.sort((a, b) => +a - +b).map((k) => v[k]);
     }
   }
-  return null;
-};
-
-// 추천배열 추출 (키 자동탐지 포함)
-const extractRecArray = (input) => {
-  const json = normalize(input);
-
-  // 1) 흔한 경로
-  let cand =
-    json?.response?.recommendedVisas ??
-    json?.recommendedVisas ??
-    json?.result?.recommendedVisas ??
-    json?.data?.recommendedVisas ??
-    null;
-
-  // 2) 배열 아니면 객체→배열 시도
-  let arr = objToArrayIfNeeded(cand);
-  if (arr) return arr;
-
-  // 3) 키 자동탐지 (recommendedVisas 오타/대소문자/공백 대응)
-  if (json && typeof json === "object") {
-    const foundKey = Object.keys(json).find((k) =>
-      k.replace(/\s+/g, "").toLowerCase().includes("recommendedvisas")
-    );
-    if (foundKey) {
-      const v = json[foundKey];
-      if (Array.isArray(v)) return v;
-      const arr2 = objToArrayIfNeeded(v);
-      if (arr2) return arr2;
-    }
-  }
-
-  // 4) 최후: 전체가 배열이면 그대로 사용
-  if (Array.isArray(json)) return json;
-
   return [];
 };
 
-// 카드 매핑 (제목=name, 본문: reason + cautions)
-const toCards = (json) =>
-  extractRecArray(json).map((v, idx) => ({
+/* ---------- normalizeRaw ---------- */
+const normalizeRaw = (raw) => {
+  // 문자열 → JSON 파싱 시도
+  let v = typeof raw === "string" ? looseJsonParse(raw) : raw;
+
+  // 흔한 래핑 해제
+  const unwrapOnce = (x) => {
+    if (!x || typeof x !== "object") return x;
+    if (x.data && Object.keys(x).length === 1) return x.data;
+    if (x.response && Object.keys(x).length === 1) return x.response;
+    if (x.result && Object.keys(x).length === 1) return x.result;
+    if (typeof x.json === "string") return looseJsonParse(x.json);
+    return x;
+  };
+
+  v = unwrapOnce(v);
+  v = unwrapOnce(v);
+
+  const root =
+    v && typeof v === "object"
+      ? v.response ?? v.result ?? v.data ?? v
+      : {};
+
+  const model = {
+    summary: root?.summary ?? "",
+    recommendations: asArray(root?.recommendedVisas),
+    alternatives: asArray(root?.alternativeOptions),
+    cautions: asArray(root?.visaCautions),
+    __raw: raw,
+    __root: root,
+    __pickedKey: undefined,
+    __parseInfo: {
+      rawType: typeof raw,
+      afterParseType: typeof v,
+    },
+  };
+
+  // 추천 배열 못 찾으면 구조 기반 탐색
+  if (model.recommendations.length === 0 && root && typeof root === "object") {
+    const looksLikeRec = (arr) => {
+      if (!Array.isArray(arr) || !arr.length || typeof arr[0] !== "object")
+        return false;
+      const sample = arr.slice(0, Math.min(arr.length, 5));
+      let hit = 0;
+      for (const it of sample) {
+        if (
+          it &&
+          typeof it === "object" &&
+          "name" in it &&
+          ("reason" in it || "cautions" in it)
+        )
+          hit++;
+      }
+      return hit >= Math.ceil(sample.length / 2);
+    };
+
+    for (const [k, val] of Object.entries(root)) {
+      const arr = asArray(val);
+      if (arr.length && looksLikeRec(arr)) {
+        model.recommendations = arr;
+        model.__pickedKey = k;
+        break;
+      }
+    }
+  }
+
+  return model;
+};
+
+/* ---------- 디버그 로그 ---------- */
+const debugPrintModel = (raw, model) => {
+  try {
+    console.groupCollapsed(
+      "%c[VisaRecommend] DEBUG",
+      "background:#111;color:#90ee90;padding:2px 6px;border-radius:4px;"
+    );
+    console.log("▶ typeof raw:", typeof raw);
+    console.log("▶ parse info:", model.__parseInfo);
+    console.log(
+      "▶ root keys:",
+      model.__root && typeof model.__root === "object"
+        ? Object.keys(model.__root)
+        : null
+    );
+    console.log("▶ summary:", model.summary);
+    console.log("▶ alternatives.length:", model.alternatives.length);
+    console.log("▶ cautions.length:", model.cautions.length);
+
+    if (model.__pickedKey) {
+      console.log("✅ picked recommendations key:", model.__pickedKey);
+    } else if (model.recommendations.length > 0) {
+      console.log("✅ recommendations from fixed path: root.recommendedVisas");
+    } else {
+      console.warn("❌ recommendations not found");
+    }
+
+    console.log("▶ recommendations.length:", model.recommendations.length);
+    console.table(model.recommendations.slice(0, 3));
+    console.groupEnd();
+  } catch (e) {
+    console.error("[VisaRecommend] debug error:", e);
+  }
+};
+
+/* ---------- 카드 매핑 ---------- */
+const toCards = (model) =>
+  model.recommendations.map((v, idx) => ({
     name: v?.name ?? "",
     reason: v?.reason ?? "",
-    cautions: A(v?.cautions),
+    cautions: Array.isArray(v?.cautions)
+      ? v.cautions
+      : v?.cautions
+      ? [v.cautions]
+      : [],
     highlight: idx === 0 ? "가장 유력한 후보!" : undefined,
   }));
 
-export default function VisaRecommend({ userName = "Anna", onHome }) {
+/* ---------- 컴포넌트 ---------- */
+function VisaRecommend({ userName = "Anna", onHome }) {
   const nav = useNavigate();
   const { state } = useLocation();
   const from = state?.from ?? "history";
-
-  // 로딩에서 넘겨준 값: raw 또는 recommendData 어느쪽이든 받기
   const raw = state?.raw ?? state?.recommendData ?? null;
 
   const [items, setItems] = useState([]);
+  const [model, setModel] = useState({
+    summary: "",
+    recommendations: [],
+    alternatives: [],
+    cautions: [],
+    __raw: null,
+    __root: null,
+  });
 
   useEffect(() => {
-    const mapped = toCards(raw);
+    const m = normalizeRaw(raw);
+    debugPrintModel(raw, m);
+
+    const mapped = toCards(m);
     if (import.meta.env.DEV) {
-      console.log("[VisaRecommend] raw:", raw);
       console.log("[VisaRecommend] extracted length:", mapped.length);
     }
+
+    setModel(m);
     setItems(mapped);
   }, [raw]);
 
@@ -98,7 +203,9 @@ export default function VisaRecommend({ userName = "Anna", onHome }) {
       <section className="relative w-full max-w-[360px] px-6 pt-16 pb-24">
         <button
           type="button"
-          onClick={onHome ?? (() => nav("/visa-history", { state: { from } }))}
+          onClick={
+            onHome ?? (() => nav("/visa-history", { state: { from } }))
+          }
           className="absolute left-6 top-6 active:scale-[0.98]"
           aria-label="홈으로"
         >
@@ -107,23 +214,27 @@ export default function VisaRecommend({ userName = "Anna", onHome }) {
 
         <h1 className="text-[25px] font-extrabold text-gray-900 text-center">
           {userName} 님을 위한
-          <br />최적의 비자
+          <br />
+          최적의 비자
         </h1>
 
         <div className="mt-16">
           {items.length === 0 ? (
             <div className="text-center text-gray-600">
-              추천 데이터를 불러오지 못했어요. (개발용) 콘솔 raw를 확인해 주세요.
+              추천 데이터를 불러오지 못했어요. (개발용) 콘솔의{" "}
+              <b>[VisaRecommend] DEBUG</b> 그룹을 확인해 주세요.
             </div>
           ) : (
-            <CardList items={items} from={from} raw={normalize(raw)} />
+            <CardList items={items} from={from} raw={model} />
           )}
         </div>
 
         <div className="mt-12">
-          <VisaMore raw={normalize(raw)} />
+          <VisaMore raw={model} />
         </div>
       </section>
     </main>
   );
 }
+
+export default VisaRecommend;
