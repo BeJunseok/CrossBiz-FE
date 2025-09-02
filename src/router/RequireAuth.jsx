@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/authStore';
 
 const RequireAuth = () => {
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
-  return isLoggedIn ? <Outlet /> : <Navigate to="/login" replace />;
+  return isLoggedIn ? <Outlet /> : <Navigate to="/onboarding" replace />;
 };
 
 export default RequireAuth;
