@@ -1,41 +1,40 @@
 // src/pages/Visa/ConfirmMore.jsx
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import commonUser from "../../data/commonUser.json"; // ✅ 추가
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import commonUser from '@/data/CommonUser.json';
 
 export default function ConfirmMore() {
   const navigate = useNavigate();
-  console.log("ConfirmMore mounted");
+  console.log('ConfirmMore mounted');
 
   // ✅ CommonUser.json에서 기본값 추출
   const wv = commonUser?.request?.withoutVisaInfo ?? {};
-  const initBizType = "private"; // 기본값: 개인 점포
+  const initBizType = 'private'; // 기본값: 개인 점포
   const initIpOwned =
     wv.hasIntellectualProperty === true
-      ? "yes"
+      ? 'yes'
       : wv.hasIntellectualProperty === false
-      ? "no"
-      : "";
-  const initInvestment =
-    wv.businessFund != null ? String(wv.businessFund) : "";
-  const initOasis = wv.oasisScore != null ? String(wv.oasisScore) : "";
+        ? 'no'
+        : '';
+  const initInvestment = wv.businessFund != null ? String(wv.businessFund) : '';
+  const initOasis = wv.oasisScore != null ? String(wv.oasisScore) : '';
 
   // ✅ 폼 상태 (초기값 프리필)
-  const [bizType, setBizType] = useState(initBizType);      // "franchise" | "private"
-  const [ipOwned, setIpOwned] = useState(initIpOwned);      // "yes" | "no"
+  const [bizType, setBizType] = useState(initBizType); // "franchise" | "private"
+  const [ipOwned, setIpOwned] = useState(initIpOwned); // "yes" | "no"
   const [investment, setInvestment] = useState(initInvestment); // 문자열
-  const [oasis, setOasis] = useState(initOasis);            // 문자열
+  const [oasis, setOasis] = useState(initOasis); // 문자열
 
   const handlePrev = () => navigate(-1);
 
   const handleNext = () => {
     if (!bizType || !ipOwned || !investment.trim() || !oasis.trim()) {
-      alert("모든 항목을 입력해주세요!!");
+      alert('모든 항목을 입력해주세요!!');
       return;
     }
- 
-    navigate("/visa-loading", {
-      state: {from: "match"},
+
+    navigate('/visa-loading', {
+      state: { from: 'match' },
       replace: false,
     });
   };
@@ -45,7 +44,8 @@ export default function ConfirmMore() {
       <section className="w-full max-w-[360px] px-6 pt-20 pb-24">
         <h1 className="text-[22px] font-extrabold text-gray-900">
           정확한 매칭을 위해
-          <br />추가 정보를 입력해주세요.
+          <br />
+          추가 정보를 입력해주세요.
         </h1>
 
         {/* 카드 */}
@@ -61,7 +61,7 @@ export default function ConfirmMore() {
                     name="biz_type"
                     className="w-3 h-3 accent-gray-900"
                     value="franchise"
-                    checked={bizType === "franchise"}
+                    checked={bizType === 'franchise'}
                     onChange={(e) => setBizType(e.target.value)}
                   />
                   <span className="text-[13px] text-gray-900">프랜차이즈</span>
@@ -72,7 +72,7 @@ export default function ConfirmMore() {
                     name="biz_type"
                     className="w-3 h-3 accent-gray-900"
                     value="private"
-                    checked={bizType === "private"} // ✅ 기본 선택
+                    checked={bizType === 'private'} // ✅ 기본 선택
                     onChange={(e) => setBizType(e.target.value)}
                   />
                   <span className="text-[13px] text-gray-900">개인 점포</span>
@@ -84,7 +84,9 @@ export default function ConfirmMore() {
           {/* ── 특허/지식재산권 보유 여부 ── */}
           <div className="mt-4">
             <div className="flex items-center justify-between">
-              <span className="text-[14px] text-gray-600">특허/지식재산권 보유 여부</span>
+              <span className="text-[14px] text-gray-600">
+                특허/지식재산권 보유 여부
+              </span>
               <div className="flex items-center gap-4">
                 <label className="flex items-center gap-1">
                   <input
@@ -92,7 +94,7 @@ export default function ConfirmMore() {
                     name="ip_owned"
                     className="w-3 h-3 accent-gray-900"
                     value="yes"
-                    checked={ipOwned === "yes"} // ✅ true → yes
+                    checked={ipOwned === 'yes'} // ✅ true → yes
                     onChange={(e) => setIpOwned(e.target.value)}
                   />
                   <span className="text-[13px] text-gray-900">예</span>
@@ -103,7 +105,7 @@ export default function ConfirmMore() {
                     name="ip_owned"
                     className="w-3 h-3 accent-gray-900"
                     value="no"
-                    checked={ipOwned === "no"} // ✅ false → no
+                    checked={ipOwned === 'no'} // ✅ false → no
                     onChange={(e) => setIpOwned(e.target.value)}
                   />
                   <span className="text-[13px] text-gray-900">아니오</span>
@@ -128,7 +130,9 @@ export default function ConfirmMore() {
 
           {/* ── 오아시스 점수 ── */}
           <label className="block mt-4">
-            <span className="block text-[14px] text-gray-600 mb-1">오아시스 점수</span>
+            <span className="block text-[14px] text-gray-600 mb-1">
+              오아시스 점수
+            </span>
             <input
               type="text"
               placeholder="85"
