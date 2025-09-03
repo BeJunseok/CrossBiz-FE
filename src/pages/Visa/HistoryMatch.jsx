@@ -1,28 +1,76 @@
-// src/pages/Visa/HistoryMatch.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import LeftIcon from "../../assets/LeftIcon.svg";
 import ShareIcon from "../../assets/Share.svg";
+import commonUser from "../../data/commonUser.json";
+import visaUser from "../../data/visaUser.json";
+
+/* ===== helpers ===== */
+const norm = (s = "") =>
+  String(s).toLowerCase().replace(/\s+/g, "").replace(/[‐-‒–—−]/g, "-");
+
+const matchName = (a = "", b = "") => {
+  const A = norm(a), B = norm(b);
+  return A === B || A.includes(B) || B.includes(A);
+};
+
+const extractRecList = (raw) =>
+  raw?.recommendations ??
+  raw?.response?.recommendedVisas ??
+  raw?.recommendedVisas ??
+  [];
+
+const toSelected = (v = {}) => ({
+  name: v?.name,
+  reason: v?.reason,
+  cautions: Array.isArray(v?.cautions) ? v.cautions : v?.cautions ? [v.cautions] : [],
+  purpose: v?.purpose,
+  target: v?.target,
+  qualification: v?.qualification,
+  requiredDocuments: v?.requiredDocuments,
+  benefits: v?.benefits,
+});
 
 export default function HistoryMatch() {
   const nav = useNavigate();
   const location = useLocation();
-  const from = location.state?.from ?? "history"; // "match" | "history"
 
-  // from 값에 따라 다른 키 사용
+  const from = location.state?.from ?? "history";        // "match" | "history"
+  const userName = location.state?.userName ?? "Anna";
+
   const storageKey = from === "match" ? "visa_history_match" : "visa_history";
 
   const [history, setHistory] = useState([]);
+  const [lastRaw, setLastRaw] = useState(null);
 
-  // 로컬스토리지에서 읽기
   useEffect(() => {
+    // 1) 히스토리
     try {
       const raw = JSON.parse(localStorage.getItem(storageKey) || "[]");
       setHistory(Array.isArray(raw) ? raw : []);
     } catch {
       setHistory([]);
     }
+
+    // 2) 최근 raw 복구
+    const tryKeys = [
+      `${storageKey}_last_raw`,
+      "visa_last_raw_match",
+      "visa_last_raw",
+    ];
+    for (const k of tryKeys) {
+      const v = localStorage.getItem(k);
+      if (v) {
+        try { setLastRaw(JSON.parse(v)); break; } catch {}
+      }
+    }
   }, [storageKey]);
+
+  // ✅ 우선 순위: (A) 이전 페이지에서 내려준 raw → (B) lastRaw → (C) 샘플
+  const incomingRaw =
+    location.state?.raw ??
+    lastRaw ??
+    (from === "match" ? commonUser : visaUser);
 
   // 날짜 내림차순 정렬
   const sorted = useMemo(() => {
@@ -30,11 +78,26 @@ export default function HistoryMatch() {
     return [...history].sort((a, b) => toNum(b.date) - toNum(a.date));
   }, [history]);
 
+  // CardList와 동일 포맷으로 넘기기: { from, raw, selected }, search ?name=
+  const goVisaInfo = (typeName) => {
+    const list = extractRecList(incomingRaw);
+    const found = list.find((v) => matchName(v?.name, typeName));
+    const selected = found ? toSelected(found) : { name: typeName };
+
+    nav(`/visa-info?name=${encodeURIComponent(typeName)}`, {
+      state: {
+        from,
+        userName,
+        raw: incomingRaw,     // ✅ raw 그대로 전달
+        selected,             // ✅ 하단 모달과 동일 구조
+      },
+    });
+  };
+
   return (
     <main className="min-h-screen w-full flex justify-center bg-white">
-      {/* ★ 393 고정 & 좌우 패딩 제거 */}
       <section className="w-[393px] px-0 py-2">
-        {/* 상단 헤더: 여기만 px-4 */}
+        {/* 헤더 */}
         <header className="relative h-[75px] border-b border-gray-200 flex items-center justify-center px-4">
           <img
             src={LeftIcon}
@@ -47,26 +110,31 @@ export default function HistoryMatch() {
           </h1>
         </header>
 
-        {/* 히스토리 카드: 풀폭(393px) */}
+        {/* 리스트 카드 */}
         <div className="mt-12 w-full bg-white overflow-hidden">
-          {/* 카드 헤더 */}
           <div className="flex items-center justify-between bg-[#E8E8E8] px-14 py-2">
             <span className="text-[13px] font-semibold text-gray-600">유형</span>
             <span className="text-[13px] font-semibold text-gray-600">날짜</span>
           </div>
 
-          {/* 리스트 */}
           <ul className="divide-y divide-gray-100">
             {sorted.map((row) => (
               <li key={row.id} className="py-3 px-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-[14px] text-gray-900">{row.type}</span>
+                  <button
+                    type="button"
+                    className="text-left text-[14px] text-gray-900 underline decoration-transparent hover:decoration-gray-300"
+                    onClick={() => goVisaInfo(row.type)}
+                  >
+                    {row.type}
+                  </button>
                   <div className="flex items-center gap-2">
                     <span className="text-[13px] text-gray-700">{row.date}</span>
                     <button
                       type="button"
-                      aria-label="공유"
+                      aria-label="상세 보기"
                       className="inline-flex items-center justify-center w-6 h-6 rounded-full border border-gray-300 bg-[#F3F3F3] hover:bg-gray-50"
+                      onClick={() => goVisaInfo(row.type)}
                     >
                       <img src={ShareIcon} alt="" className="w-3.5 h-3.5" />
                     </button>
