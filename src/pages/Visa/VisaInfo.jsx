@@ -1,39 +1,41 @@
-import React, { useMemo, useState, useCallback } from "react";
-import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
+import React, { useMemo, useState, useCallback } from 'react';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 
-import LeftIcon from "../../assets/LeftIcon.svg";
-import DownloadIcon from "../../assets/Download.svg";
-import CopyIcon from "../../assets/Copy.svg";
-import PurposeIcon from "../../assets/Purpose.svg";
-import PeopleIcon from "../../assets/People.svg";
-import TargetIcon from "../../assets/Target.svg";
-import NeedIcon from "../../assets/Need.svg";
-import BenefitsIcon from "../../assets/Benefits.svg";
-import SaveToast from "../../components/SaveToast";
-import SaveSvg from "../../assets/Save.svg";
-import URLIcon from "../../assets/URL.svg";
-import CancelIcon from "../../assets/Cancel.svg";
+import LeftIcon from '../../assets/LeftIcon.svg';
+import DownloadIcon from '../../assets/Download.svg';
+import CopyIcon from '../../assets/Copy.svg';
+import PurposeIcon from '../../assets/Purpose.svg';
+import PeopleIcon from '../../assets/People.svg';
+import TargetIcon from '../../assets/Target.svg';
+import NeedIcon from '../../assets/Need.svg';
+import BenefitsIcon from '../../assets/Benefits.svg';
+import SaveToast from '../../components/SaveToast';
+import SaveSvg from '../../assets/Save.svg';
+import URLIcon from '../../assets/URL.svg';
+import CancelIcon from '../../assets/Cancel.svg';
 
-import visaUser from "../../data/visaUser.json";
-import commonUser from "../../data/commonUser.json";
-
+import visaUser from '../../data/visaUser.json';
+import commonUser from '@/data/CommonUser.json';
 
 /* ============ helpers ============ */
 const A = (v) => (Array.isArray(v) ? v : v ? [v] : []);
 
+const normalize = (s = '') =>
+  s
+    .toLowerCase()
+    .replace(/[\s\u00A0]+/g, '')
+    .replace(/[‐-‒–—−]/g, '-')
+    .trim();
 
-const normalize = (s = "") =>
-  s.toLowerCase().replace(/[\s\u00A0]+/g, "").replace(/[‐-‒–—−]/g, "-").trim();
-
-const matchName = (a = "", b = "") => {
-  const A1 = normalize(a), B1 = normalize(b);
+const matchName = (a = '', b = '') => {
+  const A1 = normalize(a),
+    B1 = normalize(b);
   return A1 === B1 || A1.includes(B1) || B1.includes(A1);
 };
 
-const splitName = (name = "") => {
-  const [first, ...rest] = String(name).split(" ");
-  return [first || "", rest.join(" ") || ""];
-
+const splitName = (name = '') => {
+  const [first, ...rest] = String(name).split(' ');
+  return [first || '', rest.join(' ') || ''];
 };
 
 const toList = (v) => {
@@ -61,8 +63,8 @@ const mergeVisa = (base = {}, extra = {}) => {
   out.cautions = Array.isArray(out.cautions)
     ? out.cautions
     : out.cautions
-    ? [out.cautions]
-    : [];
+      ? [out.cautions]
+      : [];
   return out;
 };
 
@@ -71,22 +73,20 @@ export default function VisaInfo() {
   const nav = useNavigate();
   const { state } = useLocation();
 
-  const from = state?.from ?? "history";
+  const from = state?.from ?? 'history';
 
   const [sp] = useSearchParams();
-  const nameParam = sp.get("name") || "";
-
+  const nameParam = sp.get('name') || '';
 
   // 1) 데이터 소스 선정
   const source = useMemo(() => {
-
     if (state?.raw) return state.raw;
 
     // 최근 추천 원본(raw) 복구 시도
     const tryKeys = [
-      `${from === "match" ? "visa_history_match" : "visa_history"}_last_raw`,
-      "visa_last_raw_match",
-      "visa_last_raw",
+      `${from === 'match' ? 'visa_history_match' : 'visa_history'}_last_raw`,
+      'visa_last_raw_match',
+      'visa_last_raw',
     ];
     for (const k of tryKeys) {
       const v = localStorage.getItem(k);
@@ -99,8 +99,7 @@ export default function VisaInfo() {
     }
 
     // 최종 폴백: 샘플
-    return from === "match" ? commonUser : visaUser;
-
+    return from === 'match' ? commonUser : visaUser;
   }, [state?.raw, from]);
 
   // 2) 추천 리스트
@@ -108,20 +107,18 @@ export default function VisaInfo() {
 
   // 3) 최종 비자 객체: (1) state.selected → (2) name으로 raw에서 찾고 병합 → (3) name만 있으면 최소객체
   const visa = useMemo(() => {
-
-    const selected = state?.selected || null;                 // { name, reason, cautions, purpose, ... } 최소객체
-    const targetName = nameParam || selected?.name || "";
+    const selected = state?.selected || null; // { name, reason, cautions, purpose, ... } 최소객체
+    const targetName = nameParam || selected?.name || '';
 
     // raw에서 풀 오브젝트
     const byName = recList.find((v) => matchName(v?.name, targetName));
 
     if (selected && byName) return mergeVisa(selected, byName);
-    if (selected) return mergeVisa(selected, {});             // selected만으로 표시
-    if (byName) return mergeVisa(byName, {});                 // raw만으로 표시
+    if (selected) return mergeVisa(selected, {}); // selected만으로 표시
+    if (byName) return mergeVisa(byName, {}); // raw만으로 표시
 
     // 그래도 없으면 이름만
     return targetName ? { name: targetName } : null;
-
   }, [state?.selected, recList, nameParam]);
 
   const [mainCode, subTitle] = splitName(visa?.name || '');
@@ -163,8 +160,8 @@ export default function VisaInfo() {
 
     const d = new Date();
     const date = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(
-      d.getDate()).padStart(2, "0")}`;
-
+      d.getDate()
+    ).padStart(2, '0')}`;
 
     let list = [];
     try {
@@ -174,7 +171,7 @@ export default function VisaInfo() {
       list = [];
     }
 
-    const idx = list.findIndex((it) => (it?.type || "") === type);
+    const idx = list.findIndex((it) => (it?.type || '') === type);
 
     if (idx >= 0) list[idx] = { ...list[idx], date, id: Date.now() };
     else list.push({ id: Date.now(), type, date, source: from });
@@ -183,10 +180,7 @@ export default function VisaInfo() {
 
     // 원본 raw도 최신으로 백업해 두면 나중에 History에서 복원 가능
     try {
-      localStorage.setItem(
-        `${key}_last_raw`,
-        JSON.stringify(source)
-      );
+      localStorage.setItem(`${key}_last_raw`, JSON.stringify(source));
     } catch {}
 
     setShowSave(true);
@@ -341,11 +335,20 @@ export default function VisaInfo() {
                   type="button"
                   className="w-full"
                   aria-label="URL 복사"
-
-                  onClick={() => { try { navigator.clipboard?.writeText?.(window.location.href || ""); } catch {} ; closeCopyModal(); }}
+                  onClick={() => {
+                    try {
+                      navigator.clipboard?.writeText?.(
+                        window.location.href || ''
+                      );
+                    } catch {}
+                    closeCopyModal();
+                  }}
                 >
-                  <img src={URLIcon} alt="URL 복사" className="w-full h-auto block" />
-
+                  <img
+                    src={URLIcon}
+                    alt="URL 복사"
+                    className="w-full h-auto block"
+                  />
                 </button>
                 <button
                   type="button"

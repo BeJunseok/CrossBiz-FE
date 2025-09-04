@@ -4,7 +4,7 @@ import HistoryIcon from "../../assets/History.svg";
 import ShareIcon from "../../assets/Share.svg";
 import NearbyOffices from "../../components/NearbyOffices";
 import { getUserProfile } from "@/api/auth/Auth";
-import commonUser from "../../data/commonUser.json";
+import commonUser from "@/data/CommonUser.json";
 import visaUser from "../../data/visaUser.json";
 
 /* ===== helpers ===== */

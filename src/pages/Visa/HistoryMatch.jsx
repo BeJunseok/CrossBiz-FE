@@ -1,16 +1,20 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import LeftIcon from "../../assets/LeftIcon.svg";
-import ShareIcon from "../../assets/Share.svg";
-import commonUser from "../../data/commonUser.json";
-import visaUser from "../../data/visaUser.json";
+import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import LeftIcon from '../../assets/LeftIcon.svg';
+import ShareIcon from '../../assets/Share.svg';
+import commonUser from '@/data/CommonUser.json';
+import visaUser from '../../data/visaUser.json';
 
 /* ===== helpers ===== */
-const norm = (s = "") =>
-  String(s).toLowerCase().replace(/\s+/g, "").replace(/[‐-‒–—−]/g, "-");
+const norm = (s = '') =>
+  String(s)
+    .toLowerCase()
+    .replace(/\s+/g, '')
+    .replace(/[‐-‒–—−]/g, '-');
 
-const matchName = (a = "", b = "") => {
-  const A = norm(a), B = norm(b);
+const matchName = (a = '', b = '') => {
+  const A = norm(a),
+    B = norm(b);
   return A === B || A.includes(B) || B.includes(A);
 };
 
@@ -23,7 +27,11 @@ const extractRecList = (raw) =>
 const toSelected = (v = {}) => ({
   name: v?.name,
   reason: v?.reason,
-  cautions: Array.isArray(v?.cautions) ? v.cautions : v?.cautions ? [v.cautions] : [],
+  cautions: Array.isArray(v?.cautions)
+    ? v.cautions
+    : v?.cautions
+      ? [v.cautions]
+      : [],
   purpose: v?.purpose,
   target: v?.target,
   qualification: v?.qualification,
@@ -35,10 +43,10 @@ export default function HistoryMatch() {
   const nav = useNavigate();
   const location = useLocation();
 
-  const from = location.state?.from ?? "history";        // "match" | "history"
-  const userName = location.state?.userName ?? "Anna";
+  const from = location.state?.from ?? 'history'; // "match" | "history"
+  const userName = location.state?.userName ?? 'Anna';
 
-  const storageKey = from === "match" ? "visa_history_match" : "visa_history";
+  const storageKey = from === 'match' ? 'visa_history_match' : 'visa_history';
 
   const [history, setHistory] = useState([]);
   const [lastRaw, setLastRaw] = useState(null);
@@ -46,7 +54,7 @@ export default function HistoryMatch() {
   useEffect(() => {
     // 1) 히스토리
     try {
-      const raw = JSON.parse(localStorage.getItem(storageKey) || "[]");
+      const raw = JSON.parse(localStorage.getItem(storageKey) || '[]');
       setHistory(Array.isArray(raw) ? raw : []);
     } catch {
       setHistory([]);
@@ -55,13 +63,16 @@ export default function HistoryMatch() {
     // 2) 최근 raw 복구
     const tryKeys = [
       `${storageKey}_last_raw`,
-      "visa_last_raw_match",
-      "visa_last_raw",
+      'visa_last_raw_match',
+      'visa_last_raw',
     ];
     for (const k of tryKeys) {
       const v = localStorage.getItem(k);
       if (v) {
-        try { setLastRaw(JSON.parse(v)); break; } catch {}
+        try {
+          setLastRaw(JSON.parse(v));
+          break;
+        } catch {}
       }
     }
   }, [storageKey]);
@@ -70,11 +81,11 @@ export default function HistoryMatch() {
   const incomingRaw =
     location.state?.raw ??
     lastRaw ??
-    (from === "match" ? commonUser : visaUser);
+    (from === 'match' ? commonUser : visaUser);
 
   // 날짜 내림차순 정렬
   const sorted = useMemo(() => {
-    const toNum = (d) => Number(String(d || "").replaceAll(".", ""));
+    const toNum = (d) => Number(String(d || '').replaceAll('.', ''));
     return [...history].sort((a, b) => toNum(b.date) - toNum(a.date));
   }, [history]);
 
@@ -88,8 +99,8 @@ export default function HistoryMatch() {
       state: {
         from,
         userName,
-        raw: incomingRaw,     // ✅ raw 그대로 전달
-        selected,             // ✅ 하단 모달과 동일 구조
+        raw: incomingRaw, // ✅ raw 그대로 전달
+        selected, // ✅ 하단 모달과 동일 구조
       },
     });
   };
@@ -113,8 +124,12 @@ export default function HistoryMatch() {
         {/* 리스트 카드 */}
         <div className="mt-12 w-full bg-white overflow-hidden">
           <div className="flex items-center justify-between bg-[#E8E8E8] px-14 py-2">
-            <span className="text-[13px] font-semibold text-gray-600">유형</span>
-            <span className="text-[13px] font-semibold text-gray-600">날짜</span>
+            <span className="text-[13px] font-semibold text-gray-600">
+              유형
+            </span>
+            <span className="text-[13px] font-semibold text-gray-600">
+              날짜
+            </span>
           </div>
 
           <ul className="divide-y divide-gray-100">
@@ -129,7 +144,9 @@ export default function HistoryMatch() {
                     {row.type}
                   </button>
                   <div className="flex items-center gap-2">
-                    <span className="text-[13px] text-gray-700">{row.date}</span>
+                    <span className="text-[13px] text-gray-700">
+                      {row.date}
+                    </span>
                     <button
                       type="button"
                       aria-label="상세 보기"
