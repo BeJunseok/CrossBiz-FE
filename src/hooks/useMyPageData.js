@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { getMyPosts } from '@/api/community/postApi';
 import { getUserProfile, updateUserProfile } from '@/api/auth/Auth';
 import { useAuthStore } from '@/stores/authStore';
+import { useTranslation } from 'react-i18next';
 
 export const useMyPageData = () => {
+  const { t } = useTranslation();
   const nav = useNavigate();
   const { logout } = useAuthStore();
   const [formData, setFormData] = useState(null);
@@ -37,7 +39,7 @@ export const useMyPageData = () => {
         setMyPosts(postsData.content || []);
       } catch (err) {
         console.error('마이페이지 데이터 로딩 실패:', err);
-        setError('데이터를 불러오는 데 실패했습니다.');
+        setError(t('community.myPage.dataFetchError'));
       } finally {
         setLoading(false);
       }
@@ -77,12 +79,11 @@ export const useMyPageData = () => {
 
       await updateUserProfile(filteredData);
 
-      alert('프로필이 성공적으로 저장되었습니다.');
+      alert(t('community.myPage.profileSaveSuccess'));
     } catch (err) {
       console.error('저장 실패:', err);
-      alert(
-        `저장에 실패했습니다: ${err.response?.data?.message || err.message}`
-      );
+      const message = err.response?.data?.message || err.message;
+      alert(t('community.myPage.profileSaveError', { message }));
     } finally {
       setLoading(false);
     }

@@ -2,6 +2,7 @@ import React from 'react';
 import Views from '@/assets/svg/community/Views.svg?react';
 import Comments from '@/assets/svg/community/Comments.svg?react';
 import Likes from '@/assets/svg/community/Likes.svg?react';
+import userProfileImage from '@/assets/svg/common/ProfileImage.svg';
 import { getTimeAgo } from '@/utils/dateUtils';
 import { getCategoryColor } from '@/utils/categoryColor';
 import { useNavigate } from 'react-router-dom';
@@ -40,12 +41,16 @@ const RecentPostItem = ({ post }) => {
         </span>
       </div>
       <div className="flex gap-2.5 mb-3">
-        <div className="w-10 h-10 bg-gray-200 rounded-full flex-shrink-0"></div>
+        <div className="w-10 h-10 bg-gray-200 rounded-full flex-shrink-0 overflow-hidden">
+          <img src={userProfileImage} />
+        </div>
         <div className="flex-1">
           <div className="flex justify-between items-start">
             <div className="min-w-0 max-w-52">
-              <p className="text-xs text-black font-medium">{author}</p>
-              <p className="text-xs text-gray-600 font-semibold truncate">
+              <p className="text-[10px] text-black font-medium mb-1">
+                {author}
+              </p>
+              <p className="text-xs text-black font-semibold truncate">
                 {title}
               </p>
             </div>

@@ -1,5 +1,5 @@
 import { useAdditionalInfoData } from '@/hooks/useAdditionalInfoData';
-import MyPageHeader from '@/components/community/MyPage/MyPageHeader';
+import MyPageHeader from '@/components/Community/MyPage/MyPageHeader';
 // 공통 섹션들
 import {
   BusinessTypeSection,
@@ -11,9 +11,11 @@ import {
 import {
   VisaSection,
   BusinessInfoSection,
-} from '@/components/community/MyPage/AdditionalInfo/AdditionalInfoSections';
+} from '@/components/Community/MyPage/AdditionalInfo/AdditionalInfoSections';
+import { useTranslation } from 'react-i18next';
 
 const AdditionalInfoPage = () => {
+  const { t } = useTranslation();
   const { formData, loading, handleFieldChange, handleSave } =
     useAdditionalInfoData();
 
@@ -89,10 +91,12 @@ const AdditionalInfoPage = () => {
 
       {loading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6">
+          <div className="min-w-36 bg-white rounded-lg p-6">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p className="text-gray-600">저장하는 중...</p>
+              <p className="text-gray-600">
+                {t('community.additionalInfo.saving')}
+              </p>
             </div>
           </div>
         </div>

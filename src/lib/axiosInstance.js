@@ -24,11 +24,13 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      console.log('401: 토큰 만료 또는 인증 오류');
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      console.log(`${error.response.status}: 토큰 만료 또는 인증 오류`);
 
-      useAuthStore.getState().logout();
-      window.location.href = '/login';
+      if (useAuthStore.getState().isLoggedIn) {
+        useAuthStore.getState().logout();
+        window.location.href = '/onboarding';
+      }
     }
     return Promise.reject(error);
   }

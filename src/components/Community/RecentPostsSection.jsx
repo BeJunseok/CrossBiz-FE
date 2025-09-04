@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import RecentPostItem from './RecentPostItem';
 import FilterButtons from './FilterButton';
 import Star from '@/assets/svg/community/Star.svg?react';
+import { useTranslation } from 'react-i18next';
 
 const RecentPostsSection = ({ recentPosts }) => {
+  const { t } = useTranslation();
   const posts = Array.isArray(recentPosts) ? recentPosts : [];
   const [filteredPosts, setFilteredPosts] = useState(posts.slice(0, 5));
 
@@ -51,7 +53,9 @@ const RecentPostsSection = ({ recentPosts }) => {
       <div className="mb-3">
         <div className="flex items-center gap-1.5 mb-3">
           <Star />
-          <h3 className="text-base font-semibold text-black">최신 글</h3>
+          <h3 className="text-base font-semibold text-black">
+            {t('community.main.recentPosts')}
+          </h3>
         </div>
 
         <FilterButtons onFilterChange={handleFilterChange} />
@@ -70,7 +74,7 @@ const RecentPostsSection = ({ recentPosts }) => {
             key="no-results"
             className="p-8 text-center text-gray-500 text-sm"
           >
-            선택한 조건에 맞는 게시글이 없습니다.
+            {t('community.main.noRecentPosts')}
           </div>
         )}
       </div>

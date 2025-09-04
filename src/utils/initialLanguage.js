@@ -3,7 +3,7 @@ import { languages } from '@/constants/language';
 // 초기 언어 설정 함수
 export const getInitialLanguage = () => {
   // localStorage에서 확인
-  const stored = localStorage.getItem('selectedLanguage');
+  const stored = localStorage.getItem('i18nextLng');
   if (stored && languages.some((l) => l.code === stored)) {
     return stored;
   }

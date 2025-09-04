@@ -29,8 +29,8 @@ const HotPostItem = ({ post }) => {
       <div className="flex items-center">
         <p className="flex-1 truncate pr-4 text-xs text-gray-600">{title}</p>
 
-        <div className="flex gap-x-1">
-          <Stat icon={<Views />} value={views} width="w-7" />
+        <div className="flex gap-x-2">
+          <Stat icon={<Views />} value={views} width="w-4" />
           <Stat icon={<Comments />} value={comments} width="w-3" />
           <Stat icon={<Likes className="mb-0.5" />} value={likes} width="w-3" />
         </div>

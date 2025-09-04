@@ -2,11 +2,16 @@ import clsx from 'clsx';
 import Logo from '@/components/common/Logo';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { registerSchema } from '@/utils/validation';
+import { getRegisterSchema } from '@/utils/validation';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
+import { useMemo } from 'react';
 
 const RegisterPage = () => {
+  const { t } = useTranslation();
   const nav = useNavigate();
+
+  const registerSchema = useMemo(() => getRegisterSchema(t), [t]);
 
   const {
     register,
@@ -47,7 +52,7 @@ const RegisterPage = () => {
               <input
                 type="text"
                 {...register('loginId')}
-                placeholder="아이디"
+                placeholder={t('register.basic.idPlaceholder')}
                 required
                 autoComplete="username"
                 className={clsx(
@@ -71,7 +76,7 @@ const RegisterPage = () => {
               <input
                 type="password"
                 {...register('password')}
-                placeholder="비밀번호"
+                placeholder={t('register.basic.passwordPlaceholder')}
                 required
                 autoComplete="new-password"
                 className={clsx(
@@ -95,7 +100,7 @@ const RegisterPage = () => {
               <input
                 type="password"
                 {...register('confirmPassword')}
-                placeholder="비밀번호 확인"
+                placeholder={t('register.basic.confirmPasswordPlaceholder')}
                 required
                 autoComplete="new-password"
                 className={clsx(
@@ -121,7 +126,7 @@ const RegisterPage = () => {
             disabled={!isValid}
             className="w-full h-16 bg-black text-white text-xl font-semibold rounded-[40px] hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors mt-5"
           >
-            확인
+            {t('register.basic.confirmButton')}
           </button>
         </div>
       </form>
@@ -133,7 +138,7 @@ const RegisterPage = () => {
           onClick={handleLoginRedirect}
           className="text-[#898989] text-xs font-normal hover:text-gray-600 transition-colors"
         >
-          이미 계정이 있습니다
+          {t('register.basic.loginPrompt')}
         </button>
       </div>
     </div>

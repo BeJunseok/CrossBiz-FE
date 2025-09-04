@@ -1,0 +1,486 @@
+{
+  "bottomNav": {
+    "visa": "Visa",
+    "report": "Analysis",
+    "tax": "Tax",
+    "community": "Community"
+  },
+  "onboarding": {
+    "subtitle1": "From visa · taxes to commercial district tracking.",
+    "subtitle2": "Your own business assistant",
+    "register": "Sign Up",
+    "login": "Login"
+  },
+  "login": {
+    "loginIdPlaceholder": "ID",
+    "passwordPlaceholder": "Password",
+    "errorMessage": "Please enter both ID and password.",
+    "invalidCredentials": "The ID or password is not correct.",
+    "serverError": "A server error occurred. Please try again later.",
+    "loginError": "An error occurred during login.",
+    "forgotPassword": "Forgot your password?",
+    "signIn": "Login",
+    "signingIn": "Logging in...",
+    "register": "Sign up"
+  },
+  "register": {
+    "basic": {
+      "idPlaceholder": "ID",
+      "passwordPlaceholder": "Password",
+      "confirmPasswordPlaceholder": "Confirm Password",
+      "confirmButton": "Confirm",
+      "loginPrompt": "Already have an account?",
+      "validation": {
+        "loginIdRequired": "Please enter an ID.",
+        "loginIdMin": "ID must be at least 4 characters.",
+        "loginIdRegex": "ID can only contain lowercase letters and numbers.",
+        "passwordRequired": "Please enter a password.",
+        "passwordMin": "Password must be at least 8 characters.",
+        "confirmPasswordRequired": "Please enter the password.",
+        "passwordMismatch": "Password does not match."
+      }
+    },
+    "personalInfo": {
+      "greeting": "Hello !",
+      "promptLine1": "To provide you with personalized information,",
+      "promptLine2": "please enter your details.",
+      "nameLabel": "Name",
+      "ageLabel": "Age",
+      "nationalityLabel": "Nationality",
+      "businessInfoLabel": "Business Information",
+      "selectPlaceholder": "Please select",
+      "nextButton": "Next",
+      "processingButton": "Processing...",
+      "errorNoLoginData": "Registration information not found. Please start over.",
+      "errorAlreadyExists": "This ID already exists.",
+      "errorBadRequest": "Please check your input.",
+      "errorServer": "A server error occurred. Please try again later.",
+      "errorGeneral": "An error occurred during sign-up.",
+      "validation": {
+        "nameRequired": "Please enter your name.",
+        "ageRequired": "Please select your age.",
+        "nationalityRequired": "Please select or enter your nationality.",
+        "statusRequired": "Please select or enter your business information."
+      }
+    },
+    "visaInfo": {
+      "titleLine1": "To provide customized data,",
+      "titleLine2": "we need more detailed information.",
+      "titleLine3": "(Optional)",
+      "residenceStatusLabel": "Residence Status",
+      "expectedStayPeriodLabel": "Expected Period of Stay",
+      "workExperienceLabel": "Work Experience",
+      "degreeLabel": "Degree",
+      "koreanProficiencyLabel": "Korean Proficiency",
+      "selectPlaceholder": "Please select",
+      "confirmButton": "Confirm",
+      "skipButton": "Skip",
+      "processingButton": "Processing...",
+      "successMessage": "Sign-up completed successfully.",
+      "errorServer": "A server error occurred. Please try again later.",
+      "errorGeneral": "An error occurred while registering information."
+    }
+  },
+  "dropdown": {
+    "directInputPlaceholder": "Please enter it yourself",
+    "age": {
+      "under10": "Under 10",
+      "20s30s": "20-30s",
+      "40s50s": "40-50s",
+      "60s_and_up": "60s or older"
+    },
+    "nationality": {
+      "china": "China",
+      "usa": "USA",
+      "turkey": "Turkey",
+      "thailand": "Thailand",
+      "other": "Other"
+    },
+    "businessInfo": {
+      "selfEmployed": "Self-employed",
+      "prospective": "Prospective Entrepreneur",
+      "other": "Other"
+    },
+    "category": {
+      "qna": "Q&A",
+      "discussion": "Discussion",
+      "help": "Help",
+      "tips": "Tips"
+    },
+    "residenceStatus": {
+      "student": "Student",
+      "jobSeeker": "Job Seeker",
+      "investor": "Business Investor",
+      "shortTerm": "Short-term General",
+      "training": "General Training",
+      "other": "Other"
+    },
+    "expectedStay": {
+      "under3m": "Under 3 months",
+      "under6m": "Under 6 months",
+      "under1y": "Under 1 year",
+      "under2y": "Under 2 years",
+      "under3y": "Under 3 years",
+      "under5y": "Under 5 years",
+      "permanent": "Permanent",
+      "unknown": "Unknown"
+    },
+    "workExperience": {
+      "none": "None",
+      "1y_plus": "1+ year",
+      "2y_plus": "2+ years",
+      "3y_plus": "3+ years",
+      "5y_plus": "5+ years",
+      "10y_plus": "10+ years"
+    },
+    "degree": {
+      "none": "None",
+      "highSchool": "High School Diploma",
+      "associate": "Associate Degree",
+      "bachelor": "Bachelor's Degree",
+      "master": "Master's Degree",
+      "doctorate": "Doctorate",
+      "other": "Other"
+    },
+    "koreanProficiency": {
+      "none": "None",
+      "basic": "Basic Conversation (TOPIK 1-2)",
+      "intermediate": "Intermediate (TOPIK 3-4)",
+      "advanced": "Advanced (TOPIK 5-6)",
+      "university": "Graduated from Korean University",
+      "other": "Other"
+    },
+    "industry": {
+      "restaurant": "Restaurant",
+      "retail": "Retail",
+      "service": "Service",
+      "it": "IT",
+      "culture": "Culture/Art",
+      "other": "Other"
+    }
+  },
+  "community": {
+    "main": {
+      "title": "Community",
+      "latestNews": "Latest News",
+      "hotPosts": "HOT Posts",
+      "more": "more",
+      "noHotPosts": "No popular posts available.",
+      "recentPosts": "Recent Posts",
+      "noRecentPosts": "No posts match the selected criteria.",
+      "loading": "Loading...",
+      "error": "An error occurred while loading posts.",
+      "filters": {
+        "industry": "Industry",
+        "nationality": "Nationality",
+        "category": "Category"
+      },
+      "news": [
+        {
+          "id": 1,
+          "title": "Busan City provides up to 8 million KRW to support small restaurant owners",
+          "date": "08-15-2025",
+          "source": "Sbiz24",
+          "url": "https://www.sbiz24.kr/"
+        },
+        {
+          "id": 2,
+          "title": "Iksan City selects new young farmers, supports with settlement and policy funds",
+          "date": "08-15-2025",
+          "source": "Ministry of SMEs and Startups",
+          "url": "https://www.mss.go.kr/site/eng/main.do"
+        }
+      ]
+    },
+    "postDetail": {
+      "invalidAccess": "Invalid access.",
+      "postNotFound": "Post not found.",
+      "serverError": "A server error occurred. Please try again later.",
+      "loadFailed": "Failed to load the post.",
+      "loginRequired": "Login is required.",
+      "enterComment": "Please enter a comment.",
+      "commentFailed": "Failed to post the comment.",
+      "likeFailed": "Failed to process like.",
+      "reportPreparing": "Report feature is coming soon.",
+      "urlCopied": "URL has been copied.",
+      "urlCopyFailed": "Failed to copy URL.",
+      "loading": "Loading...",
+      "report": "Report",
+      "shareUrl": "Share URL",
+      "views": "views",
+      "comments": "Comments",
+      "likes": "Likes",
+      "writeCommentPlaceholder": "Write a comment...",
+      "loginToWriteComment": "You can write a comment after logging in.",
+      "submitComment": "Post Comment"
+    },
+    "hotPost": {
+      "title": "HOT Posts",
+      "loading": "Loading...",
+      "error": "An error has occurred:"
+    },
+    "newPost": {
+      "submitButton": "Submit",
+      "categoryPlaceholder": "Select Category",
+      "industryPlaceholder": "Select Industry",
+      "titlePlaceholder": "Title",
+      "contentPlaceholder": "Please enter the content.",
+      "submitting": "Submitting post...",
+      "validationError": "Please fill in all fields.",
+      "submitSuccess": "Post submitted successfully.",
+      "submitError": "Failed to submit post: {{message}}"
+    },
+    "search": {
+      "placeholder": "Title, content",
+      "searching": "Searching...",
+      "resultsCount": "{{count}} results",
+      "noResults": "No search results found.",
+      "tryDifferentKeyword": "Try a different keyword!",
+      "recentSearches": "Recent Searches",
+      "clearAll": "Clear All",
+      "noRecentSearches": "No recent search history.",
+      "views": "Views",
+      "comments": "Comments"
+    },
+    "myPage": {
+      "loading": "Loading information...",
+      "dataFetchError": "Failed to load data.",
+      "save": "Save",
+      "myInfo": "My Info",
+      "nameLabel": "Name",
+      "ageLabel": "Age",
+      "nationalityLabel": "Nationality",
+      "businessInfoLabel": "Business Information",
+      "residenceStatusLabel": "Residence Status",
+      "expectedStayPeriodLabel": "Expected Period of Stay",
+      "workExperienceLabel": "Work Experience",
+      "degreeLabel": "Degree",
+      "koreanProficiencyLabel": "Korean Proficiency",
+      "more": "more",
+      "myPosts": "My Posts",
+      "noPosts": "You have not written any posts.",
+      "logout": "Logout",
+      "logoutConfirm": "Are you sure you want to log out?",
+      "profileSaveSuccess": "Profile saved successfully.",
+      "profileSaveError": "Failed to save: {{message}}"
+    },
+    "additionalInfo": {
+      "saving": "Saving...",
+      "saveSuccess": "Additional information saved successfully.",
+      "saveError": "Failed to save.",
+      "businessTypeLabel": "Planned Business Type",
+      "patentLabel": "Patent/IP Ownership",
+      "patentYes": "Yes",
+      "patentNo": "No",
+      "operatingFundLabel": "Operating Funds",
+      "oasisScoreLabel": "OASIS Score (Optional)",
+      "visaInfoTitle": "Visa Information",
+      "visaTypeLabel": "Issued Visa Type",
+      "issueDateLabel": "Date of Issue",
+      "expiryDateLabel": "Date of Expiry",
+      "businessInfoTitle": "Business Information",
+      "regNumberLabel": "Business Registration Number",
+      "annualRevenueLabel": "Annual Revenue",
+      "employeeCountLabel": "Number of Employees"
+    }
+  },
+  "time": {
+    "justNow": "Just now",
+    "minuteAgo_one": "{{count}} minute ago",
+    "minuteAgo_other": "{{count}} minutes ago",
+    "hourAgo_one": "{{count}} hour ago",
+    "hourAgo_other": "{{count}} hours ago",
+    "dayAgo_one": "{{count}} day ago",
+    "dayAgo_other": "{{count}} days ago"
+  },
+  "analysis": {
+    "districts": {
+      "yonggang": "Yonggang-dong",
+      "daeheung": "Daeheung-dong",
+      "yeomri": "Yeomri-dong",
+      "sinsu": "Sinsu-dong",
+      "seogyo": "Seogyo-dong",
+      "hapjeong": "Hapjeong-dong",
+      "mangwon1": "Mangwon 1-dong",
+      "mangwon2": "Mangwon 2-dong",
+      "yeonnam": "Yeonnam-dong",
+      "seongsan1": "Seongsan 1-dong",
+      "seongsan2": "Seongsan 2-dong",
+      "sangam": "Sangam-dong",
+      "dohwa": "Dohwa-dong",
+      "seogang": "Seogang-dong",
+      "gongdeok": "Gongdeok-dong",
+      "ahyeon": "Ahyeon-dong"
+    },
+    "mapHeader": {
+      "title": "District Report",
+      "searchPlaceholder": "Search region, building, address",
+      "searchError": "Please enter a search term.",
+      "noResult": "No results found for '{{term}}'.",
+      "grade": "Location Grade",
+      "allGrades": "Grades",
+      "gradeN": "Grade {{grade}}",
+      "industry": "Industry",
+      "allIndustries": "Industries",
+      "period": "Period",
+      "allPeriods": "Periods",
+      "industryOptions": {
+        "restaurant": "Restaurant",
+        "retail": "Retail",
+        "service": "Service",
+        "it": "IT",
+        "culture": "Culture",
+        "education": "Education",
+        "health": "Medical",
+        "realEstate": "Brokerage",
+        "other": "Other"
+      },
+      "periodOptions": {
+        "1m": "Last 1 month",
+        "3m": "Last 3 months",
+        "6m": "Last 6 months",
+        "1y": "Last 1 year"
+      },
+      "facilities": "Main Facilities"
+    },
+    "dashboardHeader": {
+      "mapLoading": "Loading map...",
+      "locationGrade": "Location Grade: {{grade}}",
+      "tooltipTitle": "[Weight*Sales + Weight*Footfall + Weight*Closure Stability + Weight*Opening Rate]",
+      "tooltipBody": "The final location score is divided into 5 grades.",
+      "grade1": "- Grade 1 (Excellent): 80+",
+      "grade2": "- Grade 2 (Good): 65-79",
+      "grade3": "- Grade 3 (Average): 50-64",
+      "grade4": "- Grade 4 (Poor): 35-49",
+      "grade5": "- Grade 5 (Very Poor): Below 34",
+      "locationPrefix": "Mapo-gu, Seoul, "
+    },
+    "businessDistribution": {
+      "title": "Industry Distribution",
+      "noData": "No industry distribution data available.",
+      "districtPrefix": "The selected area is",
+      "districtSuffix": "",
+      "commercialTypes": {
+        "complex": "\nComplex Commercial Area",
+        "balanced": "\nBalanced Commercial Area"
+      },
+      "distributionCategories": {
+        "koreanFood": "Korean Food",
+        "coffeeShop": "Cafe",
+        "convenienceStore": "Convenience Store",
+        "clinic": "Clinic",
+        "bar": "Bar",
+        "supermarket": "Supermarket",
+        "pharmacy": "Pharmacy",
+        "generalAcademy": "General Academy",
+        "fruitAndVegetable": "Fruit/Vegetable",
+        "meatStore": "Butcher Shop",
+        "homeAppliances": "Home Appliances",
+        "lighting": "Lighting",
+        "sideDishStore": "Side Dish Store",
+        "westernFood": "Western Food",
+        "japaneseFood": "Japanese Food",
+        "medicalDevices": "Medical Devices",
+        "artAcademy": "Art Academy",
+        "stationery": "Stationery",
+        "sportsEquipment": "Sports Equipment",
+        "dentalClinic": "Dental Clinic",
+        "clothing": "Apparel",
+        "furniture": "Furniture",
+        "computerSales": "Computer Sales",
+        "guesthouse": "Guesthouse",
+        "beautySalon": "Beauty Salon",
+        "realEstate": "Real Estate",
+        "photoStudio": "Photo Studio",
+        "taxOffice": "Tax Office",
+        "seafood": "Seafood",
+        "travelAgency": "Travel Agency",
+        "eCommerce": "E-commerce",
+        "bakery": "Bakery",
+        "cosmetics": "Cosmetics"
+      }
+    },
+    "revenueChart": {
+      "title": "Monthly Sales by Industry",
+      "amountUnit": "₩ {{amount}}B",
+      "tooltipLabel": "Sales"
+    },
+    "openCloseAnalysis": {
+      "title": "Store Opening/Closing Rate (3 Years)",
+      "closingRate": "Closing Rate",
+      "openingRate": "Opening Rate",
+      "nearbyComparison": "Nearby Districts Comparison",
+      "loading": "Loading data..."
+    },
+    "trafficAnalysis": {
+      "title": "Footfall Analysis (3 Years)",
+      "tooltipTextPart1": "'s footfall is",
+      "tooltipTextPart2": ".",
+      "defaultTextPart1": "The average daily footfall for selected period is",
+      "defaultTextPart2": ".",
+      "unitPeople": ""
+    },
+    "demographics": {
+      "byTime": "Footfall by Time",
+      "byDay": "Footfall by Day",
+      "days": {
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sunday": "Sunday"
+      },
+      "shortDays": {
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun"
+      },
+      "timeSlots": {
+        "t0006": "00-06h",
+        "t0611": "06-11h",
+        "t1114": "11-14h",
+        "t1417": "14-17h",
+        "t1721": "17-21h",
+        "t2124": "21-24h"
+      },
+      "peakTimeText": "The time with the most footfall is",
+      "peakTimeResult": "{{day}}, {{time}}.",
+      "peakTimeSuffix": "",
+      "populationType": "Footfall Demographics",
+      "ageGroup": {
+        "teens": "Teens",
+        "20s": "20s",
+        "30s": "30s",
+        "40s": "40s",
+        "50sPlus": "50s+"
+      },
+      "gender": { "male": "Male", "female": "Female" },
+      "tooltipUnitHour": "",
+      "tooltipUnitDay": "",
+      "tooltipPopulation": "Footfall: {{count,toLocaleString}}"
+    },
+    "nearbyAreas": {
+      "title": "Top 3 Districts by Footfall",
+      "loading": "Loading grade information...",
+      "locationPrefix": "Mapo-gu, Seoul, ",
+      "gradeLabel": "Grade: {{grade}}",
+      "populationUnit": "ppl"
+    },
+    "locationTracking": {
+      "loading": "Loading data...",
+      "error": "Error: {{error}}",
+      "noCodeError": "District code is missing in the URL.",
+      "noDistrictError": "Could not find information for this district.",
+      "dataLoadError": "Failed to load analysis data:",
+      "dataFetchError": "Failed to fetch data.",
+      "compareButton": "Compare Districts",
+      "featureComingSoon": "Feature coming soon."
+    }
+  }
+}

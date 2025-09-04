@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import mockData from '@/mock/Community.json';
 import Header from '@/components/Community/Header';
 import NewsSection from '@/components/Community/NewsSection';
-import HotPostsSection from '@/components/Community/HotPostsSection';
+import HotPostsSection from '@/components/Community/HotpostsSection';
 import RecentPostsSection from '@/components/Community/RecentPostsSection';
 import Write from '@/assets/svg/community/Write.svg?react';
 import { useNavigate } from 'react-router-dom';
 import { getHotPosts, getLatestPosts } from '@/api/community/postApi';
+import { useTranslation } from 'react-i18next';
 
 const WriteButton = () => {
   const nav = useNavigate();
@@ -29,6 +29,7 @@ const WriteButton = () => {
 };
 
 const CommunityPage = () => {
+  const { t } = useTranslation();
   const [hotPosts, setHotPosts] = useState([]);
   const [recentPosts, setRecentPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,6 +56,8 @@ const CommunityPage = () => {
     industry: apiPost.businessType,
   });
 
+  const newsData = t('community.main.news', { returnObjects: true });
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -74,24 +77,22 @@ const CommunityPage = () => {
         setRecentPosts(transformedRecentPosts);
       } catch (error) {
         console.error('게시글 조회 실패:', error);
-        setError('게시글을 불러오는 중 오류가 발생했습니다.');
-
-        // 오류 발생 시 목데이터 사용
-        setHotPosts(mockData.hotPosts);
-        setRecentPosts(mockData.recentPosts);
+        setError(t('community.main.error'));
       } finally {
         setLoading(false);
       }
     };
 
     fetchPosts();
-  }, []);
+  }, [t]);
 
   if (loading) {
     return (
       <div className="bg-gray-100 min-h-screen w-full flex items-center justify-center">
         <div className="text-center">
-          <div className="text-lg font-medium text-gray-600">로딩 중...</div>
+          <div className="text-lg font-medium text-gray-600">
+            {t('community.main.loading')}
+          </div>
         </div>
       </div>
     );
@@ -107,7 +108,7 @@ const CommunityPage = () => {
         </div>
       )}
 
-      <NewsSection news={mockData.news} />
+      <NewsSection news={newsData} />
       <HotPostsSection hotPosts={hotPosts} />
       <RecentPostsSection recentPosts={recentPosts} />
 

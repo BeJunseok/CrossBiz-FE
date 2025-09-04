@@ -1,14 +1,16 @@
 import HotPostsHeader from '@/components/Community/HotPost/HotPostHeader';
 import HotPostsList from '@/components/Community/HotPost/HotPostList';
 import { useHotPosts } from '@/hooks/useHotPost';
+import { useTranslation } from 'react-i18next';
 
 const HotPostsPage = () => {
+  const { t } = useTranslation();
   const { hotPosts, loading, error } = useHotPosts();
 
   if (loading) {
     return (
       <div className="min-h-screen w-full bg-gray-50 flex items-center justify-center">
-        <div className="text-gray-500">로딩 중...</div>
+        <div className="text-gray-500">{t('community.hotPost.loading')}</div>
       </div>
     );
   }
@@ -16,7 +18,9 @@ const HotPostsPage = () => {
   if (error) {
     return (
       <div className="min-h-screen w-full bg-gray-50 flex items-center justify-center">
-        <div className="text-red-500">오류가 발생했습니다: {error}</div>
+        <div className="text-red-500">
+          {t('community.hotPost.error')} {error}
+        </div>
       </div>
     );
   }

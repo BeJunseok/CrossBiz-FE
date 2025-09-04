@@ -1,4 +1,5 @@
 // src/pages/Visa/ConfirmMore.jsx
+
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserProfile } from "@/api/auth/Auth";
@@ -85,7 +86,8 @@ export default function ConfirmMore() {
       <section className="w-full max-w-[360px] px-6 pt-20 pb-24">
         <h1 className="text-[22px] font-extrabold text-gray-900">
           정확한 매칭을 위해
-          <br />추가 정보를 입력해주세요.
+          <br />
+          추가 정보를 입력해주세요.
         </h1>
 
         {/* 카드 */}
@@ -101,7 +103,7 @@ export default function ConfirmMore() {
                     name="biz_type"
                     className="w-3 h-3 accent-gray-900"
                     value="franchise"
-                    checked={bizType === "franchise"}
+                    checked={bizType === 'franchise'}
                     onChange={(e) => setBizType(e.target.value)}
                   />
                   <span className="text-[13px] text-gray-900">프랜차이즈</span>
@@ -112,7 +114,9 @@ export default function ConfirmMore() {
                     name="biz_type"
                     className="w-3 h-3 accent-gray-900"
                     value="private"
+
                     checked={bizType === "private"}
+
                     onChange={(e) => setBizType(e.target.value)}
                   />
                   <span className="text-[13px] text-gray-900">개인 점포</span>
@@ -124,7 +128,9 @@ export default function ConfirmMore() {
           {/* ── 특허/지식재산권 보유 여부 ── */}
           <div className="mt-4">
             <div className="flex items-center justify-between">
-              <span className="text-[14px] text-gray-600">특허/지식재산권 보유 여부</span>
+              <span className="text-[14px] text-gray-600">
+                특허/지식재산권 보유 여부
+              </span>
               <div className="flex items-center gap-4">
                 <label className="flex items-center gap-1">
                   <input
@@ -133,6 +139,7 @@ export default function ConfirmMore() {
                     className="w-3 h-3 accent-gray-900"
                     value="yes"
                     checked={ipOwned === "yes"}
+
                     onChange={(e) => setIpOwned(e.target.value)}
                   />
                   <span className="text-[13px] text-gray-900">예</span>
@@ -144,7 +151,7 @@ export default function ConfirmMore() {
                     className="w-3 h-3 accent-gray-900"
                     value="no"
                     checked={ipOwned === "no"}
-                    onChange={(e) => setIpOwned(e.target.value)}
+      onChange={(e) => setIpOwned(e.target.value)}
                   />
                   <span className="text-[13px] text-gray-900">아니오</span>
                 </label>
@@ -169,7 +176,9 @@ export default function ConfirmMore() {
 
           {/* ── 오아시스 점수 ── */}
           <label className="block mt-4">
-            <span className="block text-[14px] text-gray-600 mb-1">오아시스 점수</span>
+            <span className="block text-[14px] text-gray-600 mb-1">
+              오아시스 점수
+            </span>
             <input
               type="text"
               inputMode="decimal"

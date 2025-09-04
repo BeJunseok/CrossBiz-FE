@@ -1,7 +1,7 @@
 // src/pages/Visa/VisaRecommend.jsx
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import HomeIcon from "../../assets/home.svg";
+import HomeIcon from "@/assets/Home.svg";
 import CardList from "../../components/CardList";
 import VisaMore from "./VisaMore";
 import { getUserProfile } from "@/api/auth/Auth";

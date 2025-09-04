@@ -1,12 +1,18 @@
 import clsx from 'clsx';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useClickOutside } from '@/hooks/useClickOutside';
 import TriangleDown from '@/assets/svg/register/TriangleDown.svg?react';
+import { useTranslation } from 'react-i18next';
 
 const Dropdown = ({ options, value, placeholder, onChange, error }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-
   const [isEditing, setIsEditing] = useState(false);
+
+  const selectedLabel = useMemo(() => {
+    const selectedOption = options.find((opt) => opt.key === value);
+    return selectedOption ? selectedOption.label : '';
+  }, [value, options]);
 
   const dropdownRef = useClickOutside(() => {
     setIsOpen(false);
@@ -17,21 +23,21 @@ const Dropdown = ({ options, value, placeholder, onChange, error }) => {
 
   const handleSelect = (option) => {
     setIsOpen(false);
-    if (option === '기타') {
+    if (option.directInput) {
       setIsEditing(true);
       onChange('');
     } else {
       setIsEditing(false);
-      onChange(option);
+      onChange(option.key);
     }
   };
 
   useEffect(() => {
-    if (value && !options.includes(value)) {
+    const isValueInOptions = options.some((opt) => opt.key === value);
+    if (value && !isValueInOptions) {
       setIsEditing(true);
     }
   }, [value, options]);
-
   return (
     <div className="space-y-1.5" ref={dropdownRef}>
       <div className="relative">
@@ -41,7 +47,7 @@ const Dropdown = ({ options, value, placeholder, onChange, error }) => {
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            placeholder="직접 입력해주세요"
+            placeholder={t('dropdown.directInputPlaceholder')}
             className={clsx(
               'w-full h-12 bg-[#f3f3f3] rounded-xl px-6 py-4 placeholder:text-sm text-black focus:outline-none focus:ring-2 transition-all',
               {
@@ -69,7 +75,7 @@ const Dropdown = ({ options, value, placeholder, onChange, error }) => {
                 value ? 'text-black' : 'text-gray-400'
               }`}
             >
-              {value || placeholder}
+              {selectedLabel || placeholder}
             </span>
             <TriangleDown
               className={`w-3 h-3 transition-transform ${
@@ -83,12 +89,12 @@ const Dropdown = ({ options, value, placeholder, onChange, error }) => {
           <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-10">
             {options.map((option) => (
               <button
-                key={option}
+                key={option.key}
                 type="button"
                 onClick={() => handleSelect(option)}
-                className="w-full h-12 px-6 py-3 text-left text-base hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                className="flex items-center w-full h-12 px-6 py-3 text-left text-sm hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
               >
-                {option}
+                {option.label}
               </button>
             ))}
           </div>

@@ -7,22 +7,24 @@ import Tax from '@/assets/svg/layout/tax.svg?react';
 import TaxON from '@/assets/svg/layout/tax-active.svg?react';
 import Community from '@/assets/svg/layout/community.svg?react';
 import CommunityON from '@/assets/svg/layout/community-active.svg?react';
+import { useTranslation } from 'react-i18next';
 
 const BottomNavbar = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
   const navigationItems = [
     {
       id: 'visa',
-      label: '비자',
+      label: t('bottomNav.visa'),
       path: '/',
       icon: Visa,
       activeIcon: VisaON,
     },
     {
       id: 'analysis',
-      label: '상권리포트',
+      label: t('bottomNav.report'),
       path: '/analysis',
       icon: Analysis,
       activeIcon: AnalysisON,
@@ -30,14 +32,14 @@ const BottomNavbar = () => {
 
     {
       id: 'tax',
-      label: '세무',
+      label: t('bottomNav.tax'),
       path: '/tax',
       icon: Tax,
       activeIcon: TaxON,
     },
     {
       id: 'community',
-      label: '커뮤니티',
+      label: t('bottomNav.community'),
       path: '/community',
       icon: Community,
       activeIcon: CommunityON,
