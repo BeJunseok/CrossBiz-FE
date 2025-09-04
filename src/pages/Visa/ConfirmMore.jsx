@@ -1,42 +1,84 @@
 // src/pages/Visa/ConfirmMore.jsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import commonUser from '@/data/CommonUser.json';
+
+import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { getUserProfile } from "@/api/auth/Auth";
+import { mapProfileToBasicInfo, postVisaRecommendWithout } from "@/api/visa";
+
+const toNumber = (v) => {
+  const n = Number(String(v).replace(/,/g, "").trim());
+  return Number.isFinite(n) ? n : NaN;
+};
 
 export default function ConfirmMore() {
   const navigate = useNavigate();
-  console.log('ConfirmMore mounted');
 
-  // ✅ CommonUser.json에서 기본값 추출
-  const wv = commonUser?.request?.withoutVisaInfo ?? {};
-  const initBizType = 'private'; // 기본값: 개인 점포
-  const initIpOwned =
-    wv.hasIntellectualProperty === true
-      ? 'yes'
-      : wv.hasIntellectualProperty === false
-        ? 'no'
-        : '';
-  const initInvestment = wv.businessFund != null ? String(wv.businessFund) : '';
-  const initOasis = wv.oasisScore != null ? String(wv.oasisScore) : '';
+  // ✅ 모두 빈값에서 시작 (라디오도 미선택)
+  const [bizType, setBizType] = useState("");     // "franchise" | "private"
+  const [ipOwned, setIpOwned] = useState("");     // "yes" | "no"
+  const [investment, setInvestment] = useState(""); // 숫자 문자열
+  const [oasis, setOasis] = useState("");         // 숫자 문자열
 
-  // ✅ 폼 상태 (초기값 프리필)
-  const [bizType, setBizType] = useState(initBizType); // "franchise" | "private"
-  const [ipOwned, setIpOwned] = useState(initIpOwned); // "yes" | "no"
-  const [investment, setInvestment] = useState(initInvestment); // 문자열
-  const [oasis, setOasis] = useState(initOasis); // 문자열
+  // 프로필 → basicInfo
+  const [profile, setProfile] = useState(null);
+  const basicInfo = useMemo(
+    () => (profile ? mapProfileToBasicInfo(profile) : undefined),
+    [profile]
+  );
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const me = await getUserProfile();
+        setProfile(me);
+        if (import.meta.env.DEV) console.log("[ConfirmMore] profile:", me);
+      } catch (e) {
+        console.warn("프로필 로드 실패:", e);
+      }
+    })();
+  }, []);
 
   const handlePrev = () => navigate(-1);
 
-  const handleNext = () => {
-    if (!bizType || !ipOwned || !investment.trim() || !oasis.trim()) {
-      alert('모든 항목을 입력해주세요!!');
+  const handleNext = async () => {
+    // ✅ 필수값 체크
+    if (!bizType || !ipOwned || investment.trim() === "" || oasis.trim() === "") {
+      alert("모든 항목을 입력/선택해주세요!");
+      return;
+    }
+    if (!basicInfo) {
+      alert("프로필 로드를 먼저 완료해 주세요.");
       return;
     }
 
-    navigate('/visa-loading', {
-      state: { from: 'match' },
-      replace: false,
-    });
+    const businessFund = toNumber(investment);
+    const oasisScore = toNumber(oasis);
+    if (!Number.isFinite(businessFund) || !Number.isFinite(oasisScore)) {
+      alert("투자금/오아시스 점수는 숫자로 입력해주세요.");
+      return;
+    }
+
+    // ✅ withoutVisaInfo 구성
+    const withoutVisaInfo = {
+      bizType, // "franchise" | "private"
+      hasIntellectualProperty: ipOwned === "yes",
+      businessFund,
+      oasisScore,
+    };
+
+    const payload = { basicInfo, withoutVisaInfo };
+
+    try {
+      const data = await postVisaRecommendWithout(payload);
+      // ✅ 로딩 → 추천으로 이동 (raw로 그대로 전달)
+      navigate("/visa-loading", {
+        state: { from: "match", raw: data },
+        replace: false,
+      });
+    } catch (e) {
+      console.error("❌ /visa/recommend/without 실패:", e);
+      alert("추천 정보를 불러오는 중 오류가 발생했어요.");
+    }
   };
 
   return (
@@ -72,7 +114,9 @@ export default function ConfirmMore() {
                     name="biz_type"
                     className="w-3 h-3 accent-gray-900"
                     value="private"
-                    checked={bizType === 'private'} // ✅ 기본 선택
+
+                    checked={bizType === "private"}
+
                     onChange={(e) => setBizType(e.target.value)}
                   />
                   <span className="text-[13px] text-gray-900">개인 점포</span>
@@ -94,7 +138,8 @@ export default function ConfirmMore() {
                     name="ip_owned"
                     className="w-3 h-3 accent-gray-900"
                     value="yes"
-                    checked={ipOwned === 'yes'} // ✅ true → yes
+                    checked={ipOwned === "yes"}
+
                     onChange={(e) => setIpOwned(e.target.value)}
                   />
                   <span className="text-[13px] text-gray-900">예</span>
@@ -105,8 +150,8 @@ export default function ConfirmMore() {
                     name="ip_owned"
                     className="w-3 h-3 accent-gray-900"
                     value="no"
-                    checked={ipOwned === 'no'} // ✅ false → no
-                    onChange={(e) => setIpOwned(e.target.value)}
+                    checked={ipOwned === "no"}
+      onChange={(e) => setIpOwned(e.target.value)}
                   />
                   <span className="text-[13px] text-gray-900">아니오</span>
                 </label>
@@ -119,8 +164,9 @@ export default function ConfirmMore() {
             <span className="block text-[14px] text-gray-600 mb-1">투자금</span>
             <input
               type="text"
-              placeholder="1억5천만원"
-              value={investment} // ✅ businessFund 프리필
+              inputMode="numeric"
+              placeholder="예: 10000000"
+              value={investment}
               onChange={(e) => setInvestment(e.target.value)}
               className="w-full h-11 px-2 bg-transparent border-0 border-b border-gray-200
                          focus:border-gray-900 focus:outline-none text-[15px] text-gray-900
@@ -135,8 +181,9 @@ export default function ConfirmMore() {
             </span>
             <input
               type="text"
-              placeholder="85"
-              value={oasis} // ✅ oasisScore 프리필
+              inputMode="decimal"
+              placeholder="예: 73.5"
+              value={oasis}
               onChange={(e) => setOasis(e.target.value)}
               className="w-full h-11 px-2 bg-transparent border-0 border-b border-gray-200
                          focus:border-gray-900 focus:outline-none text-[15px] text-gray-900

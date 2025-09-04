@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { buildVisaPayload } from "@/api/visa";
+
 
 
 
@@ -11,22 +11,11 @@ export default function VisaHome() {
   const goIssued = () => nav("/loading-prev", {state: {from: "issued"}});
   const [visaData, setVisaData] = useState(null);
 
-  const handleClick = async () => {
-    try {
-      const data = await buildVisaPayload();
-      if (data) {
-        setVisaData(data);
-      } else {
-        console.error("API 응답없음");
-      }
-    } catch (err) {
-      console.error("API 호출 실패..:",err);
-    }
-  };
+ 
   
   return (
     <>
-      <button onClick={handleClick} className="text-red-600 cursor-pointer">비자 추천 가져오기</button>
+ 
       {visaData && (<pre>{JSON.stringify(visaData,null,2)}</pre>)}
       <section
         className="
